@@ -2,10 +2,8 @@ from typing import Any, Callable, Dict, Tuple
 
 from albumentations.augmentations.core.transforms_interface import BasicTransform
 
-import numpy as np
-
 from .functions import Word, Words, Sentence, Sentences, Text
-from . import functions as F
+from . import functional as F
 
 __all__ = [
     "TextTransform",
