@@ -4,7 +4,7 @@ albumentations 패키지를 이용
 
 ## References
 
-```
+```bibtex
 @Article{info11020125,
     AUTHOR = {Buslaev, Alexander and Iglovikov, Vladimir I. and Khvedchenya, Eugene and Parinov, Alex and Druzhinin, Mikhail and Kalinin, Alexandr A.},
     TITLE = {Albumentations: Fast and Flexible Image Augmentations},
