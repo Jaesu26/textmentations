@@ -133,7 +133,7 @@ class RandomDeletionWords(TextTransform):
         for sentence in sentences:
             words = self.get_words_from_sentence(sentence)
             words = F.delete_words(words, self.min_words_each_sentence, self.delete_prob)
-            new_sentences.append(self.combine_words(words))
+            new_sentences.append(self.get_sentence_from_words(words))
         text = self.get_text_from_sentences(new_sentences)
         return text
 
