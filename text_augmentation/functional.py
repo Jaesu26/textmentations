@@ -39,15 +39,14 @@ def swap_words(words: Words) -> Words:
 def delete_sentences(sentences: Sentences, min_sentences: int, deletion_prob: float) -> Sentences:
     """delete random sentences"""
     num_sentences = len(sentences)
-    deletion_max_counts = num_sentences - min_sentences
 
-    if not isinstance(min_sentences, int) or min_sentences < 0:
-        raise ValueError(f"min_sentences must be positive integer. Got: {min_sentence}")
     if num_sentences <= min_sentences:
         return sentences
 
     new_sentences = []
     deletion_counts = 0
+    deletion_max_counts = num_sentences - min_sentences
+    
     for sentence in sentences:
         if np.random.random() < deletion_prob and deletion_counts < deletion_max_counts:
             deletion_counts += 1
@@ -60,15 +59,14 @@ def delete_sentences(sentences: Sentences, min_sentences: int, deletion_prob: fl
 def delete_words(words: Words, min_words: int, deletion_prob: float) -> Words:
     """delete random words"""
     num_words = len(words)
-    deletion_max_counts = num_words - min_words
     
-    if not isinstance(min_words, int) or min_words < 0:
-        raise ValueError(f"min_words must be positive integer. Got: {min_words}")
     if num_words <= min_words:
         return words
 
     new_words = []
     deletion_counts = 0
+    deletion_max_counts = num_words - min_words
+    
     for word in words:
         if np.random.random() < deletion_prob and deletion_counts < deletion_max_counts:
             deletion_counts += 1
