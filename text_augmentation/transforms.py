@@ -94,7 +94,7 @@ class RandomDeletionSentences(TextTransform):
         super(RandomDeletionSentences, self).__init__(always_apply, p)
         
         if not isinstance(min_sentences, int) or min_sentences < 0:
-            raise ValueError(f"min_sentences must be non negative integer. Got: {min_sentence}")
+            raise ValueError(f"min_sentences must be non negative integer. Got: {min_sentences}")
     
         self.min_sentences = min_sentences
         self.deletion_prob = deletion_prob
