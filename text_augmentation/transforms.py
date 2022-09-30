@@ -25,7 +25,7 @@ class TextTransform(BasicTransform):
         return params
 
     def get_sentences_from_text(self, text: Text) -> Sentences:
-        sentences = text.split('.')
+        sentences = text.split(".")
         return sentences[:-1]  
 
     def get_words_from_sentence(self, sentence: Sentence) -> Words:
@@ -33,11 +33,11 @@ class TextTransform(BasicTransform):
         return words
 
     def combine_sentences(self, sentences: Sentences) -> Text:
-        text = '.'.join(sentences) + '.'
+        text = ".".join(sentences) + "."
         return text
 
     def combine_words(self, words: Words) -> Sentence:
-        sentence = ' '.join(words)
+        sentence = " ".join(words)
         return sentence
 
 
