@@ -1,8 +1,8 @@
-from typing import Any, Callable, Dict, Tuple
+from typing import Any, Callable, Dict, List, Tuple
 
 from albumentations.augmentations.core.transforms_interface import BasicTransform
 
-from .functions import Word, Words, Sentence, Sentences, Text
+from .functions import Word, Sentence, Text
 from . import functional as F
 
 __all__ = [
@@ -24,22 +24,22 @@ class TextTransform(BasicTransform):
     def update_params(self, params: Dict[str, Any], **kwargs: Any) -> Dict[str, Any]:
         return params 
 
-    def get_words_from_sentence(self, sentence: Sentence) -> Words:
+    def get_words_from_sentence(self, sentence: Sentence) -> List[Word]:
         """Split a sentence to get words"""
         words = sentence.split()
         return words
     
-    def get_sentences_from_text(self, text: Text) -> Sentences:
+    def get_sentences_from_text(self, text: Text) -> List[Sentence]:
         """Split a text to get sentences"""
         sentences = text.split(".")
         return sentences[:-1] 
     
-    def get_sentence_from_words(self, words: Words) -> Sentence:
+    def get_sentence_from_words(self, words: List[Word]) -> Sentence:
         """Combine words to get a sentence"""
         sentence = " ".join(words)
         return sentence
     
-    def get_text_from_sentences(self, sentences: Sentences) -> Text:
+    def get_text_from_sentences(self, sentences: List[Sentence]) -> Text:
         """Combine sentences to get a text"""
         text = ".".join(sentences) + "."
         return text
