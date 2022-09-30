@@ -10,13 +10,11 @@ __all__ = [
 ]
 
 Word = str
-Words = List[str]
 Sentence = str
-Sentences = List[str]
 Text = str
 
 
-def swap_sentences(sentences: Sentences) -> Sentences:
+def swap_sentences(sentences: List[Sentence]) -> List[Sentence]:
     """swap two sentences"""
     if len(sentences) < 2:
         return sentences
@@ -26,7 +24,7 @@ def swap_sentences(sentences: Sentences) -> Sentences:
     return sentences
 
 
-def swap_words(words: Words) -> Words:
+def swap_words(words: List[Word]) -> List[Word]:
     """swap two words"""
     if len(words) < 2:
         return words
@@ -36,7 +34,7 @@ def swap_words(words: Words) -> Words:
     return words
 
 
-def delete_sentences(sentences: Sentences, min_sentences: int, deletion_prob: float) -> Sentences:
+def delete_sentences(sentences: List[Sentence], min_sentences: int, deletion_prob: float) -> List[Sentence]:
     """delete random sentences"""
     num_sentences = len(sentences)
 
@@ -56,7 +54,7 @@ def delete_sentences(sentences: Sentences, min_sentences: int, deletion_prob: fl
     return new_sentences
 
 
-def delete_words(words: Words, min_words: int, deletion_prob: float) -> Words:
+def delete_words(words: List[Word], min_words: int, deletion_prob: float) -> List[Word]:
     """delete random words"""
     num_words = len(words)
     
