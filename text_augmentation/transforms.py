@@ -22,23 +22,27 @@ class TextTransform(BasicTransform):
         return {"text": self.apply}
       
     def update_params(self, params: Dict[str, Any], **kwargs: Any) -> Dict[str, Any]:
-        return params
-
-    def get_sentences_from_text(self, text: Text) -> Sentences:
-        sentences = text.split(".")
-        return sentences[:-1]  
+        return params 
 
     def get_words_from_sentence(self, sentence: Sentence) -> Words:
+        """Split a sentence to get words"""
         words = sentence.split()
         return words
-
-    def combine_sentences(self, sentences: Sentences) -> Text:
-        text = ".".join(sentences) + "."
-        return text
-
-    def combine_words(self, words: Words) -> Sentence:
+    
+    def get_sentences_from_text(self, text: Text) -> Sentences:
+        """Split a text to get sentences"""
+        sentences = text.split(".")
+        return sentences[:-1] 
+    
+    def get_sentence_from_words(self, words: Words) -> Sentence:
+        """Combine words to get a sentence"""
         sentence = " ".join(words)
         return sentence
+    
+    def get_text_from_sentences(self, sentences: Sentences) -> Text:
+        """Combine sentences to get a text"""
+        text = ".".join(sentences) + "."
+        return text
 
 
 class RandomSwapSentences(TextTransform):
@@ -50,7 +54,7 @@ class RandomSwapSentences(TextTransform):
     def apply(self, text: Text, **params: Any) -> Text:
         sentences = self.get_senteces_from_text(text)
         sentences = F.swap_sentences(sentences)
-        text = self.combine_sentences(sentences)
+        text = self.get_text_from_sentences(sentences)
         return text
 
     def get_transform_init_args_names(self) -> Tuple[()]:
@@ -68,9 +72,9 @@ class RandomSwapWords(TextTransform):
         idx = np.random.randint(len(sentences))
         words = self.get_words_from_sentence(sentences[idx])
         words = F.swap_words(words)
-        sentence = self.combine_words(words)
+        sentence = self.get_sentence_from_words(words)
         sentences[idx] = sentence
-        text = self.combine_senteces(sentences)
+        text = self.get_text_from_sentences(sentences)
         return text
 
     def get_transform_init_args_names(self) -> Tuple[()]:
@@ -98,7 +102,7 @@ class RandomDeletionSentences(TextTransform):
     def apply(self, text: Text, **params: Any) -> Text:
         sentences = self.get_senteces_from_text(text)
         sentences = F.delete_sentences(sentences, self.min_sentences, self.deletion_prob)
-        text = self.combine_sentences(sentences)
+        text = self.get_text_from_sentences(sentences)
         return text
 
     def get_transform_init_args_names(self) -> Tuple[str, str]:
@@ -130,7 +134,7 @@ class RandomDeletionWords(TextTransform):
             words = self.get_words_from_sentence(sentence)
             words = F.delete_words(words, self.min_words_each_sentence, self.delete_prob)
             new_sentences.append(self.combine_words(words))
-        text = self.combine_sentences(new_sentences)
+        text = self.get_text_from_sentences(new_sentences)
         return text
 
     def get_transform_init_args_names(self) -> Tuple[str, str]:
