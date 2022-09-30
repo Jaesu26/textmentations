@@ -3,8 +3,8 @@ from typing import Any, List
 import numpy as np
 
 __all__ = [
-    "swap_sentence"
-    "swap_words"
+    "swap_sentence",
+    "swap_words",
     "delete_sentences",
     "delete_words",
 ]
@@ -42,7 +42,7 @@ def delete_sentences(sentences: Sentences, min_sentences: int, deletion_prob: fl
     deletion_max_counts = num_sentences - min_sentences
 
     if not isinstance(min_sentences, int) or min_sentences < 0:
-        raise ValueError('min_sentences must be positive integer')
+        raise ValueError(f"min_sentences must be positive integer. Got: {min_sentence}")
     if num_sentences <= min_sentences:
         return sentences
 
@@ -63,7 +63,7 @@ def delete_words(words: Words, min_words: int, deletion_prob: float) -> Words:
     deletion_max_counts = num_words - min_words
     
     if not isinstance(min_words, int) or min_words < 0:
-        raise ValueError('min_words must be positive integer')
+        raise ValueError(f"min_words must be positive integer. Got: {min_words}")
     if num_words <= min_words:
         return words
 
