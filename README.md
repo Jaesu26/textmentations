@@ -1,6 +1,6 @@
-# text-augmentation
+# Text Augmentation
 
-albumentations 패키지를 이용
+albumentations 패키지를 이용한 text augmentation
 
 ## References
 
