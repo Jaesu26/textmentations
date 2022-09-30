@@ -2,7 +2,7 @@
 
 albumentations 패키지를 이용한 text augmentation
 
-## References
+## Reference
 
 ```bibtex
 @Article{info11020125,
