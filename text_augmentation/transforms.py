@@ -88,6 +88,10 @@ class RandomDeletionSentences(TextTransform):
         p: float = 0.5
     ) -> None:
         super(RandomDeletionSentences, self).__init__(always_apply, p)
+        
+        if not isinstance(min_sentences, int) or min_sentences < 0:
+            raise ValueError(f"min_sentences must be non negative integer. Got: {min_sentence}")
+    
         self.min_sentences = min_sentences
         self.deletion_prob = deletion_prob
 
@@ -112,6 +116,10 @@ class RandomDeletionWords(TextTransform):
         p: float = 0.5
     ) -> None:
         super(RandomDeletionSentences, self).__init__(always_apply, p)
+        
+        if not isinstance(min_words, int) or min_words < 0:
+            raise ValueError(f"min_words must be non negative integer. Got: {min_words}")
+        
         self.min_words_each_sentence = min_words_each_sentence
         self.deletion_prob = deletion_prob
 
