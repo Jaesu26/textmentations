@@ -138,4 +138,4 @@ class RandomDeletionWords(TextTransform):
         return text
 
     def get_transform_init_args_names(self) -> Tuple[str, str]:
-        return ("min_words_each_sentence", "delete_prob")
+        return ("min_words_each_sentence", "deletion_prob")
