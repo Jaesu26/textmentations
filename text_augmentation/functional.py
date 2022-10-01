@@ -7,6 +7,7 @@ __all__ = [
     "swap_words",
     "delete_sentences",
     "delete_words",
+    "delete_fullstops",
     "Word",
     "Sentence",
     "Text",
@@ -71,3 +72,11 @@ def delete_sentences(sentences: List[Sentence], min_sentences: int, deletion_pro
 
         new_sentences.append(sentence)
     return new_sentences
+
+
+def delete_fullstops(text: Text) -> Text:
+    """Delete full stops in the text"""
+    text = text.replace(".", " ")
+    text = re.sub(r"\s+", " ", text) 
+    text = text.strip()   
+    return text
