@@ -7,6 +7,9 @@ __all__ = [
     "swap_words",
     "delete_sentences",
     "delete_words",
+    "Word",
+    "Sentence",
+    "Text",
 ]
 
 Word = str
@@ -19,7 +22,7 @@ def swap_sentences(sentences: List[Sentence]) -> List[Sentence]:
     if len(sentences) < 2:
         return sentences
 
-    idx1, idx2 = np.random.choice(len(sentences), size=2, replace=False)
+    idx1, idx2 = np.random.randint(len(sentences), size=2, replace=False)
     sentences[idx1], sentences[idx2] = sentences[idx2], sentences[idx1]
     return sentences
 
@@ -29,7 +32,7 @@ def swap_words(words: List[Word]) -> List[Word]:
     if len(words) < 2:
         return words
 
-    idx1, idx2 = np.random.choice(len(words), size=2, replace=False)
+    idx1, idx2 = np.random.randint(len(words), size=2, replace=False)
     words[idx1], words[idx2] = words[idx2], words[idx1]
     return words
 
