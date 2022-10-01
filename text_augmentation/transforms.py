@@ -25,14 +25,16 @@ class TextTransform(BasicTransform):
         return params 
 
     def get_words_from_sentence(self, sentence: Sentence) -> List[Word]:
-        """Split a sentence to get words"""
+        """Split the sentence to get words"""
         words = sentence.split()
         return words
     
     def get_sentences_from_text(self, text: Text) -> List[Sentence]:
-        """Split a text to get sentences"""
+        """Split the text to get sentences"""
         sentences = text.split(".")
-        return sentences[:-1] 
+        if text.endswith("."):
+            return sentences[:-1]
+        return sentences 
     
     def get_sentence_from_words(self, words: List[Word]) -> Sentence:
         """Combine words to get a sentence"""
@@ -41,7 +43,7 @@ class TextTransform(BasicTransform):
     
     def get_text_from_sentences(self, sentences: List[Sentence]) -> Text:
         """Combine sentences to get a text"""
-        text = ".".join(sentences) + "."
+        text = ".".join(sentences)
         return text
 
     
@@ -66,7 +68,7 @@ class RandomSwapWords(TextTransform):
 
     
 class RandomSwapSentences(TextTransform):
-    """Randomly swap two sentences in a text"""
+    """Randomly swap two sentences in the text"""
 
     def __init__(self, always_apply: bool = False, p: float = 0.5) -> None:
         super(RandomSwapSentences, self).__init__(always_apply, p)
@@ -82,7 +84,7 @@ class RandomSwapSentences(TextTransform):
 
 
 class RandomDeletionWords(TextTransform):
-    """Randomly delete words in a text"""
+    """Randomly delete words in the text"""
 
     def __init__(
         self, 
@@ -105,7 +107,10 @@ class RandomDeletionWords(TextTransform):
         for sentence in sentences:
             words = self.get_words_from_sentence(sentence)
             words = F.delete_words(words, self.min_words_each_sentence, self.delete_prob)
-            new_sentences.append(self.get_sentence_from_words(words))
+            new_sentence = self.get_sentence_from_words(words)
+            if new_sentence:
+                new_sentences.append(new_sentence)
+
         text = self.get_text_from_sentences(new_sentences)
         return text
 
@@ -114,7 +119,7 @@ class RandomDeletionWords(TextTransform):
 
 
 class RandomDeletionSentences(TextTransform):
-    """Randomly delete sentences in a text"""
+    """Randomly delete sentences in the text"""
 
     def __init__(
         self, 
