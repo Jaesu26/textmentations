@@ -88,7 +88,7 @@ class RandomSwapSentences(TextTransform):
 
     def apply(self, text: Text, **params: Any) -> Text:
         sentences = self.get_senteces_from_text(text)
-        sentences = F.swap_sentences(sentences, self.ignore_sentence)
+        sentences = F.swap_sentences(sentences, self.ignore_first)
         text = self.get_text_from_sentences(sentences)
         return text
 
