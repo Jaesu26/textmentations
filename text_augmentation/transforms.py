@@ -44,23 +44,7 @@ class TextTransform(BasicTransform):
         text = ".".join(sentences) + "."
         return text
 
-
-class RandomSwapSentences(TextTransform):
-    """Randomly swap two sentences in a text"""
-
-    def __init__(self, always_apply: bool = False, p: float = 0.5) -> None:
-        super(RandomSwapSentences, self).__init__(always_apply, p)
-
-    def apply(self, text: Text, **params: Any) -> Text:
-        sentences = self.get_senteces_from_text(text)
-        sentences = F.swap_sentences(sentences)
-        text = self.get_text_from_sentences(sentences)
-        return text
-
-    def get_transform_init_args_names(self) -> Tuple[()]:
-        return ()
-
-
+    
 class RandomSwapWords(TextTransform):
     """Randomly swap two words in a random sentence"""
 
@@ -80,33 +64,21 @@ class RandomSwapWords(TextTransform):
     def get_transform_init_args_names(self) -> Tuple[()]:
         return ()
 
-
-class RandomDeletionSentences(TextTransform):
-    """Randomly delete sentences in a text"""
-
-    def __init__(
-        self, 
-        min_sentences: int = 3,
-        deletion_prob: float = 0.1, 
-        always_apply: bool = False, 
-        p: float = 0.5
-    ) -> None:
-        super(RandomDeletionSentences, self).__init__(always_apply, p)
-        
-        if not isinstance(min_sentences, int) or min_sentences < 0:
-            raise ValueError(f"min_sentences must be non negative integer. Got: {min_sentences}")
     
-        self.min_sentences = min_sentences
-        self.deletion_prob = deletion_prob
+class RandomSwapSentences(TextTransform):
+    """Randomly swap two sentences in a text"""
+
+    def __init__(self, always_apply: bool = False, p: float = 0.5) -> None:
+        super(RandomSwapSentences, self).__init__(always_apply, p)
 
     def apply(self, text: Text, **params: Any) -> Text:
         sentences = self.get_senteces_from_text(text)
-        sentences = F.delete_sentences(sentences, self.min_sentences, self.deletion_prob)
+        sentences = F.swap_sentences(sentences)
         text = self.get_text_from_sentences(sentences)
         return text
 
-    def get_transform_init_args_names(self) -> Tuple[str, str]:
-        return ("min_sentences", "deletion_prob")
+    def get_transform_init_args_names(self) -> Tuple[()]:
+        return ()
 
 
 class RandomDeletionWords(TextTransform):
@@ -139,3 +111,31 @@ class RandomDeletionWords(TextTransform):
 
     def get_transform_init_args_names(self) -> Tuple[str, str]:
         return ("min_words_each_sentence", "deletion_prob")
+
+
+class RandomDeletionSentences(TextTransform):
+    """Randomly delete sentences in a text"""
+
+    def __init__(
+        self, 
+        min_sentences: int = 3,
+        deletion_prob: float = 0.1, 
+        always_apply: bool = False, 
+        p: float = 0.5
+    ) -> None:
+        super(RandomDeletionSentences, self).__init__(always_apply, p)
+        
+        if not isinstance(min_sentences, int) or min_sentences < 0:
+            raise ValueError(f"min_sentences must be non negative integer. Got: {min_sentences}")
+    
+        self.min_sentences = min_sentences
+        self.deletion_prob = deletion_prob
+
+    def apply(self, text: Text, **params: Any) -> Text:
+        sentences = self.get_senteces_from_text(text)
+        sentences = F.delete_sentences(sentences, self.min_sentences, self.deletion_prob)
+        text = self.get_text_from_sentences(sentences)
+        return text
+
+    def get_transform_init_args_names(self) -> Tuple[str, str]:
+        return ("min_sentences", "deletion_prob")
