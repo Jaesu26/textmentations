@@ -18,7 +18,7 @@ class TextTransform(BasicTransform):
     """Transform applied to text"""
 
     @property
-    def targets(self) -> Dict[str, Callable]:
+    def targets(self) -> Dict[str, Callable[[Text], Text]]:
         return {"text": self.apply}
       
     def update_params(self, params: Dict[str, Any], **kwargs: Any) -> Dict[str, Any]:
