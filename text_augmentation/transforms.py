@@ -11,6 +11,7 @@ __all__ = [
     "RandomSwapWords",
     "RandomDeletionSentences",
     "RandomDeletionWords",
+    "DeletionFullstops",
 ]
 
 
@@ -144,3 +145,17 @@ class RandomDeletionSentences(TextTransform):
 
     def get_transform_init_args_names(self) -> Tuple[str, str]:
         return ("min_sentences", "deletion_prob")
+
+    
+class DeletionFullstops(TextTransform):
+    """Delete full stops in the text"""
+
+    def __init__(self, always_apply: bool = False, p: float = 1.0) -> None:
+        super(DeletionFullstops, self).__init__(always_apply, p)
+
+    def apply(self, text: Text, **params: Any) -> Text:
+        text = F.delete_fullstops(text)
+        return text
+
+    def get_transform_init_args_names(self) -> Tuple[()]:
+        return ()
