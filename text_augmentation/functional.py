@@ -28,12 +28,12 @@ def swap_words(words: List[Word]) -> List[Word]:
     return words
 
 
-def swap_sentences(sentences: List[Sentence]) -> List[Sentence]:
+def swap_sentences(sentences: List[Sentence], ignore_first: bool) -> List[Sentence]:
     """Randomly swap two sentences"""
     if len(sentences) < 2:
         return sentences
 
-    idx1, idx2 = np.random.choice(len(sentences), size=2, replace=False)
+    idx1, idx2 = np.random.choice(ignore_first, len(sentences), size=2, replace=False)
     sentences[idx1], sentences[idx2] = sentences[idx2], sentences[idx1]
     return sentences
 
@@ -56,16 +56,21 @@ def delete_words(words: List[Word], min_words: int, deletion_prob: float) -> Lis
     return new_words
 
 
-def delete_sentences(sentences: List[Sentence], min_sentences: int, deletion_prob: float) -> List[Sentence]:
+def delete_sentences(
+    sentences: List[Sentence], 
+    min_sentences: int, 
+    deletion_prob: float, 
+    ignore_first: bool
+) -> List[Sentence]:
     """Randomly delete sentences"""
     if len(sentences) <= min_sentences:
         return sentences
 
-    new_sentences = []
+    new_sentences = [sentences[0]] if ignore_first else [] 
     deletion_counts = 0
     deletion_max_counts = len(sentences) - min_sentences
     
-    for sentence in sentences:
+    for sentence in sentences[ignore_first:]:
         if np.random.random() < deletion_prob and deletion_counts < deletion_max_counts:
             deletion_counts += 1
             continue
