@@ -31,10 +31,10 @@ def swap_words(words: List[Word]) -> List[Word]:
 
 def swap_sentences(sentences: List[Sentence], ignore_first: bool) -> List[Sentence]:
     """Randomly swap two sentences"""
-    if len(sentences) < 2:
+    if len(sentences) < ignore_first + 2:
         return sentences
 
-    idx1, idx2 = np.random.choice(ignore_first, len(sentences), size=2, replace=False)
+    idx1, idx2 = np.random.choice(np.arange(ignore_first, len(sentences)), size=2, replace=False)
     sentences[idx1], sentences[idx2] = sentences[idx2], sentences[idx1]
     return sentences
 
