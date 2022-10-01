@@ -62,6 +62,9 @@ class RandomSwapWords(TextTransform):
 
     def apply(self, text: Text, **params: Any) -> Text:
         sentences = self.get_sentences_from_text(text)
+        if len(sentences) <= self.ignore_first:
+            return text
+
         idx = np.random.randint(self.ignore_first, len(sentences))
         words = self.get_words_from_sentence(sentences[idx])
         words = F.swap_words(words)
@@ -87,7 +90,7 @@ class RandomSwapSentences(TextTransform):
         self.ignore_first = ignore_first
 
     def apply(self, text: Text, **params: Any) -> Text:
-        sentences = self.get_senteces_from_text(text)
+        sentences = self.get_sentences_from_text(text)
         sentences = F.swap_sentences(sentences, self.ignore_first)
         text = self.get_text_from_sentences(sentences)
         return text
@@ -107,7 +110,7 @@ class RandomDeletionWords(TextTransform):
         always_apply: bool = False, 
         p: float = 0.5
     ) -> None:
-        super(RandomDeletionSentences, self).__init__(always_apply, p)
+        super(RandomDeletionWords, self).__init__(always_apply, p)
         
         if not isinstance(min_words_each_sentence, int) or min_words_each_sentence < 0:
             raise ValueError(f"min_words_each_sentence must be non negative integer. Got: {min_words_each_sentence}")
@@ -117,12 +120,12 @@ class RandomDeletionWords(TextTransform):
         self.ignore_first = ignore_first
 
     def apply(self, text: Text, **params: Any) -> Text:
+        sentences = self.get_sentences_from_text(text)
         new_sentences = [sentences[0]] if self.ignore_first else [] 
-        sentences = self.get_senteces_from_text(text)
         
         for sentence in sentences[self.ignore_first:]:
             words = self.get_words_from_sentence(sentence)
-            words = F.delete_words(words, self.min_words_each_sentence, self.delete_prob)
+            words = F.delete_words(words, self.min_words_each_sentence, self.deletion_prob)
             new_sentence = self.get_sentence_from_words(words)
             if new_sentence:
                 new_sentences.append(new_sentence)
@@ -155,7 +158,7 @@ class RandomDeletionSentences(TextTransform):
         self.ignore_first = ignore_first
 
     def apply(self, text: Text, **params: Any) -> Text:
-        sentences = self.get_senteces_from_text(text)
+        sentences = self.get_sentences_from_text(text)
         sentences = F.delete_sentences(sentences, self.min_sentences, self.deletion_prob, self.ignore_first)
         text = self.get_text_from_sentences(sentences)
         return text
