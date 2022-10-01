@@ -18,7 +18,7 @@ Text = str
 
 
 def swap_words(words: List[Word]) -> List[Word]:
-    """swap two words"""
+    """Randomly swap two words"""
     if len(words) < 2:
         return words
 
@@ -28,7 +28,7 @@ def swap_words(words: List[Word]) -> List[Word]:
 
 
 def swap_sentences(sentences: List[Sentence]) -> List[Sentence]:
-    """swap two sentences"""
+    """Randomly swap two sentences"""
     if len(sentences) < 2:
         return sentences
 
@@ -38,7 +38,7 @@ def swap_sentences(sentences: List[Sentence]) -> List[Sentence]:
 
 
 def delete_words(words: List[Word], min_words: int, deletion_prob: float) -> List[Word]:
-    """delete random words""" 
+    """Randomly delete words""" 
     if len(words) <= min_words:
         return words
 
@@ -56,7 +56,7 @@ def delete_words(words: List[Word], min_words: int, deletion_prob: float) -> Lis
 
 
 def delete_sentences(sentences: List[Sentence], min_sentences: int, deletion_prob: float) -> List[Sentence]:
-    """delete random sentences"""
+    """Randomly delete sentences"""
     if len(sentences) <= min_sentences:
         return sentences
 
