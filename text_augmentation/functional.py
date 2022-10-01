@@ -44,8 +44,8 @@ def delete_words(words: List[Word], min_words: int, deletion_prob: float) -> Lis
         return words
 
     new_words = []
-    deletion_counts = 0
     deletion_max_counts = len(words) - min_words
+    deletion_counts = 0
     
     for word in words:
         if np.random.random() < deletion_prob and deletion_counts < deletion_max_counts:
@@ -67,8 +67,8 @@ def delete_sentences(
         return sentences
 
     new_sentences = [sentences[0]] if ignore_first else [] 
-    deletion_counts = 0
     deletion_max_counts = len(sentences) - min_sentences
+    deletion_counts = 0
     
     for sentence in sentences[ignore_first:]:
         if np.random.random() < deletion_prob and deletion_counts < deletion_max_counts:
