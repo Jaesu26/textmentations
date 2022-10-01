@@ -86,7 +86,7 @@ class RandomDeletionWords(TextTransform):
 
     def __init__(
         self, 
-        min_words_each_sentence: int = 3,
+        min_words_each_sentence: int = 5,
         deletion_prob: float = 0.1, 
         always_apply: bool = False, 
         p: float = 0.5
