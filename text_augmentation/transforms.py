@@ -53,7 +53,7 @@ class RandomSwapWords(TextTransform):
 
     def __init__(
         self, 
-        ignore_first: bool = True,
+        ignore_first: bool = False,
         always_apply: bool = False, 
         p: float = 0.5
     ) -> None:
@@ -82,7 +82,7 @@ class RandomSwapSentences(TextTransform):
 
     def __init__(
         self, 
-        ignore_first: bool = True,
+        ignore_first: bool = False,
         always_apply: bool = False, 
         p: float = 0.5
     ) -> None:
@@ -106,7 +106,7 @@ class RandomDeletionWords(TextTransform):
         self, 
         min_words_each_sentence: int = 5,
         deletion_prob: float = 0.1, 
-        ignore_first: bool = True,
+        ignore_first: bool = False,
         always_apply: bool = False, 
         p: float = 0.5
     ) -> None:
@@ -144,7 +144,7 @@ class RandomDeletionSentences(TextTransform):
         self, 
         min_sentences: int = 3,
         deletion_prob: float = 0.1,
-        ignore_first: bool = True,
+        ignore_first: bool = False,
         always_apply: bool = False, 
         p: float = 0.5
     ) -> None:
