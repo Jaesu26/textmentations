@@ -1,6 +1,7 @@
 from typing import List
 
 import re
+import copy
 import numpy as np
 
 __all__ = [
@@ -19,21 +20,27 @@ Sentence = str
 Text = str
 
 
-def swap_words(words: List[Word]) -> List[Word]:
+def swap_words(words: List[Word], deepcopy: bool = False) -> List[Word]:
     """Randomly swap two words"""
     if len(words) < 2:
         return words
-
+    
+    if deepcopy:
+        words = copy.deepcopy(words)
+        
     idx1, idx2 = np.random.choice(len(words), size=2, replace=False)
     words[idx1], words[idx2] = words[idx2], words[idx1]
     return words
 
 
-def swap_sentences(sentences: List[Sentence], ignore_first: bool) -> List[Sentence]:
+def swap_sentences(sentences: List[Sentence], ignore_first: bool, deepcopy: bool = False) -> List[Sentence]:
     """Randomly swap two sentences"""
     if len(sentences) < ignore_first + 2:
         return sentences
-
+    
+    if deepcopy:
+        sentences = copy.deepcopy(sentences)
+        
     idx1, idx2 = np.random.choice(np.arange(ignore_first, len(sentences)), size=2, replace=False)
     sentences[idx1], sentences[idx2] = sentences[idx2], sentences[idx1]
     return sentences
