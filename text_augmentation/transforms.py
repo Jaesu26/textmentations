@@ -27,12 +27,12 @@ class TextTransform(BasicTransform):
 
     def get_words_from_sentence(self, sentence: Sentence) -> List[Word]:
         """Split the sentence to get words"""
-        words = sentence.split()
+        words = list(map(lambda word: word.strip(), sentence.split()))
         return words
     
     def get_sentences_from_text(self, text: Text) -> List[Sentence]:
         """Split the text to get sentences"""
-        sentences = text.split(".")
+        sentences = list(map(lambda sentence: sentence.strip(), text.split(".")))
         if text.endswith("."):
             return sentences[:-1]
         return sentences 
@@ -44,7 +44,8 @@ class TextTransform(BasicTransform):
     
     def get_text_from_sentences(self, sentences: List[Sentence]) -> Text:
         """Combine sentences to get a text"""
-        text = ".".join(sentences)
+        text = ". ".join(sentences)
+        text = text + "." if text else ''
         return text
 
     
