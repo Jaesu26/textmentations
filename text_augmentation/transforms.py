@@ -12,6 +12,7 @@ __all__ = [
     "RandomDeletionSentences",
     "RandomDeletionWords",
     "DeletionFullstops",
+    "DeletionLastFullstop",
 ]
 
 
