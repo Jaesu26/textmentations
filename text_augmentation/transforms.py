@@ -2,7 +2,7 @@ from typing import Any, Callable, Dict, List, Tuple
 
 from albumentations.augmentations.core.transforms_interface import BasicTransform
 
-from .functional import Word, Sentence, Text
+from .utlis import Word, Sentence, Text
 from . import functional as F
 
 __all__ = [
@@ -23,34 +23,12 @@ class TextTransform(BasicTransform):
         return {"text": self.apply}
       
     def update_params(self, params: Dict[str, Any], **kwargs: Any) -> Dict[str, Any]:
+        params.update({"len_text":len(kwargs["text"])})
         return params 
-
-    def get_words_from_sentence(self, sentence: Sentence) -> List[Word]:
-        """Split the sentence to get words"""
-        words = list(map(lambda word: word.strip(), sentence.split()))
-        return words
-    
-    def get_sentences_from_text(self, text: Text) -> List[Sentence]:
-        """Split the text to get sentences"""
-        sentences = list(map(lambda sentence: sentence.strip(), text.split(".")))
-        if text.endswith("."):
-            return sentences[:-1]
-        return sentences 
-    
-    def get_sentence_from_words(self, words: List[Word]) -> Sentence:
-        """Combine words to get a sentence"""
-        sentence = " ".join(words)
-        return sentence
-    
-    def get_text_from_sentences(self, sentences: List[Sentence]) -> Text:
-        """Combine sentences to get a text"""
-        text = ". ".join(sentences)
-        text = text + "." if text else ''
-        return text
 
     
 class RandomSwapWords(TextTransform):
-    """Randomly swap two words in a random sentence"""
+    """Randomly swap two words in a random sentence in the text"""
 
     def __init__(
         self, 
@@ -62,17 +40,7 @@ class RandomSwapWords(TextTransform):
         self.ignore_first = ignore_first
 
     def apply(self, text: Text, **params: Any) -> Text:
-        sentences = self.get_sentences_from_text(text)
-        if len(sentences) <= self.ignore_first:
-            return text
-
-        idx = np.random.randint(self.ignore_first, len(sentences))
-        words = self.get_words_from_sentence(sentences[idx])
-        words = F.swap_words(words)
-        sentence = self.get_sentence_from_words(words)
-        sentences[idx] = sentence
-        text = self.get_text_from_sentences(sentences)
-        return text
+        return F.swap_words(text, self.ignore_first)
 
     def get_transform_init_args_names(self) -> Tuple[str]:
         return ("ignore_first",)
@@ -91,10 +59,7 @@ class RandomSwapSentences(TextTransform):
         self.ignore_first = ignore_first
 
     def apply(self, text: Text, **params: Any) -> Text:
-        sentences = self.get_sentences_from_text(text)
-        sentences = F.swap_sentences(sentences, self.ignore_first)
-        text = self.get_text_from_sentences(sentences)
-        return text
+        return F.swap_sentences(text, self.ignore_first)
 
     def get_transform_init_args_names(self) -> Tuple[str]:
         return ("ignore_first",)
@@ -121,18 +86,7 @@ class RandomDeletionWords(TextTransform):
         self.ignore_first = ignore_first
 
     def apply(self, text: Text, **params: Any) -> Text:
-        sentences = self.get_sentences_from_text(text)
-        new_sentences = [sentences[0]] if self.ignore_first else [] 
-        
-        for sentence in sentences[self.ignore_first:]:
-            words = self.get_words_from_sentence(sentence)
-            words = F.delete_words(words, self.min_words_each_sentence, self.deletion_prob)
-            new_sentence = self.get_sentence_from_words(words)
-            if new_sentence:
-                new_sentences.append(new_sentence)
-
-        text = self.get_text_from_sentences(new_sentences)
-        return text
+        return F.delete_words(text, self.min_words_each_sentence, self.deletion_prob, self.ignore_first)
 
     def get_transform_init_args_names(self) -> Tuple[str, str, str]:
         return ("min_words_each_sentence", "deletion_prob", "ignore_first")
@@ -159,10 +113,7 @@ class RandomDeletionSentences(TextTransform):
         self.ignore_first = ignore_first
 
     def apply(self, text: Text, **params: Any) -> Text:
-        sentences = self.get_sentences_from_text(text)
-        sentences = F.delete_sentences(sentences, self.min_sentences, self.deletion_prob, self.ignore_first)
-        text = self.get_text_from_sentences(sentences)
-        return text
+        return F.delete_sentences(text, self.min_sentences, self.deletion_prob, self.ignore_first)
 
     def get_transform_init_args_names(self) -> Tuple[str, str, str]:
         return ("min_sentences", "deletion_prob", "ignore_first")
@@ -175,8 +126,20 @@ class DeletionFullstops(TextTransform):
         super(DeletionFullstops, self).__init__(always_apply, p)
 
     def apply(self, text: Text, **params: Any) -> Text:
-        text = F.delete_fullstops(text)
-        return text
+        return F.delete_fullstops(text)
+
+    def get_transform_init_args_names(self) -> Tuple[()]:
+        return ()
+
+    
+class DeletionLastFullstop(TextTransform):
+    """Delete a full stop at the end of the text"""
+
+    def __init__(self, always_apply: bool = False, p: float = 1.0) -> None:
+        super(DeletionLastFullstop, self).__init__(always_apply, p)
+
+    def apply(self, text: Text, **params: Any) -> Text:
+        return F.delete_last_fullstop(text)
 
     def get_transform_init_args_names(self) -> Tuple[()]:
         return ()
