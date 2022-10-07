@@ -66,7 +66,6 @@ def delete_words(
     
     for sentence in sentences[ignore_first:]:
         words = get_words_from_sentence(sentence)
-        #words = delete_words(words, self.min_words_each_sentence, self.deletion_prob)
 
         if len(words) > min_words:
             new_words = []
