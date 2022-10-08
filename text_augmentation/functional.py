@@ -32,7 +32,7 @@ def swap_words(text: Text, ignore_first: bool) -> Text:
 
     idx = np.random.randint(ignore_first, len(sentences))
     words = get_words_from_sentence(sentences[idx])
-    if len(words) >= 2:  ## 단어가 2개 이상인 문장중에서만 선택할지 고민 중   
+    if len(words) >= 2:    
         idx1, idx2 = np.random.choice(len(words), size=2, replace=False)
         words[idx1], words[idx2] = words[idx2], words[idx1]
 
@@ -66,6 +66,7 @@ def delete_words(
     
     for sentence in sentences[ignore_first:]:
         words = get_words_from_sentence(sentence)
+        new_words = words
 
         if len(words) > min_words:
             new_words = []
@@ -106,7 +107,7 @@ def delete_sentences(
             continue
         new_sentences.append(sentence)
 
-    text = get_text_from_sentences(sentences)
+    text = get_text_from_sentences(new_sentences)
     return text
 
 
