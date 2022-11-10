@@ -2,7 +2,7 @@ from typing import Any, Callable, Dict, List, Tuple
 
 from albumentations.core.transforms_interface import BasicTransform
 
-from .utlis import Word, Sentence, Text
+from .utils import Word, Sentence, Text
 from . import functional as F
 
 __all__ = [
