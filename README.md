@@ -11,7 +11,7 @@ pip install git+https://github.com/Jaesu26/text-augmentation.git
 ## Simple Example
 
 ```python
-from text_augmentation.transforms import RandomSwapSentences, RandomSwapWords, RandomDeletionSentences, RandomDeletionWords
+from text_augmentation.transforms import RandomSwapWords, RandomSwapSentences, RandomDeletionWords, RandomDeletionSentences
 
 text = "아침에는 짜장면을 맛있게 먹었다. 점심에는 짬뽕을 맛있게 먹었다. 저녁에는 짬짜면을 맛있게 먹었다."
 sw = RandomSwapWords()
@@ -29,7 +29,7 @@ print(dw(text=text))
 # "먹었다. 저녁에는 짬짜면을 맛있게 먹었다. 점심에는 맛있게 먹었다."
 
 print(ds(text=text))
-# "아침에는 짜장면을 맛있게 먹었다. 점심에는 짬뽕을 맛있게 먹었다."
+# "아침에는 짜장면을 맛있게 먹었다. 저녁에는 짬짜면을 맛있게 먹었다."
 ```
 
 ## Reference
