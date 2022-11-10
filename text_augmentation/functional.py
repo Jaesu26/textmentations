@@ -15,7 +15,7 @@ from .utils import (
 )
 
 __all__ = [
-    "swap_words"
+    "swap_words",
     "swap_sentence",
     "delete_words",
     "delete_sentences",
