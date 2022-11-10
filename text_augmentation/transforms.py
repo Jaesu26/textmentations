@@ -1,6 +1,6 @@
 from typing import Any, Callable, Dict, List, Tuple
 
-from albumentations.augmentations.core.transforms_interface import BasicTransform
+from albumentations.core.transforms_interface import BasicTransform
 
 from .utlis import Word, Sentence, Text
 from . import functional as F
