@@ -5,7 +5,7 @@ albumentations 패키지를 이용한 text augmentation
 ## How to install
 
 ```
-pip install git+https://github.com/Jaesu26/text-augmentation.git
+pip install git+https://github.com/Jaesu26/text_augmentation.git
 ```
 
 ## Simple Example
