@@ -7,10 +7,10 @@ from . import functional as F
 
 __all__ = [
     "TextTransform",
-    "RandomSwapSentences",
     "RandomSwapWords",
-    "RandomDeletionSentences",
+    "RandomSwapSentences",
     "RandomDeletionWords",
+    "RandomDeletionSentences",
     "DeletionFullstops",
     "DeletionLastFullstop",
 ]
