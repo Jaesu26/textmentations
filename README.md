@@ -8,7 +8,7 @@ albumentations 패키지를 이용한 text augmentation
 pip install git+https://github.com/Jaesu26/text-augmentation.git
 ```
 
-## Simple Example
+## A simple example
 
 ```python
 import albumentations as A
