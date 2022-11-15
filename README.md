@@ -12,7 +12,7 @@ pip install git+https://github.com/Jaesu26/text-augmentation.git
 
 ```python
 import albumentations as A
-from text_augmentation.transforms import RandomSwapWords, RandomSwapSentences, RandomDeletionWords, RandomDeletionSentences
+from text_augmentation import RandomSwapWords, RandomSwapSentences, RandomDeletionWords, RandomDeletionSentences
 
 text = "아침에는 짜장면을 맛있게 먹었다. 점심에는 짬뽕을 맛있게 먹었다. 저녁에는 짬짜면을 맛있게 먹었다."
 sw = RandomSwapWords()
