@@ -22,9 +22,9 @@ def strip(str_sequence: Sequence[str]) -> List[str]:
 
   
 def get_words_from_sentence(sentence: Sentence) -> List[Word]:
-        """Split the sentence to get words"""
-        words = strip(sentence.split())
-        return words
+    """Split the sentence to get words"""
+    words = strip(sentence.split())
+    return words
 
       
 def get_sentences_from_text(text: Text) -> List[Sentence]:
