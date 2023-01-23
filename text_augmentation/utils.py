@@ -2,10 +2,10 @@ from typing import List, Sequence
 
 __all__ = [
     "strip",
-    "get_words_from_sentence",
-    "get_sentences_from_text",
-    "get_sentence_from_words",
-    "get_text_from_sentences",
+    "split_sentence",
+    "split_text",
+    "combine_words",
+    "combine_sentences",
     "Word",
     "Sentence",
     "Text",
