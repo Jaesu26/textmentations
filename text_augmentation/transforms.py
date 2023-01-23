@@ -24,7 +24,7 @@ class TextTransform(BasicTransform):
         return {"text": self.apply}
       
     def update_params(self, params: Dict[str, Any], **kwargs: Any) -> Dict[str, Any]:
-        params.update({"len_text":len(kwargs["text"])})
+        params.update({"length":len(kwargs["text"])})
         return params 
 
     
