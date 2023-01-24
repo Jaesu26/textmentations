@@ -14,11 +14,10 @@ __all__ = [
 Word = str
 Sentence = str
 Text = str
-x=1
+
 
 def strip(str_sequence: Sequence[str]) -> List[str]:
     """Remove leading and trailing whitespaces each string in sequence"""
-    print(x)
     return list(map(lambda string: string.strip(), str_sequence))
 
   
