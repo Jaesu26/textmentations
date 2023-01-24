@@ -56,7 +56,7 @@ def swap_sentences(text: Text, ignore_first: bool) -> Text:
 
 def delete_words(
     text: Text, 
-    min_words: int, 
+    min_words_each_sentence: int, 
     deletion_prob: float, 
     ignore_first: bool
 ) -> Text:
@@ -68,9 +68,9 @@ def delete_words(
         words = split_sentence(sentence)
         new_words = words
 
-        if len(words) > min_words:
+        if len(words) > min_words_each_sentence:
             new_words = []
-            deletion_max_counts = len(words) - min_words
+            deletion_max_counts = len(words) - min_words_each_sentence
             deletion_counts = 0
             for word in words:
                 if np.random.random() < deletion_prob and deletion_counts < deletion_max_counts:
