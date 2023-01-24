@@ -31,7 +31,7 @@ def split_text(text: Text) -> List[Sentence]:
     """Split the text to get sentences"""
     sentences = strip(text.split("."))
     if text.endswith("."):
-        return sentences[:-1]
+        sentences = sentences[:-1]
     return sentences 
 
   
