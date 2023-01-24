@@ -4,7 +4,6 @@ import re
 import numpy as np
 
 from .utils import (
-    #strip,
     split_sentence,
     split_text,
     combine_words,
