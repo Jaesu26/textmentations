@@ -16,9 +16,9 @@ Sentence = str
 Text = str
 
 
-def strip(str_sequence: Sequence[str]) -> List[str]:
+def strip(string_sequence: Sequence[str]) -> List[str]:
     """Remove leading and trailing whitespaces each string in sequence"""
-    return list(map(lambda string: string.strip(), str_sequence))
+    return [string.strip() for string in string_sequence]
 
   
 def split_sentence(sentence: Sentence) -> List[Word]:
