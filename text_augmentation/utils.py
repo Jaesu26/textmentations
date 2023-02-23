@@ -1,4 +1,4 @@
-from typing import List, Sequence
+from typing import List, Sequence, TypeVar
 
 __all__ = [
     "strip",
@@ -11,9 +11,9 @@ __all__ = [
     "Text",
 ]
 
-Word = str
-Sentence = str
-Text = str
+Word = TypeVar("Word", str)
+Sentence = TypeVar("Sentence", str)
+Text = TypeVar("Text", str)
 
 
 def strip(string_sequence: Sequence[str]) -> List[str]:
