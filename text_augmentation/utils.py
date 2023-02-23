@@ -11,9 +11,9 @@ __all__ = [
     "Text",
 ]
 
-Word = NewType("Word", str)
-Sentence = NewType("Sentence", str)
-Text = NewType("Text", str)
+Word = str
+Sentence = str
+Text = str
 
 
 def strip(string_sequence: Sequence[str]) -> List[str]:
