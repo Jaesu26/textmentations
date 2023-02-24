@@ -26,8 +26,8 @@ class TextTransform(BasicTransform):
 
     
 class RandomSwapWords(TextTransform):
-    """Randomly swap two words in a random sentence in the text"""
-
+    """Randomly swap two words in a randomly selected sentence from the text"""
+    
     def __init__(
         self, 
         ignore_first: bool = False,
