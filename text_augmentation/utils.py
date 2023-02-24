@@ -1,5 +1,6 @@
-import re
 from typing import List, Sequence
+
+import re
 
 __all__ = [
     "strip",
