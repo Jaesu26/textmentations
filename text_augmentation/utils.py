@@ -1,7 +1,9 @@
-from typing import List, Sequence, NewType
+import re
+from typing import List, Sequence
 
 __all__ = [
     "strip",
+    "remove_empty_strings",
     "split_sentence",
     "split_text",
     "combine_words",
@@ -16,22 +18,29 @@ Sentence = str
 Text = str
 
 
-def strip(string_sequence: Sequence[str]) -> List[str]:
-    """Remove leading and trailing whitespaces each string in sequence"""
-    return [string.strip() for string in string_sequence]
+def strip(strings: Sequence[str]) -> List[str]:
+    """Remove leading and trailing whitespaces from each string in the sequence"""
+    return [string.strip() for string in strings]
+
+
+def remove_empty_strings(strings: Sequence[str]) -> List[str]:
+    """Remove empty strings from a sequence of strings"""
+    return [string for string in strings if string]
 
   
 def split_sentence(sentence: Sentence) -> List[Word]:
     """Split the sentence to get words"""
-    words = strip(sentence.split())
+    words = sentence.split()
+    words = strip(words)
+    words = remove_empty_strings(words)
     return words
 
       
 def split_text(text: Text) -> List[Sentence]:
     """Split the text to get sentences"""
-    sentences = strip(text.split("."))
-    if text.endswith("."):
-        sentences = sentences[:-1]
+    sentences = re.split(r"[.?!]", text)
+    sentences = strip(sentences)
+    sentences = remove_empty_strings(sentences)
     return sentences 
 
   
