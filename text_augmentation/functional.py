@@ -1,6 +1,5 @@
 from typing import List
 
-import re
 import numpy as np
 
 from .utils import (
@@ -10,7 +9,7 @@ from .utils import (
     combine_sentences,
     Word,
     Sentence,
-    Text
+    Text,
 )
 
 __all__ = [
@@ -18,8 +17,6 @@ __all__ = [
     "swap_sentences",
     "delete_words",
     "delete_sentences",
-    "delete_fullstops",
-    "delete_last_fullstop",
 ]
 
 
@@ -107,19 +104,4 @@ def delete_sentences(
         new_sentences.append(sentence)
 
     text = combine_sentences(new_sentences)
-    return text
-
-
-def delete_fullstops(text: Text) -> Text:
-    """Delete full stops in the text"""
-    text = text.replace(".", " ")
-    text = re.sub(r" +", " ", text) 
-    text = text.strip()   
-    return text
-
-
-def delete_last_fullstop(text: Text) -> Text:
-    """Delete a full stop at the end of the text"""
-    if text.endswith("."):
-        text = text[:-1]
     return text

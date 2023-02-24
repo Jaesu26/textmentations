@@ -1,4 +1,4 @@
-from typing import Any, Callable, Dict, List, Tuple
+from typing import Any, Callable, Dict, Tuple
 
 from albumentations.core.transforms_interface import BasicTransform
 
@@ -11,8 +11,6 @@ __all__ = [
     "RandomSwapSentences",
     "RandomDeletionWords",
     "RandomDeletionSentences",
-    "DeletionFullstops",
-    "DeletionLastFullstop",
 ]
 
 
@@ -117,29 +115,3 @@ class RandomDeletionSentences(TextTransform):
 
     def get_transform_init_args_names(self) -> Tuple[str, str, str]:
         return ("min_sentences", "deletion_prob", "ignore_first")
-
-    
-class DeletionFullstops(TextTransform):
-    """Delete full stops in the text"""
-
-    def __init__(self, always_apply: bool = False, p: float = 1.0) -> None:
-        super(DeletionFullstops, self).__init__(always_apply, p)
-
-    def apply(self, text: Text, **params: Any) -> Text:
-        return F.delete_fullstops(text)
-
-    def get_transform_init_args_names(self) -> Tuple[()]:
-        return ()
-
-    
-class DeletionLastFullstop(TextTransform):
-    """Delete a full stop at the end of the text"""
-
-    def __init__(self, always_apply: bool = False, p: float = 1.0) -> None:
-        super(DeletionLastFullstop, self).__init__(always_apply, p)
-
-    def apply(self, text: Text, **params: Any) -> Text:
-        return F.delete_last_fullstop(text)
-
-    def get_transform_init_args_names(self) -> Tuple[()]:
-        return ()
