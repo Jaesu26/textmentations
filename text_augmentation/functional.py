@@ -69,7 +69,7 @@ def delete_words(
     new_sentences = [sentences[0]] if ignore_first else [] 
     
     for sentence in sentences[ignore_first:]:
-        sentence = delete_words_in_sentence(sentence, min_words_each_sentence)
+        sentence = delete_words_in_sentence(sentence, min_words_each_sentence, deletion_prob)
         if sentence:
             new_sentences.append(sentence)
 
@@ -77,7 +77,7 @@ def delete_words(
     return text
 
 
-def delete_words_in_sentence(sentence: Sentence, min_words: int) -> Sentence:
+def delete_words_in_sentence(sentence: Sentence, min_words: int, deletion_prob: float) -> Sentence:
     """Randomly delete words in the sentence"""
     words = split_sentence(sentence)
     if len(words) <= min_words:
