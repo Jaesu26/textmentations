@@ -3,7 +3,7 @@ from typing import List
 
 
 def get_requirements(file_path: str = "requirements.txt") -> List[str]:
-    with open(file_path, 'r') as f:
+    with open(file_path, "r") as f:
         requirements = f.read().splitlines()
     return requirements
 
