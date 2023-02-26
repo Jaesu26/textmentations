@@ -1,6 +1,6 @@
 # Text Augmentation
 
-text augmentation using albumentations package
+Text augmentation using albumentations package
 
 ## How to install
 
