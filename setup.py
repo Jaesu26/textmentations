@@ -2,10 +2,10 @@ from setuptools import setup, find_packages
 from typing import List
 
 
-def get_requirements(file_path: str = "requirements.txt") -> List[str]:
-    with open(file_path, "r") as f:
-        requirements = f.read().splitlines()
-    return requirements
+def get_install_requires(file_path: str = "requirements.txt") -> List[str]:
+    with open(file_path) as f:
+        install_requires = f.read().splitlines()
+    return install_requires
 
 setup(
     name="text_augmentation",
@@ -20,5 +20,5 @@ setup(
     zip_safe=False,
     include_package_data=True,
     python_requires=">=3.6",
-    install_requires=get_requirements(),
+    install_requires=get_install_requires(),
 )
