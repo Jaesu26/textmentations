@@ -1,4 +1,4 @@
-from typing import Any, Callable, Dict, Tuple
+from typing import Any, Callable, Dict, Tuple, Union
 
 from albumentations.core.transforms_interface import BasicTransform
 
@@ -68,7 +68,7 @@ class RandomDeletionWords(TextTransform):
 
     def __init__(
         self, 
-        min_words_each_sentence: int = 5,
+        min_words_each_sentence: Union[float, int] = 5,
         deletion_prob: float = 0.1, 
         ignore_first: bool = False,
         always_apply: bool = False, 
@@ -76,8 +76,12 @@ class RandomDeletionWords(TextTransform):
     ) -> None:
         super(RandomDeletionWords, self).__init__(always_apply, p)
         
-        if not isinstance(min_words_each_sentence, int) or min_words_each_sentence < 0:
-            raise ValueError(f"min_words_each_sentence must be non negative integer. Got: {min_words_each_sentence}")
+        if not isinstance(min_words_each_sentence, (float, int)):
+            raise TypeError(f"min_words_each_sentence must be either an integer or a float. Got: {min_words_each_sentence}")
+        if isinstance(min_words_each_sentence, float) and not (0.0 <= min_words_each_sentence <= 1.0):
+            raise ValueError(f"If min_words_each_sentence is a float, it must be between 0 and 1. Got: {min_words_each_sentence}")
+        if not isinstance(min_words_each_sentence, int) and min_words_each_sentence < 0:
+            raise ValueError(f"If min_words_each_sentence is an integer, it must be a non-negative. Got: {min_words_each_sentence}")
         
         self.min_words_each_sentence = min_words_each_sentence
         self.deletion_prob = deletion_prob
@@ -88,14 +92,14 @@ class RandomDeletionWords(TextTransform):
 
     def get_transform_init_args_names(self) -> Tuple[str, str, str]:
         return ("min_words_each_sentence", "deletion_prob", "ignore_first")
-
-
+    
+    
 class RandomDeletionSentences(TextTransform):
     """Randomly delete sentences in the text"""
 
     def __init__(
         self, 
-        min_sentences: int = 3,
+        min_sentences: Union[float, int] = 3,
         deletion_prob: float = 0.1,
         ignore_first: bool = False,
         always_apply: bool = False, 
@@ -103,8 +107,12 @@ class RandomDeletionSentences(TextTransform):
     ) -> None:
         super(RandomDeletionSentences, self).__init__(always_apply, p)
         
-        if not isinstance(min_sentences, int) or min_sentences < 0:
-            raise ValueError(f"min_sentences must be non negative integer. Got: {min_sentences}")
+        if not isinstance(min_sentences, (float, int)):
+            raise TypeError(f"min_sentences must be either an integer or a float. Got: {min_sentences}")
+        if isinstance(min_sentences, float) and not (0.0 <= min_sentences <= 1.0):
+            raise ValueError(f"If min_sentences is a float, it must be between 0 and 1. Got: {min_sentences}")
+        if not isinstance(min_sentences, int) and min_sentences < 0:
+            raise ValueError(f"If min_sentences is an integer, it must be a non-negative. Got: {min_sentences}")
     
         self.min_sentences = min_sentences
         self.deletion_prob = deletion_prob

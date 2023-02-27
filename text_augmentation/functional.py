@@ -1,5 +1,6 @@
-from typing import List
+from typing import List, Union
 
+import math
 import numpy as np
 
 from .utils import (
@@ -25,10 +26,12 @@ __all__ = [
 def swap_words(text: Text, ignore_first: bool) -> Text:
     """Randomly swap two words in a randomly selected sentence from the text"""
     sentences = split_text(text)
-    if len(sentences) <= ignore_first + 1:
+    num_sentences = len(sentences)
+    
+    if num_sentences <= ignore_first + 1:
         return text
 
-    idx = np.random.randint(ignore_first, len(sentences))
+    idx = np.random.randint(ignore_first, num_sentences)
     sentences[idx] = swap_words_in_sentence(sentences[idx])
     text = combine_sentences(sentences)
     return text
@@ -37,10 +40,12 @@ def swap_words(text: Text, ignore_first: bool) -> Text:
 def swap_words_in_sentence(sentence: Sentence) -> Sentence:
     """Randomly swap two words in the sentence"""
     words = split_sentence(sentence)
-    if len(words) < 2:
+    num_words = len(words)
+    
+    if num_words < 2:
         return sentence
     
-    idx1, idx2 = np.random.choice(len(words), size=2, replace=False)
+    idx1, idx2 = np.random.choice(num_words, size=2, replace=False)
     words[idx1], words[idx2] = words[idx2], words[idx1]
     sentence = combine_words(words)
     return sentence
@@ -49,10 +54,12 @@ def swap_words_in_sentence(sentence: Sentence) -> Sentence:
 def swap_sentences(text: Text, ignore_first: bool) -> Text:
     """Randomly swap two sentences in the text"""
     sentences = split_text(text)
-    if len(sentences) < ignore_first + 2:
+    num_sentences = len(sentences)
+    
+    if num_sentences < ignore_first + 2:
         return text
         
-    idx1, idx2 = np.random.choice(np.arange(ignore_first, len(sentences)), size=2, replace=False)
+    idx1, idx2 = np.random.choice(np.arange(ignore_first, num_sentences), size=2, replace=False)
     sentences[idx1], sentences[idx2] = sentences[idx2], sentences[idx1]
     text = combine_sentences(sentences)
     return text
@@ -60,7 +67,7 @@ def swap_sentences(text: Text, ignore_first: bool) -> Text:
     
 def delete_words(
     text: Text, 
-    min_words_each_sentence: int, 
+    min_words_each_sentence: Union[float, int], 
     deletion_prob: float, 
     ignore_first: bool
 ) -> Text:
@@ -77,14 +84,18 @@ def delete_words(
     return text
 
 
-def delete_words_in_sentence(sentence: Sentence, min_words: int, deletion_prob: float) -> Sentence:
+def delete_words_in_sentence(sentence: Sentence, min_words: Union[float, int], deletion_prob: float) -> Sentence:
     """Randomly delete words in the sentence"""
     words = split_sentence(sentence)
-    if len(words) <= min_words:
+    num_words = len(words)
+    
+    if isinstance(min_words, float):
+        min_words = math.ceil(num_words * min_words)
+    if num_words <= min_words:
         return sentence
 
     new_words = []
-    max_deletion_counts = len(words) - min_words
+    max_deletion_counts = num_words - min_words
     deleted_counts = 0
     
     for word in words:
@@ -99,17 +110,21 @@ def delete_words_in_sentence(sentence: Sentence, min_words: int, deletion_prob: 
 
 def delete_sentences(
     text: Text, 
-    min_sentences: int, 
+    min_sentences: Union[float, int], 
     deletion_prob: float, 
     ignore_first: bool
 ) -> Text:
     """Randomly delete sentences in the text"""
     sentences = split_text(text)
-    if len(sentences) <= min_sentences:
+    num_sentences = len(sentences)
+    
+    if isinstance(min_sentences, float):
+        min_sentences = math.ceil(num_sentences * min_sentences)    
+    if num_sentences <= min_sentences:
         return text
 
     new_sentences = [sentences[0]] if ignore_first else [] 
-    max_deletion_counts = len(sentences) - min_sentences
+    max_deletion_counts = num_sentences - min_sentences
     deleted_counts = 0
     
     for sentence in sentences[ignore_first:]:

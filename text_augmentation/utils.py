@@ -28,7 +28,7 @@ def remove_empty_strings(strings: Sequence[str]) -> List[str]:
     """Remove empty strings from a sequence of strings"""
     return [string for string in strings if string]
 
-  
+
 def split_sentence(sentence: Sentence) -> List[Word]:
     """Split the sentence to get words"""
     words = sentence.split()
