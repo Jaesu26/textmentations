@@ -1,7 +1,7 @@
 from typing import List, Union
 
 import math
-import numpy as np
+import random
 
 from .utils import (
     split_sentence,
@@ -31,7 +31,7 @@ def swap_words(text: Text, ignore_first: bool) -> Text:
     if num_sentences <= ignore_first + 1:
         return text
 
-    idx = np.random.randint(ignore_first, num_sentences)
+    idx = random.randrange(ignore_first, num_sentences)
     sentences[idx] = swap_words_in_sentence(sentences[idx])
     text = combine_sentences(sentences)
     return text
@@ -45,7 +45,7 @@ def swap_words_in_sentence(sentence: Sentence) -> Sentence:
     if num_words < 2:
         return sentence
     
-    idx1, idx2 = np.random.choice(num_words, size=2, replace=False)
+    idx1, idx2 = random.sample(range(num_words), k=2)
     words[idx1], words[idx2] = words[idx2], words[idx1]
     sentence = combine_words(words)
     return sentence
@@ -59,7 +59,7 @@ def swap_sentences(text: Text, ignore_first: bool) -> Text:
     if num_sentences < ignore_first + 2:
         return text
         
-    idx1, idx2 = np.random.choice(np.arange(ignore_first, num_sentences), size=2, replace=False)
+    idx1, idx2 = random.sample(range(ignore_first, num_sentences), k=2)
     sentences[idx1], sentences[idx2] = sentences[idx2], sentences[idx1]
     text = combine_sentences(sentences)
     return text
@@ -99,7 +99,7 @@ def delete_words_in_sentence(sentence: Sentence, min_words: Union[float, int], d
     deleted_counts = 0
     
     for word in words:
-        if np.random.random() < deletion_prob and deleted_counts < max_deletion_counts:
+        if random.random() < deletion_prob and deleted_counts < max_deletion_counts:
             deleted_counts += 1
             continue
         new_words.append(word)
@@ -128,7 +128,7 @@ def delete_sentences(
     deleted_counts = 0
     
     for sentence in sentences[ignore_first:]:
-        if np.random.random() < deletion_prob and deleted_counts < max_deletion_counts:
+        if random.random() < deletion_prob and deleted_counts < max_deletion_counts:
             deleted_counts += 1
             continue
         new_sentences.append(sentence)
