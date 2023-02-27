@@ -77,10 +77,10 @@ class RandomDeletionWords(TextTransform):
         super(RandomDeletionWords, self).__init__(always_apply, p)
         
         if not isinstance(min_words_each_sentence, (float, int)):
-            raise TypeError(f"min_words_each_sentence must be either an integer or a float. Got: {min_words_each_sentence}")
+            raise TypeError(f"min_words_each_sentence must be either an integer or a float. Got: {type(min_words_each_sentence)} type")
         if isinstance(min_words_each_sentence, float) and not (0.0 <= min_words_each_sentence <= 1.0):
             raise ValueError(f"If min_words_each_sentence is a float, it must be between 0 and 1. Got: {min_words_each_sentence}")
-        if not isinstance(min_words_each_sentence, int) and min_words_each_sentence < 0:
+        if isinstance(min_words_each_sentence, int) and min_words_each_sentence < 0:
             raise ValueError(f"If min_words_each_sentence is an integer, it must be a non-negative. Got: {min_words_each_sentence}")
         
         self.min_words_each_sentence = min_words_each_sentence
@@ -108,10 +108,10 @@ class RandomDeletionSentences(TextTransform):
         super(RandomDeletionSentences, self).__init__(always_apply, p)
         
         if not isinstance(min_sentences, (float, int)):
-            raise TypeError(f"min_sentences must be either an integer or a float. Got: {min_sentences}")
+            raise TypeError(f"min_sentences must be either an integer or a float. Got: {type(min_sentences)} type")
         if isinstance(min_sentences, float) and not (0.0 <= min_sentences <= 1.0):
             raise ValueError(f"If min_sentences is a float, it must be between 0 and 1. Got: {min_sentences}")
-        if not isinstance(min_sentences, int) and min_sentences < 0:
+        if isinstance(min_sentences, int) and min_sentences < 0:
             raise ValueError(f"If min_sentences is an integer, it must be a non-negative. Got: {min_sentences}")
     
         self.min_sentences = min_sentences
