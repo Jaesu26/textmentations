@@ -24,7 +24,7 @@ __all__ = [
 
 
 def swap_words(text: Text, ignore_first: bool) -> Text:
-    """Randomly swap two words in a randomly selected sentence from the text"""
+    """Randomly swap two words in a randomly selected sentence from the text."""
     sentences = split_text(text)
     num_sentences = len(sentences)
     
@@ -38,7 +38,7 @@ def swap_words(text: Text, ignore_first: bool) -> Text:
 
 
 def swap_words_in_sentence(sentence: Sentence) -> Sentence:
-    """Randomly swap two words in the sentence"""
+    """Randomly swap two words in the sentence."""
     words = split_sentence(sentence)
     num_words = len(words)
     
@@ -52,7 +52,7 @@ def swap_words_in_sentence(sentence: Sentence) -> Sentence:
 
 
 def swap_sentences(text: Text, ignore_first: bool) -> Text:
-    """Randomly swap two sentences in the text"""
+    """Randomly swap two sentences in the text."""
     sentences = split_text(text)
     num_sentences = len(sentences)
     
@@ -71,7 +71,7 @@ def delete_words(
     deletion_prob: float, 
     ignore_first: bool
 ) -> Text:
-    """Randomly delete words in the text"""
+    """Randomly delete words in the text."""
     sentences = split_text(text)
     new_sentences = [sentences[0]] if ignore_first else [] 
     
@@ -85,7 +85,7 @@ def delete_words(
 
 
 def delete_words_in_sentence(sentence: Sentence, min_words: Union[float, int], deletion_prob: float) -> Sentence:
-    """Randomly delete words in the sentence"""
+    """Randomly delete words in the sentence."""
     words = split_sentence(sentence)
     num_words = len(words)
     
@@ -114,7 +114,7 @@ def delete_sentences(
     deletion_prob: float, 
     ignore_first: bool
 ) -> Text:
-    """Randomly delete sentences in the text"""
+    """Randomly delete sentences in the text."""
     sentences = split_text(text)
     num_sentences = len(sentences)
     

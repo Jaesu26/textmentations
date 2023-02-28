@@ -20,17 +20,17 @@ Text = str
 
 
 def strip(strings: Sequence[str]) -> List[str]:
-    """Remove leading and trailing whitespaces from each string in the sequence"""
+    """Remove leading and trailing whitespaces from each string in the sequence."""
     return [string.strip() for string in strings]
 
 
 def remove_empty_strings(strings: Sequence[str]) -> List[str]:
-    """Remove empty strings from a sequence of strings"""
+    """Remove empty strings from the sequence of strings."""
     return [string for string in strings if string]
 
 
 def split_sentence(sentence: Sentence) -> List[Word]:
-    """Split the sentence to get words"""
+    """Split the sentence into words."""
     words = sentence.split()
     words = strip(words)
     words = remove_empty_strings(words)
@@ -38,7 +38,7 @@ def split_sentence(sentence: Sentence) -> List[Word]:
 
       
 def split_text(text: Text) -> List[Sentence]:
-    """Split the text to get sentences"""
+    """Split the text into sentences."""
     sentences = re.split(r"[.?!]", text)
     sentences = strip(sentences)
     sentences = remove_empty_strings(sentences)
@@ -46,13 +46,13 @@ def split_text(text: Text) -> List[Sentence]:
 
   
 def combine_words(words: List[Word]) -> Sentence:
-    """Combine words to get a sentence"""
+    """Combine words into a sentence."""
     sentence = " ".join(words)
     return sentence
 
   
 def combine_sentences(sentences: List[Sentence]) -> Text:
-    """Combine sentences to get a text"""
+    """Combine sentences into a text."""
     text = ". ".join(sentences)
     if text:
         text = ".".join([text, ""])

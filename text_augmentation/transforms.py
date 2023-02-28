@@ -15,7 +15,7 @@ __all__ = [
 
 
 class TextTransform(BasicTransform):
-    """Transform applied to a text"""
+    """Transform applied to text."""
 
     @property
     def targets(self) -> Dict[str, Callable[[Text], Text]]:
@@ -26,7 +26,7 @@ class TextTransform(BasicTransform):
 
     
 class RandomSwapWords(TextTransform):
-    """Randomly swap two words in a randomly selected sentence from the text"""
+    """Randomly swap two words in a randomly selected sentence from the input text."""
     
     def __init__(
         self, 
@@ -45,7 +45,7 @@ class RandomSwapWords(TextTransform):
 
     
 class RandomSwapSentences(TextTransform):
-    """Randomly swap two sentences in the text"""
+    """Randomly swap two sentences in the input text."""
 
     def __init__(
         self, 
@@ -64,7 +64,7 @@ class RandomSwapSentences(TextTransform):
 
 
 class RandomDeletionWords(TextTransform):
-    """Randomly delete words in the text"""
+    """Randomly delete words in the input text."""
 
     def __init__(
         self, 
@@ -77,7 +77,7 @@ class RandomDeletionWords(TextTransform):
         super(RandomDeletionWords, self).__init__(always_apply, p)
         
         if not isinstance(min_words_each_sentence, (float, int)):
-            raise TypeError(f"min_words_each_sentence must be either an integer or a float. Got: {type(min_words_each_sentence)} type")
+            raise TypeError(f"min_words_each_sentence must be either an integer or a float. Got: {type(min_words_each_sentence)}")
         if isinstance(min_words_each_sentence, float) and not (0.0 <= min_words_each_sentence <= 1.0):
             raise ValueError(f"If min_words_each_sentence is a float, it must be between 0 and 1. Got: {min_words_each_sentence}")
         if isinstance(min_words_each_sentence, int) and min_words_each_sentence < 0:
@@ -95,7 +95,7 @@ class RandomDeletionWords(TextTransform):
     
     
 class RandomDeletionSentences(TextTransform):
-    """Randomly delete sentences in the text"""
+    """Randomly delete sentences in the input text."""
 
     def __init__(
         self, 
@@ -108,7 +108,7 @@ class RandomDeletionSentences(TextTransform):
         super(RandomDeletionSentences, self).__init__(always_apply, p)
         
         if not isinstance(min_sentences, (float, int)):
-            raise TypeError(f"min_sentences must be either an integer or a float. Got: {type(min_sentences)} type")
+            raise TypeError(f"min_sentences must be either an integer or a float. Got: {type(min_sentences)}")
         if isinstance(min_sentences, float) and not (0.0 <= min_sentences <= 1.0):
             raise ValueError(f"If min_sentences is a float, it must be between 0 and 1. Got: {min_sentences}")
         if isinstance(min_sentences, int) and min_sentences < 0:
