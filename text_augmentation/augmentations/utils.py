@@ -12,7 +12,7 @@ __all__ = [
     "combine_sentences",
 ]
 
-T = TypeVar("T", Word, Sentence, Text)
+T = TypeVar("T", Word, Sentence)
 
 
 def strip(strings: Sequence[T]) -> List[T]:
