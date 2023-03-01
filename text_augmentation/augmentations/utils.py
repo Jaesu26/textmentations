@@ -1,4 +1,5 @@
-from typing import List, Sequence
+from typing import List, Sequence, TypeVar
+from ..corpus_types import Word, Sentence, Text
 
 import re
 
@@ -9,22 +10,17 @@ __all__ = [
     "split_text",
     "combine_words",
     "combine_sentences",
-    "Word",
-    "Sentence",
-    "Text",
 ]
 
-Word = str
-Sentence = str
-Text = str
+T = TypeVar("T", Word, Sentence, Text)
 
 
-def strip(strings: Sequence[str]) -> List[str]:
+def strip(strings: Sequence[T]) -> List[T]:
     """Remove leading and trailing whitespaces from each string in the sequence."""
     return [string.strip() for string in strings]
 
 
-def remove_empty_strings(strings: Sequence[str]) -> List[str]:
+def remove_empty_strings(strings: Sequence[T]) -> List[T]:
     """Remove empty strings from the sequence of strings."""
     return [string for string in strings if string]
 
