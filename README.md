@@ -1,6 +1,6 @@
 # text-boost
 
-Text augmentations using albumentations package
+Text augmentations using albumentations
 
 ## How to install
 
