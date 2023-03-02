@@ -7,10 +7,10 @@ from . import functional as F
 
 __all__ = [
     "TextTransform",
-    "RandomSwapWords",
-    "RandomSwapSentences",
     "RandomDeletionWords",
     "RandomDeletionSentences",
+    "RandomSwapWords",
+    "RandomSwapSentences",
     "SynonymsReplacement",
 ]
 
@@ -29,60 +29,6 @@ class TextTransform(BasicTransform):
       
     def update_params(self, params: Dict[str, Any], **kwargs: Any) -> Dict[str, Any]:
         return params 
-
-    
-class RandomSwapWords(TextTransform):
-    """Randomly swap two words in a randomly selected sentence from the input text.
-    
-    Args:
-        ignore_first (bool): whether to ignore the first sentence when applying the transform. Default: False.
-        p (float): probability of applying the transform. Default: 0.5.
-        
-    Targets:
-        text
-    """
-    
-    def __init__(
-        self, 
-        ignore_first: bool = False,
-        always_apply: bool = False, 
-        p: float = 0.5
-    ) -> None:
-        super(RandomSwapWords, self).__init__(always_apply, p)
-        self.ignore_first = ignore_first
-
-    def apply(self, text: Text, **params: Any) -> Text:
-        return F.swap_words(text, self.ignore_first)
-
-    def get_transform_init_args_names(self) -> Tuple[str]:
-        return ("ignore_first",)
-
-    
-class RandomSwapSentences(TextTransform):
-    """Randomly swap two sentences in the input text.
-    
-    Args:
-        ignore_first (bool): whether to ignore the first sentence when applying the transform. Default: False.
-        p (float): probability of applying the transform. Default: 0.5.
-        
-    Targets:
-        text
-    """
-
-    def __init__(
-        self, 
-        ignore_first: bool = False,
-        always_apply: bool = False, 
-        p: float = 0.5
-    ) -> None:
-        super(RandomSwapSentences, self).__init__(always_apply, p)
-        self.ignore_first = ignore_first
-
-    def apply(self, text: Text, **params: Any) -> Text:
-        return F.swap_sentences(text, self.ignore_first)
-
-    def get_transform_init_args_names(self) -> Tuple[str]:
-        return ("ignore_first",)
 
 
 class RandomDeletionWords(TextTransform):
@@ -169,6 +115,60 @@ class RandomDeletionSentences(TextTransform):
 
     def get_transform_init_args_names(self) -> Tuple[str, str, str]:
         return ("min_sentences", "deletion_prob", "ignore_first")
+    
+
+class RandomSwapWords(TextTransform):
+    """Randomly swap two words in a randomly selected sentence from the input text.
+    
+    Args:
+        ignore_first (bool): whether to ignore the first sentence when applying the transform. Default: False.
+        p (float): probability of applying the transform. Default: 0.5.
+        
+    Targets:
+        text
+    """
+    
+    def __init__(
+        self, 
+        ignore_first: bool = False,
+        always_apply: bool = False, 
+        p: float = 0.5
+    ) -> None:
+        super(RandomSwapWords, self).__init__(always_apply, p)
+        self.ignore_first = ignore_first
+
+    def apply(self, text: Text, **params: Any) -> Text:
+        return F.swap_words(text, self.ignore_first)
+
+    def get_transform_init_args_names(self) -> Tuple[str]:
+        return ("ignore_first",)
+
+    
+class RandomSwapSentences(TextTransform):
+    """Randomly swap two sentences in the input text.
+    
+    Args:
+        ignore_first (bool): whether to ignore the first sentence when applying the transform. Default: False.
+        p (float): probability of applying the transform. Default: 0.5.
+        
+    Targets:
+        text
+    """
+
+    def __init__(
+        self, 
+        ignore_first: bool = False,
+        always_apply: bool = False, 
+        p: float = 0.5
+    ) -> None:
+        super(RandomSwapSentences, self).__init__(always_apply, p)
+        self.ignore_first = ignore_first
+
+    def apply(self, text: Text, **params: Any) -> Text:
+        return F.swap_sentences(text, self.ignore_first)
+
+    def get_transform_init_args_names(self) -> Tuple[str]:
+        return ("ignore_first",)
     
     
 class SynonymsReplacement(TextTransform):
