@@ -1,9 +1,8 @@
-from typing import List, Union
-from ..corpus_types import Word, Sentence, Text
-
 import math
 import random
+from typing import List, Union
 
+from ..corpora.corpus_types import Word, Sentence, Text
 from ..corpora.utils import get_synonyms
 
 from .utils import (

@@ -1,7 +1,7 @@
-from typing import List, Sequence, TypeVar
-from ..corpus_types import Word, Sentence, Text
-
 import re
+from typing import List, Sequence, TypeVar
+
+from ..corpora.corpus_types import Word, Sentence, Text
 
 __all__ = [
     "strip",

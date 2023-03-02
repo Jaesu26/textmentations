@@ -1,8 +1,8 @@
 from typing import Any, Callable, Dict, Tuple, Union
-from ..corpus_types import Text
 
 from albumentations.core.transforms_interface import BasicTransform
 
+from ..corpora.corpus_types import Text
 from . import functional as F
 
 __all__ = [
