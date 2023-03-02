@@ -111,7 +111,7 @@ def replace_synonyms(text: Text, replacement_prob: float, ignore_first: bool) ->
         sentence = replace_synonyms_in_sentence(sentence, replacement_prob)
         new_sentences.append(sentence)
         
-    text = combine_sentence(new_sentences)
+    text = combine_sentences(new_sentences)
     return text
 
 
