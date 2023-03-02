@@ -1,18 +1,18 @@
-# Text Augmentation
+# text-boost
 
-Text augmentation using albumentations package
+Text augmentations using albumentations package
 
 ## How to install
 
 ```
-pip install git+https://github.com/Jaesu26/text-augmentation.git
+pip install git+https://github.com/Jaesu26/text-boost.git
 ```
 
 ## A simple example
 
 ```python
 from albumentations import Compose
-from text_augmentation import RandomSwapWords, RandomSwapSentences, RandomDeletionWords, RandomDeletionSentences
+from text_boost import RandomSwapWords, RandomSwapSentences, RandomDeletionWords, RandomDeletionSentences
 
 text = "아침에는 짜장면을 맛있게 먹었다. 점심에는 짬뽕을 맛있게 먹었다. 저녁에는 짬짜면을 맛있게 먹었다."
 sw = RandomSwapWords()
@@ -37,6 +37,8 @@ print(mixed_transforms(text=text)["text"])
 # 저녁에는 먹었다 짬짜면을. 점심에는 짬뽕을.
 ```
 
-## Reference
+## References
 
 - [albumentations](https://github.com/albumentations-team/albumentations)
+
+- [Korean WordNet (KWN)](http://wordnet.kaist.ac.kr/)

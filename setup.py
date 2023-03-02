@@ -8,9 +8,9 @@ def get_install_requires(file_path: str = "requirements.txt") -> List[str]:
     return install_requires
 
 setup(
-    name="text_augmentation",
+    name="text_boost",
     version="1.0.0",
-    url="https://github.com/Jaesu26/text-augmentation",
+    url="https://github.com/Jaesu26/text-boost",
     license="MIT",
     author="Jaesu Han",
     author_email="gkswotn9753@gmail.com",

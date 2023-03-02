@@ -1,1 +1,1 @@
-include text_augmentation/corpora/wordnet.json
+include text_boost/corpora/*.json
