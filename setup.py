@@ -1,5 +1,6 @@
-from setuptools import find_packages, setup
 from typing import List
+
+from setuptools import find_packages, setup
 
 
 def get_install_requires(file_path: str = "requirements.txt") -> List[str]:
