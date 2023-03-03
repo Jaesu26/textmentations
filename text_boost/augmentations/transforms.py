@@ -35,8 +35,8 @@ class RandomDeletionWords(TextTransform):
     """Randomly delete words in the input text.
     
     Args:
-        min_words_each_sentence (float or int): the minimum number of words in each sentence.
-            If a `float`, then it's the proportion of words that should be kept in each sentence after deletion.
+        min_words_each_sentence (float or int):
+            If a `float`, then it's the minimum proportion of words that should be kept in each sentence after deletion.
             If an `int`, then it's the minimum number of words in each sentence. Default 5.
         deletion_prob (float): probability of deleting a word. Default 0.1.
         ignore_first (bool): whether to ignore the first sentence when applying the transform. Default: False.
@@ -57,11 +57,11 @@ class RandomDeletionWords(TextTransform):
         super(RandomDeletionWords, self).__init__(always_apply, p)
         
         if not isinstance(min_words_each_sentence, (float, int)):
-            raise TypeError(f"min_words_each_sentence must be either an integer or a float. Got: {type(min_words_each_sentence)}")
+            raise TypeError(f"min_words_each_sentence must be either an int or a float. Got: {type(min_words_each_sentence)}")
         if isinstance(min_words_each_sentence, float) and not (0.0 <= min_words_each_sentence <= 1.0):
             raise ValueError(f"If min_words_each_sentence is a float, it must be between 0 and 1. Got: {min_words_each_sentence}")
         if isinstance(min_words_each_sentence, int) and min_words_each_sentence < 0:
-            raise ValueError(f"If min_words_each_sentence is an integer, it must be a non-negative. Got: {min_words_each_sentence}")
+            raise ValueError(f"If min_words_each_sentence is an int, it must be a non-negative. Got: {min_words_each_sentence}")
         
         self.min_words_each_sentence = min_words_each_sentence
         self.deletion_prob = deletion_prob
@@ -78,9 +78,9 @@ class RandomDeletionSentences(TextTransform):
     """Randomly delete sentences in the input text.
     
     Args:
-        min_sentences (float or int): the minimum number of sentences in the text.
-            If a `float`, then it's the proportion of sentences that should be kept in the text after deletion.
-            If an `int`, then it's the minimum number of sentences in text. Default 3.
+        min_sentences (float or int):
+            If a `float`, then it's the minimum proportion of sentences that should be kept in the text after deletion.
+            If an `int`, then it's the minimum number of sentences in the text. Default 3.
         deletion_prob (float): probability of deleting a sentence. Default 0.1.
         ignore_first (bool): whether to ignore the first sentence when applying the transform. Default: False.
         p (float): probability of applying the transform. Default: 0.5.
@@ -100,11 +100,11 @@ class RandomDeletionSentences(TextTransform):
         super(RandomDeletionSentences, self).__init__(always_apply, p)
         
         if not isinstance(min_sentences, (float, int)):
-            raise TypeError(f"min_sentences must be either an integer or a float. Got: {type(min_sentences)}")
+            raise TypeError(f"min_sentences must be either an int or a float. Got: {type(min_sentences)}")
         if isinstance(min_sentences, float) and not (0.0 <= min_sentences <= 1.0):
             raise ValueError(f"If min_sentences is a float, it must be between 0 and 1. Got: {min_sentences}")
         if isinstance(min_sentences, int) and min_sentences < 0:
-            raise ValueError(f"If min_sentences is an integer, it must be a non-negative. Got: {min_sentences}")
+            raise ValueError(f"If min_sentences is an int, it must be a non-negative. Got: {min_sentences}")
     
         self.min_sentences = min_sentences
         self.deletion_prob = deletion_prob
