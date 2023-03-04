@@ -8,6 +8,7 @@ def get_install_requires(file_path: str = "requirements.txt") -> List[str]:
         install_requires = f.read().splitlines()
     return install_requires
 
+
 setup(
     name="text_boost",
     version="1.0.0",
