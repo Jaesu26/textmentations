@@ -1,6 +1,6 @@
 import math
 import random
-from typing import List, Union
+from typing import Union
 
 from ..corpora.corpus_types import Word, Sentence, Text
 from ..corpora.utils import get_synonyms
