@@ -199,4 +199,3 @@ class SynonymsReplacement(TextTransform):
 
     def get_transform_init_args_names(self) -> Tuple[str, str]:
         return ("replacement_prob", "ignore_first")
-    
