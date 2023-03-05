@@ -17,8 +17,8 @@ from text_boost import RandomSwapWords, RandomSwapSentences, RandomDeletionWords
 text = "아침에는 짜장면을 맛있게 먹었다. 점심에는 짬뽕을 맛있게 먹었다. 저녁에는 짬짜면을 맛있게 먹었다."
 sw = RandomSwapWords()
 ss = RandomSwapSentences()
-dw = RandomDeletionWords(min_words_each_sentence=1, deletion_prob=0.5)
-ds = RandomDeletionSentences(min_sentences=2, deletion_prob=0.5)
+dw = RandomDeletionWords(deletion_prob=0.5, min_words_each_sentence=1)
+ds = RandomDeletionSentences(deletion_prob=0.5, min_sentences=2)
 mixed_transforms = Compose([sw, ss, dw, ds])
 
 print(sw(text=text)["text"])
