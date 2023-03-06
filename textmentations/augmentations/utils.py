@@ -108,6 +108,8 @@ def get_first_sentence(text: Text) -> Sentence:
 def get_nth_sentence(text: Text, n: int) -> Text:
     """gets the nth sentence from the text"""
     sentences = split_text(text)
+    if len(sentences) <= n:
+        return ""
     return sentences[n]
 
 
