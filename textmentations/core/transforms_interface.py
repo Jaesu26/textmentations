@@ -30,14 +30,14 @@ class TextTransform(BasicTransform):
 
     def __call__(self, *args: Any, force_apply: bool = False, **kwargs: Any) -> Dict[str, Text]:
         if not self.ignore_first:
-            return super(TextTransform, self).__call__(self, *args, force_apply, **kwargs)
-        return self.apply_without_first(self, *args, force_apply, **kwargs)
+            return super(TextTransform, self).__call__(*args, force_apply, **kwargs)
+        return self.apply_without_first(*args, force_apply, **kwargs)
 
     def apply_without_first(self, *args: Any, force_apply: bool = False, **kwargs: Any) -> Dict[str, Text]:
         kwargs_first_sentences = get_first_sentences_from_kwargs(kwargs)
         kwargs_without_first_sentences = remove_first_sentences_from_kwargs(kwargs)
         augmented_kwargs_without_first_sentences = super(TextTransform, self).__call__(
-            self, *args, force_apply, **kwargs_without_first_sentences
+            *args, force_apply, **kwargs_without_first_sentences
         )
         augmented_kwargs = combine_augmented_kwargs_with_first_sentences(
             augmented_kwargs_without_first_sentences,
