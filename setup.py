@@ -19,11 +19,11 @@ def get_install_requires(file_path: str = "requirements.txt") -> List[str]:
 setup(
     name="textmentations",
     version=get_version(),
-    description="Text augmentation using albumentations",
+    description="A Python library for text augmentation that is specialized for the Korean language.",
     long_description=open("README.md", encoding="utf-8").read(),
     author="Jaesu Han",
     author_email="gkswotn9753@gmail.com",
-    url="https://github.com/Jaesu26/text-boost",
+    url="https://github.com/Jaesu26/textmentations",
     packages=find_packages(),
     license="MIT",
     include_package_data=True,
