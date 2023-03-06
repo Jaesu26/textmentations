@@ -2,7 +2,6 @@
 
 Textmentations is a Python library for text augmentation that is specialized for the Korean language. 
 Inspired by [albumentations](https://github.com/albumentations-team/albumentations). 
-
 Textmentations uses the albumentations as a dependency.
 
 ## Installation
