@@ -2,11 +2,11 @@ from typing import List
 
 from setuptools import find_packages, setup
 
-import text_boost
+import textmentations
 
 
 def get_version() -> str:
-    version = text_boost.__version__
+    version = textmentations.__version__
     return version
 
 
@@ -17,7 +17,7 @@ def get_install_requires(file_path: str = "requirements.txt") -> List[str]:
 
 
 setup(
-    name="text_boost",
+    name="textmentations",
     version=get_version(),
     description="Text augmentation using albumentations",
     long_description=open("README.md", encoding="utf-8").read(),
