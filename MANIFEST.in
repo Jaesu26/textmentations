@@ -1,1 +1,1 @@
-include text_boost/corpora/*.json
+include textmentations/corpora/*.json
