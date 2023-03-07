@@ -108,9 +108,10 @@ def get_first_sentence(text: Text) -> Sentence:
 def get_nth_sentence(text: Text, n: int) -> Text:
     """gets the nth sentence from the text"""
     sentences = split_text(text)
-    if len(sentences) <= n:
+    try:
+        return sentences[n]
+    except IndexError:
         return ""
-    return sentences[n]
 
 
 def remove_first_sentence(text: Text) -> Text:
@@ -121,6 +122,10 @@ def remove_first_sentence(text: Text) -> Text:
 def remove_nth_sentence(text: Text, n: int) -> Text:
     """Removes the nth sentence from the text"""
     sentences = split_text(text)
-    remaining_sentences = [s for idx, s in enumerate(sentences) if idx != n]
-    text = combine_sentences(remaining_sentences)
+    try:
+        del sentences[n]
+    except IndexError:
+        return text
+
+    text = combine_sentences(sentences)
     return text
