@@ -23,9 +23,6 @@ __all__ = [
 
 def delete_words(text: Text, deletion_prob: float, min_words_each_sentence: Union[float, int]) -> Text:
     """Randomly deletes words in the text."""
-    if not text:
-        return text
-    
     sentences = split_text(text)
     new_sentences = []
     
@@ -64,9 +61,6 @@ def delete_words_in_sentence(sentence: Sentence, deletion_prob: float, min_words
 
 def delete_sentences(text: Text, deletion_prob: float, min_sentences: Union[float, int]) -> Text:
     """Randomly deletes sentences in the text."""
-    if not text:
-        return text
-    
     sentences = split_text(text)
     num_sentences = len(sentences)
     
@@ -91,9 +85,6 @@ def delete_sentences(text: Text, deletion_prob: float, min_sentences: Union[floa
 
 def replace_synonyms(text: Text, replacement_prob: float) -> Text:
     """Randomly replaces words in the text with synonyms."""
-    if not text:
-        return text
-    
     sentences = split_text(text)
     new_sentences = []
     
@@ -161,7 +152,7 @@ def swap_sentences(text: Text) -> Text:
     """Randomly swaps two sentences in the text."""
     sentences = split_text(text)
     num_sentences = len(sentences)
-    
+
     if num_sentences < 2:
         return text
         
