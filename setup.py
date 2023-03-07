@@ -19,7 +19,7 @@ def get_install_requires(file_path: str = "requirements.txt") -> List[str]:
 setup(
     name="textmentations",
     version=get_version(),
-    description="A Python library for text augmentation that is specialized for the Korean language.",
+    description="A Python library for text augmentation that is specialized for Korean.",
     long_description=open("README.md", encoding="utf-8").read(),
     author="Jaesu Han",
     author_email="gkswotn9753@gmail.com",
