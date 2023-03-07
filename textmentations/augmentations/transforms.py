@@ -1,7 +1,8 @@
-from typing import Any, Tuple, Union
+from typing import Any, Dict, List, Tuple, Union
 
 from ..core.transforms_interface import TextTransform
 from ..corpora.corpus_types import Text
+from .utils import split_text
 from . import functional as F
 
 __all__ = [
@@ -94,8 +95,32 @@ class RandomDeletionSentences(TextTransform):
         self.deletion_prob = deletion_prob
         self.min_sentences = min_sentences
 
-    def apply(self, text: Text, **params: Any) -> Text:
-        return F.delete_sentences(text, self.deletion_prob, self.min_sentences)
+    def apply(self, text: Text, min_sentences: Union[float, int] = 3, **params: Any) -> Text:
+        return F.delete_sentences(text, self.deletion_prob, min_sentences)
+
+    @property
+    def targets_as_params(self) -> List[str]:
+        return ["text"]
+
+    def get_params_dependent_on_targets(self, params: Dict[str, Any]) -> Dict[str, Any]:
+        text = params["text"]
+        if isinstance(self.min_sentences, int):
+            return {"min_sentences": self.min_sentences - self.ignore_first}
+
+        # n: Length of original sentences (>= 2)
+        # p: `min_sentences` ([0, 1))
+        # q: The minimum proportion of sentences to retain in the text after deletion if `ignore_first` is True
+        # If not `ignore_first`: the minimum number of sentences after deleting is n * p
+        # If `ignore_first`: the minimum number of sentences after deleting is 1 + (n - 1)*q
+        # So, n * p == 1 + (n - 1)*q, ===> q = (n*p - 1) / (n - 1)
+
+        num_original_sentences = len(split_text(text)) + self.ignore_first
+        if num_original_sentences < 2:
+            return {"min_sentences": self.min_sentences}
+        return {
+            "min_sentences": (self.min_sentences*num_original_sentences - self.ignore_first)
+            / (num_original_sentences - self.ignore_first)
+        }
 
     def get_transform_init_args_names(self) -> Tuple[str, str]:
         return ("deletion_prob", "min_sentences")
