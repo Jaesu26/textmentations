@@ -8,13 +8,13 @@ __all__ = [
     "remove_empty_strings",
     "split_sentence",
     "split_text",
-    "combine_words",
-    "combine_sentences",
-    "combine_sentences_with_text",
-    "get_first_sentence",
-    "get_nth_sentence",
+    "join_words",
+    "join_sentences",
+    "extract_first_sentence",
+    "extract_nth_sentence",
     "remove_first_sentence",
     "remove_nth_sentence",
+    "wrap_text_with_sentences",
 ]
 
 
@@ -61,52 +61,30 @@ def split_text(text: Text) -> List[Sentence]:
     sentences = re.split(r"[.?!]", text)
     sentences = strip(sentences)
     sentences = remove_empty_strings(sentences)
-    return sentences 
+    return sentences
 
-  
-def combine_words(words: List[Word]) -> Sentence:
-    """Combines words into a sentence."""
+
+def join_words(words: List[Word]) -> Sentence:
+    """joins words into a sentence."""
     sentence = " ".join(words)
     return sentence
 
-  
-def combine_sentences(sentences: List[Sentence]) -> Text:
-    """Combines sentences into a text."""
+
+def join_sentences(sentences: List[Sentence]) -> Text:
+    """joins sentences into a text."""
     text = ". ".join(sentences)
     if text:
         text = ".".join([text, ""])
     return text
 
 
-def combine_sentences_with_text(
-    text: Text,
-    *,
-    prefix_sentences: Optional[List[Sentence]] = None,
-    suffix_sentences: Optional[List[Sentence]] = None
-) -> Text:
-    """Combines prefix sentences, the input text, and suffix sentences into a single text.
-
-    Args:
-        text (Text): The input text.
-        prefix_sentences (List[Sentence]): List of sentences to add at the beginning of the text.
-        suffix_sentences (List[Sentence]): List of sentences to add at the end of the text.
-
-    Returns:
-        full_text (Text): The combined text.
-    """
-    prefix_text = combine_sentences(prefix_sentences) if prefix_sentences is not None else ""
-    suffix_text = combine_sentences(suffix_sentences) if suffix_sentences is not None else ""
-    full_text = " ".join([prefix_text, text, suffix_text]).strip()
-    return full_text
+def extract_first_sentence(text: Text) -> Sentence:
+    """extracts the first sentence from the text"""
+    return extract_nth_sentence(text, 0)
 
 
-def get_first_sentence(text: Text) -> Sentence:
-    """gets the first sentence from the text"""
-    return get_nth_sentence(text, 0)
-
-
-def get_nth_sentence(text: Text, n: int) -> Text:
-    """gets the nth sentence from the text"""
+def extract_nth_sentence(text: Text, n: int) -> Text:
+    """extracts the nth sentence from the text"""
     sentences = split_text(text)
     try:
         return sentences[n]
@@ -127,5 +105,27 @@ def remove_nth_sentence(text: Text, n: int) -> Text:
     except IndexError:
         return text
 
-    text = combine_sentences(sentences)
+    text = join_sentences(sentences)
     return text
+
+
+def wrap_text_with_sentences(
+    text: Text,
+    *,
+    prefix_sentences: Optional[List[Sentence]] = None,
+    suffix_sentences: Optional[List[Sentence]] = None
+) -> Text:
+    """Wraps the input text with the specified prefix and suffix sentences.
+
+    Args:
+        text (Text): The text to wrap with sentences.
+        prefix_sentences (List[Sentence]): List of sentences to add at the beginning of the text.
+        suffix_sentences (List[Sentence]): List of sentences to add at the end of the text.
+
+    Returns:
+        wrapped_text (Text): The wrapped text.
+    """
+    prefix_text = join_sentences(prefix_sentences) if prefix_sentences is not None else ""
+    suffix_text = join_sentences(suffix_sentences) if suffix_sentences is not None else ""
+    wrapped_text = " ".join([prefix_text, text, suffix_text]).strip()
+    return wrapped_text

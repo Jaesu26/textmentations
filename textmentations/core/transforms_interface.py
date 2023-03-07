@@ -4,9 +4,9 @@ from albumentations.core.transforms_interface import BasicTransform
 
 from ..corpora.corpus_types import Text
 from .utils import (
-    get_first_sentences_from_kwargs,
+    extract_first_sentences_from_kwargs,
     remove_first_sentences_from_kwargs,
-    combine_augmented_kwargs_with_first_sentences
+    wrap_augmented_kwargs_with_first_sentences
 )
 
 __all__ = [
@@ -34,12 +34,12 @@ class TextTransform(BasicTransform):
         return self.apply_without_first(*args, force_apply=force_apply, **kwargs)
 
     def apply_without_first(self, *args: Any, force_apply: bool = False, **kwargs: Any) -> Dict[str, Text]:
-        kwargs_first_sentences = get_first_sentences_from_kwargs(kwargs)
+        kwargs_first_sentences = extract_first_sentences_from_kwargs(kwargs)
         kwargs_without_first_sentences = remove_first_sentences_from_kwargs(kwargs)
         augmented_kwargs_without_first_sentences = super(TextTransform, self).__call__(
             *args, force_apply=force_apply, **kwargs_without_first_sentences
         )
-        augmented_kwargs = combine_augmented_kwargs_with_first_sentences(
+        augmented_kwargs = wrap_augmented_kwargs_with_first_sentences(
             augmented_kwargs_without_first_sentences,
             kwargs_first_sentences
         )

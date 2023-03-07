@@ -8,8 +8,8 @@ from ..corpora.utils import get_synonyms
 from .utils import (
     split_sentence,
     split_text,
-    combine_words,
-    combine_sentences
+    join_words,
+    join_sentences
 )
 
 __all__ = [
@@ -31,7 +31,7 @@ def delete_words(text: Text, deletion_prob: float, min_words_each_sentence: Unio
         if sentence:
             new_sentences.append(sentence)
 
-    text = combine_sentences(new_sentences)
+    text = join_sentences(new_sentences)
     return text
 
 
@@ -55,7 +55,7 @@ def delete_words_in_sentence(sentence: Sentence, deletion_prob: float, min_words
             continue
         new_words.append(word)
 
-    sentence = combine_words(new_words)
+    sentence = join_words(new_words)
     return sentence
 
 
@@ -79,7 +79,7 @@ def delete_sentences(text: Text, deletion_prob: float, min_sentences: Union[floa
             continue
         new_sentences.append(sentence)
 
-    text = combine_sentences(new_sentences)
+    text = join_sentences(new_sentences)
     return text
 
 
@@ -92,7 +92,7 @@ def replace_synonyms(text: Text, replacement_prob: float) -> Text:
         sentence = replace_synonyms_in_sentence(sentence, replacement_prob)
         new_sentences.append(sentence)
         
-    text = combine_sentences(new_sentences)
+    text = join_sentences(new_sentences)
     return text
 
 
@@ -106,7 +106,7 @@ def replace_synonyms_in_sentence(sentence: Sentence, replacement_prob: float) ->
             synonym = replace_word_with_synonym(word)
             new_words.append(synonym)
 
-    sentence = combine_words(new_words)
+    sentence = join_words(new_words)
     return sentence
 
 
@@ -130,7 +130,7 @@ def swap_words(text: Text) -> Text:
 
     idx = random.randrange(num_sentences)
     sentences[idx] = swap_words_in_sentence(sentences[idx])
-    text = combine_sentences(sentences)
+    text = join_sentences(sentences)
     return text
 
 
@@ -144,7 +144,7 @@ def swap_words_in_sentence(sentence: Sentence) -> Sentence:
     
     idx1, idx2 = random.sample(range(num_words), k=2)
     words[idx1], words[idx2] = words[idx2], words[idx1]
-    sentence = combine_words(words)
+    sentence = join_words(words)
     return sentence
 
 
@@ -158,5 +158,5 @@ def swap_sentences(text: Text) -> Text:
         
     idx1, idx2 = random.sample(range(num_sentences), k=2)
     sentences[idx1], sentences[idx2] = sentences[idx2], sentences[idx1]
-    text = combine_sentences(sentences)
+    text = join_sentences(sentences)
     return text
