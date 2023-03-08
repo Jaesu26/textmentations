@@ -83,7 +83,7 @@ def extract_first_sentence(text: Text) -> Sentence:
     return extract_nth_sentence(text, 0)
 
 
-def extract_nth_sentence(text: Text, n: int) -> Text:
+def extract_nth_sentence(text: Text, n: int) -> Sentence:
     """extracts the nth sentence from the text"""
     sentences = split_text(text)
     try:
