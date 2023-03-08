@@ -125,7 +125,7 @@ def wrap_text_with_sentences(
     Returns:
         wrapped_text (Text): The wrapped text.
     """
-    prefix_text = join_sentences(prefix_sentences) if prefix_sentences is not None else ""
-    suffix_text = join_sentences(suffix_sentences) if suffix_sentences is not None else ""
+    prefix_text = join_sentences(prefix_sentences) if prefix_sentences else ""
+    suffix_text = join_sentences(suffix_sentences) if suffix_sentences else ""
     wrapped_text = " ".join([prefix_text, text, suffix_text]).strip()
     return wrapped_text
