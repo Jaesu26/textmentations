@@ -4,73 +4,66 @@ from ..augmentations.utils import extract_first_sentence, remove_first_sentence,
 from ..corpora.corpus_types import Sentence, Text
 
 
-def extract_first_sentences_from_kwargs(kwargs: Dict[str, Text]) -> Dict[str, Sentence]:
+def extract_first_sentence_by_key(key2text: Dict[str, Text]) -> Dict[str, Sentence]:
     """Extracts the first sentence from a dictionary of text inputs.
 
     Args:
-        kwargs (Dict[str, Text]): A dictionary with string keys and Text values.
+        key2text (Dict[str, Text]): A dictionary with string keys and Text values.
 
     Returns:
-        kwargs_first_sentences (Dict[str, Sentence]): A dictionary with the same keys as `kwargs`,
-        but with the values replaced by their first sentence.
+        key2first_sentence (Dict[str, Sentence]): A dictionary with the same keys as `key2text`,
+            but with the values replaced by their first sentence.
     """
-    kwargs_first_sentences = {}
-    for key, arg in kwargs.items():
-        if arg is not None:
-            text = kwargs[key]
-            kwargs_first_sentences[key] = extract_first_sentence(text)
+    key2first_sentence = {}
+    for key, text in key2text.items():
+        if text is not None:
+            key2first_sentence[key] = extract_first_sentence(text)
         else:
-            kwargs_first_sentences[key] = None
-    return kwargs_first_sentences
+            key2first_sentence[key] = None
+    return key2first_sentence
 
 
-def remove_first_sentences_from_kwargs(kwargs: Dict[str, Text]) -> Dict[str, Text]:
+def remove_first_sentence_by_key(key2text: Dict[str, Text]) -> Dict[str, Text]:
     """Removes the first sentence from a dictionary of text inputs.
 
     Args:
-        kwargs (Dict[str, Text]): A dictionary with string keys and Text values.
+        key2text (Dict[str, Text]): A dictionary with string keys and Text values.
 
     Returns:
-        kwargs_without_first_sentences (Dict[str, Text]): A dictionary with the same keys as `kwargs`,
-        but with the values replaced by the input text with the first sentence removed.
+        key2text_without_first_sentence (Dict[str, Text]): A dictionary with the same keys as `key2text`,
+            but with the values replaced by the input text with the first sentence removed.
     """
-    kwargs_without_first_sentences = {}
-    for key, arg in kwargs.items():
-        if arg is not None:
-            text = kwargs[key]
-            kwargs_without_first_sentences[key] = remove_first_sentence(text)
+    key2text_without_first_sentence = {}
+    for key, text in key2text.items():
+        if text is not None:
+            key2text_without_first_sentence[key] = remove_first_sentence(text)
         else:
-            kwargs_without_first_sentences[key] = None
-    return kwargs_without_first_sentences
+            key2text_without_first_sentence[key] = None
+    return key2text_without_first_sentence
 
 
-def wrap_augmented_kwargs_with_first_sentences(
-    augmented_kwargs_without_first_sentences: Dict[str, Text],
-    kwargs_first_sentences: Dict[str, Sentence]
+# TODO: wrap_text_with_first_sentence_by_key 함수의 일반화 버전 구현
+def wrap_text_with_first_sentence_by_key(
+    key2text_without_first_sentence: Dict[str, Text],
+    key2first_sentence: Dict[str, Sentence]
 ) -> Dict[str, Text]:
-    """Wraps augmented text inputs with their corresponding first sentence.
+    """Wraps text inputs with their corresponding first sentence.
 
     Args:
-        augmented_kwargs_without_first_sentences (Dict[str, Text]): A dictionary with string keys and Text
-            values that represent augmented versions of text inputs with their first sentences removed.
-        kwargs_first_sentences (Dict[str, Sentence]): A dictionary with string keys and Sentence values that
+        key2text_without_first_sentence (Dict[str, Text]): A dictionary with string keys and Text
+            values that represent text inputs with their first sentences removed.
+        key2first_sentence (Dict[str, Sentence]): A dictionary with string keys and Sentence values that
             represent the first sentences of the original text inputs.
 
     Returns:
-        augmented_kwargs (Dict[str, Text]): A dictionary with the same keys as
-        `augmented_kwargs_without_first_sentences`,
-        but with the values wrapped with their corresponding first sentence as a prefix.
+        key2text (Dict[str, Text]): A dictionary with the same keys as `key2text_without_first_sentence`,
+            but with the values wrapped with their corresponding first sentence as a prefix.
     """
-    augmented_kwargs = {}
-    for key, arg in augmented_kwargs_without_first_sentences.items():
-        if arg is not None:
-            augmented_text_without_first_sentence = augmented_kwargs_without_first_sentences[key]
-            first_sentence = kwargs_first_sentences[key]
-            augmented_text = wrap_text_with_sentences(
-                augmented_text_without_first_sentence,
-                prefix_sentences=[first_sentence]
-            )
-            augmented_kwargs[key] = augmented_text
+    key2text = {}
+    for key, text_without_first_sentence in key2text_without_first_sentence.items():
+        if text_without_first_sentence is not None:
+            first_sentence = key2first_sentence[key]
+            key2text[key] = wrap_text_with_sentences(text_without_first_sentence, prefix_sentences=[first_sentence])
         else:
-            augmented_kwargs[key] = None
-    return augmented_kwargs
+            key2text[key] = None
+    return key2text

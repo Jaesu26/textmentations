@@ -4,9 +4,9 @@ from albumentations.core.transforms_interface import BasicTransform
 
 from ..corpora.corpus_types import Text
 from .utils import (
-    extract_first_sentences_from_kwargs,
-    remove_first_sentences_from_kwargs,
-    wrap_augmented_kwargs_with_first_sentences
+    extract_first_sentence_by_key,
+    remove_first_sentence_by_key,
+    wrap_text_with_first_sentence_by_key
 )
 
 __all__ = [
@@ -28,22 +28,22 @@ class TextTransform(BasicTransform):
         super(TextTransform, self).__init__(always_apply, p)
         self.ignore_first = ignore_first
 
-    def __call__(self, *args: Any, force_apply: bool = False, **kwargs: Any) -> Dict[str, Text]:
+    def __call__(self, *args: Any, force_apply: bool = False, **kwargs: Text) -> Dict[str, Text]:
         if not self.ignore_first:
             return super(TextTransform, self).__call__(*args, force_apply=force_apply, **kwargs)
         return self.apply_without_first(*args, force_apply=force_apply, **kwargs)
 
-    def apply_without_first(self, *args: Any, force_apply: bool = False, **kwargs: Any) -> Dict[str, Text]:
-        kwargs_first_sentences = extract_first_sentences_from_kwargs(kwargs)
-        kwargs_without_first_sentences = remove_first_sentences_from_kwargs(kwargs)
-        augmented_kwargs_without_first_sentences = super(TextTransform, self).__call__(
-            *args, force_apply=force_apply, **kwargs_without_first_sentences
+    def apply_without_first(self, *args: Any, force_apply: bool = False, **kwargs: Text) -> Dict[str, Text]:
+        key2first_sentence = extract_first_sentence_by_key(kwargs)
+        key2text_without_first_sentence = remove_first_sentence_by_key(kwargs)
+        key2augmented_text_without_first_sentence = super(TextTransform, self).__call__(
+            *args, force_apply=force_apply, **key2text_without_first_sentence
         )
-        augmented_kwargs = wrap_augmented_kwargs_with_first_sentences(
-            augmented_kwargs_without_first_sentences,
-            kwargs_first_sentences
+        key2augmented_text = wrap_text_with_first_sentence_by_key(
+            key2augmented_text_without_first_sentence,
+            key2first_sentence
         )
-        return augmented_kwargs
+        return key2augmented_text
 
     @property
     def targets(self) -> Dict[str, Callable[[Text, Dict[str, Any]], Text]]:
