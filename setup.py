@@ -21,6 +21,7 @@ setup(
     version=get_version(),
     description="A Python library for text augmentation that is specialized for Korean.",
     long_description=open("README.md", encoding="utf-8").read(),
+    long_description_content_type="text/markdown",
     author="Jaesu Han",
     author_email="gkswotn9753@gmail.com",
     url="https://github.com/Jaesu26/textmentations",
