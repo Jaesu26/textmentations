@@ -103,7 +103,6 @@ class RandomDeletionSentences(TextTransform):
         return ["text"]
 
     def get_params_dependent_on_targets(self, params: Dict[str, Text]) -> Dict[str, Union[float, int]]:
-        text = params["text"]
         if isinstance(self.min_sentences, int):
             return {"min_sentences": self.min_sentences - self.ignore_first}
 
@@ -114,6 +113,7 @@ class RandomDeletionSentences(TextTransform):
         # If `ignore_first`: the minimum number of sentences after deleting is 1 + (n - 1)*q
         # So, n * p == 1 + (n - 1)*q, ===> q = (n*p - 1) / (n - 1)
 
+        text = params["text"]
         num_original_sentences = len(split_text(text)) + self.ignore_first
         if num_original_sentences < 2:
             return {"min_sentences": self.min_sentences}
