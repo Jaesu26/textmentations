@@ -127,37 +127,59 @@ class RandomDeletionSentences(TextTransform):
 
 
 class RandomSwapWords(TextTransform):
-    """Randomly swaps two words in a randomly selected sentence from the input text.
+    """Repeats n times the task of randomly swapping two words in a randomly selected sentence from the input text.
     
     Args:
+        n_times (int): The number of times to repeat the operation. Default: 1.
         p (float): Probability of applying the transform. Default: 0.5.
         
     Targets:
         text
     """
 
-    def apply(self, text: Text, **params: Any) -> Text:
-        return F.swap_words(text)
+    def __init__(
+        self,
+        n_times: int = 1,
+        ignore_first: bool = False,
+        always_apply: bool = False,
+        p: float = 0.5
+    ) -> None:
+        super(RandomSwapWords, self).__init__(ignore_first, always_apply, p)
+        self.n_times = n_times
 
-    def get_transform_init_args_names(self) -> Tuple[()]:
-        return ()
+    def apply(self, text: Text, **params: Any) -> Text:
+        return F.swap_words(text, self.n_times)
+
+    def get_transform_init_args_names(self) -> Tuple[str]:
+        return ("n_times",)
 
     
 class RandomSwapSentences(TextTransform):
-    """Randomly swaps two sentences in the input text.
+    """Repeats n times the task of randomly swapping two sentences in the input text.
     
     Args:
+        n_times (int): The number of times to repeat the operation. Default: 1.
         p (float): Probability of applying the transform. Default: 0.5.
         
     Targets:
         text
     """
 
-    def apply(self, text: Text, **params: Any) -> Text:
-        return F.swap_sentences(text)
+    def __init__(
+        self,
+        n_times: int = 1,
+        ignore_first: bool = False,
+        always_apply: bool = False,
+        p: float = 0.5
+    ) -> None:
+        super(RandomSwapSentences, self).__init__(ignore_first, always_apply, p)
+        self.n_times = n_times
 
-    def get_transform_init_args_names(self) -> Tuple[()]:
-        return ()
+    def apply(self, text: Text, **params: Any) -> Text:
+        return F.swap_sentences(text, self.n_times)
+
+    def get_transform_init_args_names(self) -> Tuple[str]:
+        return ("n_times",)
     
     
 class SynonymsReplacement(TextTransform):

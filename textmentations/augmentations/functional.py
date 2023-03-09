@@ -120,7 +120,14 @@ def replace_word_with_synonym(word: Word) -> Word:
     return synonym
 
 
-def swap_words(text: Text) -> Text:
+def swap_words(text: Text, n_times: int) -> Text:
+    """Repeats n times the task of randomly swapping two words in a randomly selected sentence from the text."""
+    for _ in range(n_times):
+        text = swap_two_words(text)
+    return text
+
+
+def swap_two_words(text: Text) -> Text:
     """Randomly swaps two words in a randomly selected sentence from the text."""
     sentences = split_text(text)
     num_sentences = len(sentences)
@@ -129,12 +136,12 @@ def swap_words(text: Text) -> Text:
         return text
 
     idx = random.randrange(num_sentences)
-    sentences[idx] = swap_words_in_sentence(sentences[idx])
+    sentences[idx] = swap_two_words_in_sentence(sentences[idx])
     text = join_sentences(sentences)
     return text
 
 
-def swap_words_in_sentence(sentence: Sentence) -> Sentence:
+def swap_two_words_in_sentence(sentence: Sentence) -> Sentence:
     """Randomly swaps two words in the sentence."""
     words = split_sentence(sentence)
     num_words = len(words)
@@ -148,7 +155,14 @@ def swap_words_in_sentence(sentence: Sentence) -> Sentence:
     return sentence
 
 
-def swap_sentences(text: Text) -> Text:
+def swap_sentences(text: Text, n_times: int) -> Text:
+    """Repeats n times the task of randomly swapping two sentences in the text."""
+    for _ in range(n_times):
+        text = swap_two_sentences(text)
+    return text
+
+
+def swap_two_sentences(text: Text) -> Text:
     """Randomly swaps two sentences in the text."""
     sentences = split_text(text)
     num_sentences = len(sentences)
