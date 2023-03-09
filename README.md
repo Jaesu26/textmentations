@@ -7,7 +7,7 @@ Textmentations uses the albumentations as a dependency.
 ## Installation
 
 ```
-pip install git+https://github.com/Jaesu26/textmentations.git
+pip install textmentations
 ```
 
 ## A simple example
