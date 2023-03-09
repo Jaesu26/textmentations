@@ -118,7 +118,7 @@ class RandomDeletionSentences(TextTransform):
         if num_original_sentences < 2:
             return {"min_sentences": self.min_sentences}
         return {
-            "min_sentences": (self.min_sentences*num_original_sentences - self.ignore_first)
+            "min_sentences": (self.min_sentences * num_original_sentences - self.ignore_first)
             / (num_original_sentences - self.ignore_first)
         }
 
