@@ -59,7 +59,7 @@ def autopsy_sentence(
     """The decorator follows this procedure:
         1. Splits the input sentence into words.
         2. Applies the `func` to the words.
-        3. joins the words returned by 'func' into a sentence.
+        3. Joins the words returned by 'func' into a sentence.
 
     Args:
         func (Callable[Concatenate[List[Word], P], List[Word]]):
@@ -102,7 +102,7 @@ def autopsy_text(
     """The decorator follows this procedure:
         1. Splits the input text into sentences.
         2. Applies the `func` to the sentences.
-        3. joins the sentences returned by 'func' into a text.
+        3. Joins the sentences returned by 'func' into a text.
 
     Args:
         func (Callable[Concatenate[List[Sentence], P], List[Sentence]]):
