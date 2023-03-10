@@ -25,7 +25,7 @@ def delete_words(
     deletion_prob: float,
     min_words_each_sentence: Union[float, int]
 ) -> List[Sentence]:
-    """Randomly deletes words in the text.
+    """Randomly deletes words in the text. Decorated with `autopsy_text`.
 
     Args:
         sentences (List[Sentence]): The list of sentences.
@@ -55,7 +55,7 @@ def delete_words(
 
 @autopsy_sentence
 def delete_words_in_sentence(words: List[Word], deletion_prob: float, min_words: Union[float, int]) -> List[Word]:
-    """Randomly deletes words in the list of words.
+    """Randomly deletes words in the list of words. Decorated with `autopsy_sentence`.
 
     Args:
         words (List[Word]): The list of words.
@@ -99,7 +99,7 @@ def delete_sentences(
     deletion_prob: float,
     min_sentences: Union[float, int]
 ) -> List[Sentence]:
-    """Randomly deletes sentences in the list of sentences.
+    """Randomly deletes sentences in the list of sentences. Decorated with `autopsy_text`.
 
     Args:
         sentences (List[Sentence]): The list of sentences.
@@ -134,12 +134,12 @@ def delete_sentences(
             continue
         new_sentences.append(sentence)
 
-    return num_sentences
+    return new_sentences
 
 
 @autopsy_text
 def replace_synonyms(sentences: List[Sentence], replacement_prob: float) -> List[Sentence]:
-    """Randomly replaces words in the list of sentences with synonyms."""
+    """Randomly replaces words in the list of sentences with synonyms. Decorated with `autopsy_text`."""
     new_sentences = []
     for sentence in sentences:
         sentence = replace_synonyms_in_sentence(sentence, replacement_prob)
@@ -150,7 +150,7 @@ def replace_synonyms(sentences: List[Sentence], replacement_prob: float) -> List
 
 @autopsy_sentence
 def replace_synonyms_in_sentence(words: List[Word], replacement_prob: float) -> List[Word]:
-    """Randomly replaces words in the list of words with synonyms."""
+    """Randomly replaces words in the list of words with synonyms. Decorated with `autopsy_sentence`."""
     new_words = []
     for word in words:
         if random.random() < replacement_prob:
@@ -173,6 +173,7 @@ def replace_word_with_synonym(word: Word) -> Word:
 @autopsy_text
 def swap_words(sentences: List[Sentence], n_times: int) -> Text:
     """Repeats n times the task of randomly swapping two words in a randomly selected sentence.
+    Decorated with `autopsy_text`.
 
     Args:
         sentences (List[Sentence]): The list of sentences.
@@ -223,7 +224,7 @@ def get_random_index(elements: List[Any]) -> int:
 
 @autopsy_sentence
 def swap_two_words_in_sentence(words: List[Word]) -> List[Word]:
-    """Randomly swaps two words in the list of words.
+    """Randomly swaps two words in the list of words. Decorated with `autopsy_sentence`.
 
     Args:
         words (List[Word]): The list of words.
@@ -242,6 +243,7 @@ def swap_two_words_in_sentence(words: List[Word]) -> List[Word]:
 @autopsy_text
 def swap_sentences(sentences: List[Sentence], n_times: int) -> List[Sentence]:
     """Repeats n times the task of randomly swapping two sentences in the list of sentences.
+    Decorated with `autopsy_text`.
 
     Args:
         sentences (List[Sentence]): The list of sentences.

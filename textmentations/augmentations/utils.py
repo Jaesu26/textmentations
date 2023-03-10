@@ -190,7 +190,7 @@ def remove_first_sentence(text: Text) -> Text:
 
 @autopsy_text
 def remove_nth_sentence(sentences: List[Sentence], n: int) -> List[Sentence]:
-    """Removes the nth sentence from the list of sentences.
+    """Removes the nth sentence from the list of sentences. Decorated with `autopsy_text`.
 
     Args:
         sentences (List[Sentence]): The list of sentences.
