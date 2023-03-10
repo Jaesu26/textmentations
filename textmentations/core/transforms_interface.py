@@ -21,7 +21,7 @@ class TextTransform(BasicTransform):
         ignore_first (bool): Whether to ignore the first sentence when applying the transform.
             It is useful when the main idea of the text is expressed in the first sentence. Default: False.
         always_apply (bool): Whether the transform should be always applied. Default: False.
-        p (float): Probability of applying the transform. Default: 0.5.
+        p (float): The probability of applying the transform. Default: 0.5.
     """
 
     def __init__(self, ignore_first: bool = False, always_apply: bool = False, p: float = 0.5):

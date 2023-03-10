@@ -1,11 +1,14 @@
 import re
-from typing import List, Optional, overload
+from functools import wraps
+from typing import Callable, List, Optional, overload
+
+from typing_extensions import Concatenate, ParamSpec
 
 from ..corpora.corpus_types import Word, Sentence, Text
 
 __all__ = [
-    "strip",
-    "remove_empty_strings",
+    "autopsy_sentence",
+    "autopsy_text",
     "split_sentence",
     "split_text",
     "join_words",
@@ -16,6 +19,8 @@ __all__ = [
     "remove_nth_sentence",
     "wrap_text_with_sentences",
 ]
+
+P = ParamSpec("P")
 
 
 @overload
@@ -48,6 +53,92 @@ def remove_empty_strings(strings):
     return [s for s in strings if s]
 
 
+def autopsy_sentence(
+    func: Callable[Concatenate[List[Word], P], List[Word]]
+) -> Callable[Concatenate[Sentence, P], Sentence]:
+    """The decorator follows this procedure:
+        1. Splits the input sentence into words.
+        2. Applies the `func` to the words.
+        3. joins the words returned by 'func' into a sentence.
+
+    Args:
+        func (Callable[Concatenate[List[Word], P], List[Word]]):
+            The function to be decorated. It should take a list of words as its first argument.
+
+    Returns:
+        Callable[Concatenate[Sentence, P], Sentence]:
+            A decorated function that performs the procedure.
+
+    Example:
+        >>> from typing import List, TypeVar
+        ...
+        >>> Word = TypeVar("Word", bound=str)
+        ...
+        ...
+        >>> @autopsy_sentence
+        ... def remove_second_word(words: List[Word]) -> List[Word]:
+        ...    try:
+        ...        del words[1]
+        ...        return words
+        ...    except IndexError:
+        ...        return words
+        ...
+        >>> sentence = "짜장면을 맛있게 먹었다"
+        >>> remove_second_word(sentence)
+        "짜장면을 먹었다"
+    """
+    @wraps(func)
+    def wrapped(sentence: Sentence, *args: P.args, **kwargs: P.kwargs) -> Sentence:
+        words = split_sentence(sentence)
+        words = func(words, *args, **kwargs)
+        sentence = join_words(words)
+        return sentence
+    return wrapped
+
+
+def autopsy_text(
+    func: Callable[Concatenate[List[Sentence], P], List[Sentence]]
+) -> Callable[Concatenate[Text, P], Text]:
+    """The decorator follows this procedure:
+        1. Splits the input text into sentences.
+        2. Applies the `func` to the sentences.
+        3. joins the sentences returned by 'func' into a text.
+
+    Args:
+        func (Callable[Concatenate[List[Sentence], P], List[Sentence]]):
+            The function to be decorated. It should take a list of sentences as its first argument.
+
+    Returns:
+        Callable[Concatenate[Text, P], Text]:
+            A decorated function that performs the procedure.
+
+    Example:
+        >>> from typing import List, TypeVar
+        ...
+        >>> Sentence = TypeVar("Sentence", bound=str)
+        ...
+        ...
+        >>> @autopsy_text
+        ... def remove_second_sentence(sentences: List[Sentence]) -> List[Sentence]:
+        ...    try:
+        ...        del sentences[1]
+        ...        return sentences
+        ...    except IndexError:
+        ...        return sentences
+        ...
+        >>> text = "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다."
+        >>> remove_second_sentence(text)
+        "짜장면을 맛있게 먹었다."
+    """
+    @wraps(func)
+    def wrapped(text: Text, *args: P.args, **kwargs: P.kwargs) -> Text:
+        sentences = split_text(text)
+        sentences = func(sentences, *args, **kwargs)
+        text = join_sentences(sentences)
+        return text
+    return wrapped
+
+
 def split_sentence(sentence: Sentence) -> List[Word]:
     """Splits the sentence into words."""
     words = sentence.split()
@@ -55,7 +146,7 @@ def split_sentence(sentence: Sentence) -> List[Word]:
     words = remove_empty_strings(words)
     return words
 
-      
+
 def split_text(text: Text) -> List[Sentence]:
     """Splits the text into sentences."""
     sentences = re.split(r"[.?!]", text)
@@ -65,13 +156,13 @@ def split_text(text: Text) -> List[Sentence]:
 
 
 def join_words(words: List[Word]) -> Sentence:
-    """joins words into a sentence."""
+    """Joins words into a sentence."""
     sentence = " ".join(words)
     return sentence
 
 
 def join_sentences(sentences: List[Sentence]) -> Text:
-    """joins sentences into a text."""
+    """Joins sentences into a text."""
     text = ". ".join(sentences)
     if text:
         text = ".".join([text, ""])
@@ -79,12 +170,12 @@ def join_sentences(sentences: List[Sentence]) -> Text:
 
 
 def extract_first_sentence(text: Text) -> Sentence:
-    """extracts the first sentence from the text"""
+    """Extracts the first sentence from the text."""
     return extract_nth_sentence(text, 0)
 
 
 def extract_nth_sentence(text: Text, n: int) -> Sentence:
-    """extracts the nth sentence from the text"""
+    """Extracts the nth sentence from the text."""
     sentences = split_text(text)
     try:
         return sentences[n]
@@ -93,20 +184,31 @@ def extract_nth_sentence(text: Text, n: int) -> Sentence:
 
 
 def remove_first_sentence(text: Text) -> Text:
-    """Removes the first sentence from the text"""
+    """Removes the first sentence from the text."""
     return remove_nth_sentence(text, 0)
 
 
-def remove_nth_sentence(text: Text, n: int) -> Text:
-    """Removes the nth sentence from the text"""
-    sentences = split_text(text)
+@autopsy_text
+def remove_nth_sentence(sentences: List[Sentence], n: int) -> List[Sentence]:
+    """Removes the nth sentence from the list of sentences.
+
+    Args:
+        sentences (List[Sentence]): The list of sentences.
+        n (int): The index of the sentence to extract.
+
+    Returns:
+        List[Sentence]: The modified list of sentences with the nth sentence removed.
+
+    Example:
+        >>> text = "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다."
+        >>> remove_nth_sentence(text, 1)
+        "짜장면을 맛있게 먹었다"
+    """
     try:
         del sentences[n]
+        return sentences
     except IndexError:
-        return text
-
-    text = join_sentences(sentences)
-    return text
+        return sentences
 
 
 def wrap_text_with_sentences(
@@ -123,7 +225,7 @@ def wrap_text_with_sentences(
         suffix_sentences (List[Sentence]): List of sentences to add at the end of the text.
 
     Returns:
-        wrapped_text (Text): The wrapped text.
+        Text: The wrapped text.
     """
     prefix_text = join_sentences(prefix_sentences) if prefix_sentences else ""
     suffix_text = join_sentences(suffix_sentences) if suffix_sentences else ""

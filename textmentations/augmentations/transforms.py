@@ -22,7 +22,7 @@ class RandomDeletionWords(TextTransform):
         min_words_each_sentence (float or int):
             If a `float`, then it is the minimum proportion of words to retain in each sentence after deletion.
             If an `int`, then it is the minimum number of words in each sentence. Default 5.
-        p (float): Probability of applying the transform. Default: 0.5.
+        p (float): The probability of applying the transform. Default: 0.5.
         
     Targets:
         text
@@ -69,7 +69,7 @@ class RandomDeletionSentences(TextTransform):
         min_sentences (float or int):
             If a `float`, then it is the minimum proportion of sentences to retain in the text after deletion.
             If an `int`, then it is the minimum number of sentences in the text. Default 3.
-        p (float): Probability of applying the transform. Default: 0.5.
+        p (float): The probability of applying the transform. Default: 0.5.
         
     Targets:
         text
@@ -131,7 +131,7 @@ class RandomSwapWords(TextTransform):
     
     Args:
         n_times (int): The number of times to repeat the operation. Default: 1.
-        p (float): Probability of applying the transform. Default: 0.5.
+        p (float): The probability of applying the transform. Default: 0.5.
         
     Targets:
         text
@@ -159,7 +159,7 @@ class RandomSwapSentences(TextTransform):
     
     Args:
         n_times (int): The number of times to repeat the operation. Default: 1.
-        p (float): Probability of applying the transform. Default: 0.5.
+        p (float): The probability of applying the transform. Default: 0.5.
         
     Targets:
         text
@@ -187,7 +187,7 @@ class SynonymsReplacement(TextTransform):
     
     Args:
         replacement_prob (float): Probability of replacing a word with a synonym. Default 0.2.
-        p (float): Probability of applying the transform. Default: 0.5.
+        p (float): The probability of applying the transform. Default: 0.5.
         
     Targets:
         text
