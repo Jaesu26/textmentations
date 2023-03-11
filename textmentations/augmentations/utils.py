@@ -69,7 +69,7 @@ def autopsy_sentence(
         Callable[Concatenate[Sentence, P], Sentence]:
             A decorated function that performs the procedure.
 
-    Example:
+    Examples:
         >>> from typing import List, TypeVar
         ...
         >>> Word = TypeVar("Word", bound=str)
@@ -112,7 +112,7 @@ def autopsy_text(
         Callable[Concatenate[Text, P], Text]:
             A decorated function that performs the procedure.
 
-    Example:
+    Examples:
         >>> from typing import List, TypeVar
         ...
         >>> Sentence = TypeVar("Sentence", bound=str)

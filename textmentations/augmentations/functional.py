@@ -32,7 +32,7 @@ def delete_words(text: Text, deletion_prob: float, min_words_each_sentence: Unio
     Returns:
         Text: A text with randomly deleted words each sentence.
 
-    Example:
+    Examples:
         >>> text = "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."
         >>> deletion_prob = 0.7
         >>> min_words_each_sentence = 1
@@ -93,7 +93,7 @@ def delete_sentences(text: Text, deletion_prob: float, min_sentences: Union[floa
     Returns:
         Text: A text with randomly deleted sentences.
 
-    Example:
+    Examples:
         >>> text = "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."
         >>> deletion_prob = 0.5
         >>> min_sentences = 1
@@ -139,7 +139,7 @@ def replace_synonyms(text: Text, replacement_prob: float) -> Text:
     Returns:
         text: A text with random words replaced by synonyms.
 
-    Example:
+    Examples:
         >>> text = "물 한잔만 주세요."
         >>> replacement_prob = 0.5
         >>> replace_synonyms(text, replacement_prob)
@@ -191,7 +191,7 @@ def swap_words(text: Text, n_times: int) -> Text:
     Returns:
         Text: A text with randomly shuffled words each sentence.
 
-    Example:
+    Examples:
         >>> text = "짜장면을 맛있게 먹었다. 짬뽕도 먹고 싶었다."
         >>> n_times = 2
         >>> swap_words(text, n_times)
@@ -227,7 +227,7 @@ def get_random_index(elements: List[Any]) -> int:
     Raises:
         ValueError: If the list is empty.
 
-    Example:
+    Examples:
         >>> get_random_index(["짜장면", "짬뽕", "짬짜면"])
         1
     """
@@ -255,7 +255,7 @@ def swap_sentences(text: Text, n_times: int) -> Text:
     Returns:
         Text: A text with randomly shuffled sentences.
 
-    Example:
+    Examples:
         >>> text = "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."
         >>> n_times = 1
         >>> swap_sentences(text, n_times)
