@@ -3,7 +3,7 @@ import random
 from typing import Any, List, Union
 
 from ..corpora.corpus_types import Word, Sentence, Text
-from ..corpora.utils import get_synonyms
+from ..corpora.utils import get_stopwords, get_synonyms
 
 from .utils import (
     autopsy_sentence,
@@ -130,7 +130,7 @@ def _delete_sentences(
 
 
 def replace_synonyms(text: Text, replacement_prob: float) -> Text:
-    """Randomly replaces words in the text with synonyms.
+    """Randomly replaces words that are not stopwords in the text with synonyms.
     
     Args:
         text (Text): The input text.
@@ -150,7 +150,8 @@ def replace_synonyms(text: Text, replacement_prob: float) -> Text:
 
 @autopsy_text
 def _replace_synonyms(sentences: List[Sentence], replacement_prob: float) -> List[Sentence]:
-    """Randomly replaces words in the list of sentences with synonyms. Decorated with `autopsy_text`."""
+    """Randomly replaces words that are not stopwords in the list of sentences with synonyms.
+    Decorated with `autopsy_text`."""
     new_sentences = []
     for sentence in sentences:
         sentence = replace_synonyms_in_sentence(sentence, replacement_prob)
@@ -161,7 +162,8 @@ def _replace_synonyms(sentences: List[Sentence], replacement_prob: float) -> Lis
 
 @autopsy_sentence
 def replace_synonyms_in_sentence(words: List[Word], replacement_prob: float) -> List[Word]:
-    """Randomly replaces words in the list of words with synonyms. Decorated with `autopsy_sentence`."""
+    """Randomly replaces words that are not stopwords in the list of words with synonyms.
+    Decorated with `autopsy_sentence`."""
     new_words = []
     for word in words:
         if random.random() < replacement_prob:
@@ -172,7 +174,11 @@ def replace_synonyms_in_sentence(words: List[Word], replacement_prob: float) -> 
 
 
 def replace_word_with_synonym(word: Word) -> Word:
-    """Replaces the word with one of synonyms at random."""
+    """Replaces the word that is not stopword with one of synonyms at random."""
+    stopwords = get_stopwords()
+    if word in stopwords:
+        return word
+
     synonyms = get_synonyms(word)
     if not synonyms:
         return word
