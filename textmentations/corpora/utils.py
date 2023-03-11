@@ -1,7 +1,14 @@
 from typing import List
 
 from .corpus_types import Word
+from .stopwords import STOPWORDS
 from .wordnet import WORDNET
+
+
+def get_stopwords() -> List[Word]:
+    """get stopwords."""
+    stopwords = STOPWORDS.get("stopwords", [])
+    return stopwords
 
 
 def get_synonyms(word: Word) -> List[Word]:
