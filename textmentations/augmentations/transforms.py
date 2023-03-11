@@ -18,7 +18,7 @@ class RandomDeletionWords(TextTransform):
     """Randomly deletes words in the input text.
     
     Args:
-        deletion_prob (float): Probability of deleting a word. Default 0.1.
+        deletion_prob (float): The probability of deleting a word. Default 0.1.
         min_words_each_sentence (float or int):
             If a `float`, then it is the minimum proportion of words to retain in each sentence after deletion.
             If an `int`, then it is the minimum number of words in each sentence. Default 5.
@@ -65,7 +65,7 @@ class RandomDeletionSentences(TextTransform):
     """Randomly deletes sentences in the input text.
     
     Args:
-        deletion_prob (float): Probability of deleting a sentence. Default 0.1.
+        deletion_prob (float): The probability of deleting a sentence. Default 0.1.
         min_sentences (float or int):
             If a `float`, then it is the minimum proportion of sentences to retain in the text after deletion.
             If an `int`, then it is the minimum number of sentences in the text. Default 3.
@@ -186,7 +186,7 @@ class SynonymsReplacement(TextTransform):
     """Randomly replaces words in the input text with synonyms.
     
     Args:
-        replacement_prob (float): Probability of replacing a word with a synonym. Default 0.2.
+        replacement_prob (float): The probability of replacing a word with a synonym. Default 0.2.
         p (float): The probability of applying the transform. Default: 0.5.
         
     Targets:

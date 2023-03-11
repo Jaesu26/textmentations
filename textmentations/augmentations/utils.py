@@ -188,27 +188,15 @@ def remove_first_sentence(text: Text) -> Text:
     return remove_nth_sentence(text, 0)
 
 
-@autopsy_text
-def remove_nth_sentence(sentences: List[Sentence], n: int) -> List[Sentence]:
-    """Removes the nth sentence from the list of sentences. Decorated with `autopsy_text`.
-
-    Args:
-        sentences (List[Sentence]): The list of sentences.
-        n (int): The index of the sentence to extract.
-
-    Returns:
-        List[Sentence]: The modified list of sentences with the nth sentence removed.
-
-    Example:
-        >>> text = "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다."
-        >>> remove_nth_sentence(text, 1)
-        "짜장면을 맛있게 먹었다"
-    """
+def remove_nth_sentence(text: Text, n: int) -> Text:
+    """Removes the nth sentence from the text"""
+    sentences = split_text(text)
     try:
         del sentences[n]
-        return sentences
+        text = join_sentences(sentences)
+        return text
     except IndexError:
-        return sentences
+        return text
 
 
 def wrap_text_with_sentences(

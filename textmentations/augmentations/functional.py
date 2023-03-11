@@ -19,23 +19,18 @@ __all__ = [
 ]
 
 
-@autopsy_text
-def delete_words(
-    sentences: List[Sentence],
-    deletion_prob: float,
-    min_words_each_sentence: Union[float, int]
-) -> List[Sentence]:
-    """Randomly deletes words in the text. Decorated with `autopsy_text`.
+def delete_words(text: Text, deletion_prob: float, min_words_each_sentence: Union[float, int]) -> Text:
+    """Randomly deletes words in the text.
 
     Args:
-        sentences (List[Sentence]): The list of sentences.
-        deletion_prob (float): The probability of deleting a sentence.
+        text (Text): The input text.
+        deletion_prob (float): The probability of deleting a word.
         min_words_each_sentence (float or int):
-            If a `float`, then it is the minimum proportion of words to retain in each sentence.
+            If a `float`, then it is the minimum proportion of words to retain in each sentence after deletion.
             If an `int`, then it is the minimum number of words in each sentence.
 
     Returns:
-        List[Sentence]: A list of sentences with random words deleted for each sentence.
+        Text: A text with randomly deleted words each sentence.
 
     Example:
         >>> text = "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."
@@ -44,6 +39,16 @@ def delete_words(
         >>> delete_words(text, deletion_prob, min_words_each_sentence)
         "짜장면을. 짬뽕도. 먹고 싶었다."
     """
+    return _delete_words(text, deletion_prob, min_words_each_sentence)
+
+
+@autopsy_text
+def _delete_words(
+    sentences: List[Sentence],
+    deletion_prob: float,
+    min_words_each_sentence: Union[float, int]
+) -> List[Sentence]:
+    """Randomly deletes words in the text. Decorated with `autopsy_text`."""
     new_sentences = []
     for sentence in sentences:
         sentence = delete_words_in_sentence(sentence, deletion_prob, min_words_each_sentence)
@@ -55,25 +60,7 @@ def delete_words(
 
 @autopsy_sentence
 def delete_words_in_sentence(words: List[Word], deletion_prob: float, min_words: Union[float, int]) -> List[Word]:
-    """Randomly deletes words in the list of words. Decorated with `autopsy_sentence`.
-
-    Args:
-        words (List[Word]): The list of words.
-        deletion_prob (float): The probability of deleting a word.
-        min_words (float or int):
-            If a `float`, then it is the minimum proportion of words to retain in the list of words.
-            If an `int`, then it is the minimum number of words in the list of words.
-
-    Returns:
-        List[Word]: A list of words with random words deleted.
-
-    Example:
-        >>> sentence = "짜장면을 맛있게 먹었다"
-        >>> deletion_prob = 0.5
-        >>> min_words = 1
-        >>> delete_words_in_sentence(sentence, deletion_prob, min_words)
-        "짜장면을"
-    """
+    """Randomly deletes words in the list of words. Decorated with `autopsy_sentence`."""
     num_words = len(words)
     if isinstance(min_words, float):
         min_words = math.ceil(num_words * min_words)
@@ -93,23 +80,18 @@ def delete_words_in_sentence(words: List[Word], deletion_prob: float, min_words:
     return new_words
 
 
-@autopsy_text
-def delete_sentences(
-    sentences: List[Sentence],
-    deletion_prob: float,
-    min_sentences: Union[float, int]
-) -> List[Sentence]:
-    """Randomly deletes sentences in the list of sentences. Decorated with `autopsy_text`.
+def delete_sentences(text: Text, deletion_prob: float, min_sentences: Union[float, int]) -> Text:
+    """Randomly deletes sentences in the text.
 
     Args:
-        sentences (List[Sentence]): The list of sentences.
+        text (Text): The input text.
         deletion_prob (float): The probability of deleting a sentence.
         min_sentences (float or int):
-            If a `float`, then it is the minimum proportion of sentences to retain in the list of sentences.
-            If an `int`, then it is the minimum number of sentences in the list of sentences.
+            If a `float`, then it is the minimum proportion of sentences to retain in the text after deletion.
+            If an `int`, then it is the minimum number of sentences in the text.
 
     Returns:
-        List[Sentence]: A list of sentences with random sentences deleted.
+        Text: A text with randomly deleted sentences.
 
     Example:
         >>> text = "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."
@@ -118,6 +100,16 @@ def delete_sentences(
         >>> delete_sentences(text, deletion_prob, min_sentences)
         "짬짜면도 먹고 싶었다."
     """
+    return _delete_sentences(text, deletion_prob, min_sentences)
+
+
+@autopsy_text
+def _delete_sentences(
+    sentences: List[Sentence],
+    deletion_prob: float,
+    min_sentences: Union[float, int]
+) -> List[Sentence]:
+    """Randomly deletes sentences in the list of sentences. Decorated with `autopsy_text`."""
     num_sentences = len(sentences)
     if isinstance(min_sentences, float):
         min_sentences = math.ceil(num_sentences * min_sentences)    
@@ -137,8 +129,27 @@ def delete_sentences(
     return new_sentences
 
 
+def replace_synonyms(text: Text, replacement_prob: float) -> Text:
+    """Randomly replaces words in the text with synonyms.
+    
+    Args:
+        text (Text): The input text.
+        replacement_prob (float): The probability of replacing a word with a synonym.
+
+    Returns:
+        text: A text with random words replaced by synonyms.
+
+    Example:
+        >>> text = "물 한잔만 주세요."
+        >>> replacement_prob = 0.5
+        >>> replace_synonyms(text, replacement_prob)
+        "음료 한잔만 주세요.
+    """
+    return _replace_synonyms(text, replacement_prob)
+
+
 @autopsy_text
-def replace_synonyms(sentences: List[Sentence], replacement_prob: float) -> List[Sentence]:
+def _replace_synonyms(sentences: List[Sentence], replacement_prob: float) -> List[Sentence]:
     """Randomly replaces words in the list of sentences with synonyms. Decorated with `autopsy_text`."""
     new_sentences = []
     for sentence in sentences:
@@ -170,23 +181,29 @@ def replace_word_with_synonym(word: Word) -> Word:
     return synonym
 
 
-@autopsy_text
-def swap_words(sentences: List[Sentence], n_times: int) -> Text:
-    """Repeats n times the task of randomly swapping two words in a randomly selected sentence.
-    Decorated with `autopsy_text`.
+def swap_words(text: Text, n_times: int) -> Text:
+    """Repeats n times the task of randomly swapping two words in a randomly selected sentence from the text.
 
     Args:
-        sentences (List[Sentence]): The list of sentences.
+        text (Text): The input text.
         n_times (int): The number of times to repeat the word-swapping process in a randomly selected sentence.
 
     Returns:
-        List[Sentence]: A list of sentences with the swapped words.
+        Text: A text with randomly shuffled words each sentence.
 
     Example:
-        >>> text = "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다."
+        >>> text = "짜장면을 맛있게 먹었다. 짬뽕도 먹고 싶었다."
         >>> n_times = 2
         >>> swap_words(text, n_times)
         "맛있게 짜장면을 먹었다. 먹고 짬뽕도 싶었다."
+    """
+    return _swap_words(text, n_times)
+
+
+@autopsy_text
+def _swap_words(sentences: List[Sentence], n_times: int) -> Text:
+    """Repeats n times the task of randomly swapping two words in a randomly selected sentence.
+    Decorated with `autopsy_text`.
     """
     if len(sentences) < 1:
         return sentences
@@ -224,33 +241,19 @@ def get_random_index(elements: List[Any]) -> int:
 
 @autopsy_sentence
 def swap_two_words_in_sentence(words: List[Word]) -> List[Word]:
-    """Randomly swaps two words in the list of words. Decorated with `autopsy_sentence`.
-
-    Args:
-        words (List[Word]): The list of words.
-
-    Returns:
-        List[Word]: A list of words with two words randomly swapped.
-
-    Example:
-        >>> sentence = "짜장면을 맛있게 먹었다"
-        >>> swap_two_words_in_sentence(sentence)
-        "맛있게 짜장면을 먹었다"
-    """
+    """Randomly swaps two words in the list of words. Decorated with `autopsy_sentence`."""
     return swap_two_elements(words)
 
 
-@autopsy_text
-def swap_sentences(sentences: List[Sentence], n_times: int) -> List[Sentence]:
-    """Repeats n times the task of randomly swapping two sentences in the list of sentences.
-    Decorated with `autopsy_text`.
+def swap_sentences(text: Text, n_times: int) -> Text:
+    """Repeats n times the task of randomly swapping two sentences in the text.
 
     Args:
-        sentences (List[Sentence]): The list of sentences.
+        text (Text): The input text.
         n_times (int): The number of times to repeat the sentence-swapping process.
 
     Returns:
-        List[Sentence]: A shuffled sentences.
+        Text: A text with randomly shuffled sentences.
 
     Example:
         >>> text = "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."
@@ -258,6 +261,15 @@ def swap_sentences(sentences: List[Sentence], n_times: int) -> List[Sentence]:
         >>> swap_sentences(text, n_times)
         "짜장면을 맛있게 먹었다. 짬짜면도 먹고 싶었다. 짬뽕도 맛있게 먹었다."
     """
+    return _swap_sentences(text, n_times)
+
+
+@autopsy_text
+def _swap_sentences(sentences: List[Sentence], n_times: int) -> List[Sentence]:
+    """Repeats n times the task of randomly swapping two sentences in the list of sentences.
+    Decorated with `autopsy_text`.
+    """
+
     for _ in range(n_times):
         sentences = swap_two_elements(sentences)
     return sentences
