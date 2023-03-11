@@ -205,10 +205,10 @@ def wrap_text_with_sentences(
     prefix_sentences: Optional[List[Sentence]] = None,
     suffix_sentences: Optional[List[Sentence]] = None
 ) -> Text:
-    """Wraps the input text with the specified prefix and suffix sentences.
+    """Wraps the text with the specified prefix and suffix sentences.
 
     Args:
-        text (Text): The text to wrap with sentences.
+        text (Text): The input text to wrap with sentences.
         prefix_sentences (List[Sentence]): List of sentences to add at the beginning of the text.
         suffix_sentences (List[Sentence]): List of sentences to add at the end of the text.
 
