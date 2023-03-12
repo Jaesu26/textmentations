@@ -11,7 +11,7 @@ def extract_first_sentence_by_key(key2text: Dict[str, Text]) -> Dict[str, Senten
         key2text (Dict[str, Text]): A dictionary with string keys and Text values.
 
     Returns:
-        key2first_sentence (Dict[str, Sentence]): A dictionary with the same keys as `key2text`,
+        Dict[str, Sentence]: A dictionary with the same keys as `key2text`,
             but with the values replaced by their first sentence.
     """
     key2first_sentence = {}
@@ -30,7 +30,7 @@ def remove_first_sentence_by_key(key2text: Dict[str, Text]) -> Dict[str, Text]:
         key2text (Dict[str, Text]): The dictionary with string keys and Text values.
 
     Returns:
-        key2text_without_first_sentence (Dict[str, Text]): A dictionary with the same keys as `key2text`,
+        Dict[str, Text]: A dictionary with the same keys as `key2text`,
             but with the values replaced by the input text with the first sentence removed.
     """
     key2text_without_first_sentence = {}
@@ -56,7 +56,7 @@ def wrap_text_with_first_sentence_by_key(
             represent the first sentences of the original text inputs.
 
     Returns:
-        key2text (Dict[str, Text]): A dictionary with the same keys as `key2text_without_first_sentence`,
+        Dict[str, Text]: A dictionary with the same keys as `key2text_without_first_sentence`,
             but with the values wrapped with their corresponding first sentence as a prefix.
     """
     key2text = {}

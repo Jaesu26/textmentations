@@ -193,8 +193,8 @@ def remove_nth_sentence(text: Text, n: int) -> Text:
     sentences = split_text(text)
     try:
         del sentences[n]
-        text = join_sentences(sentences)
-        return text
+        text_without_nth_sentence = join_sentences(sentences)
+        return text_without_nth_sentence
     except IndexError:
         return text
 
