@@ -6,7 +6,7 @@ from .wordnet import WORDNET
 
 
 def get_stopwords() -> List[Word]:
-    """get stopwords."""
+    """get the set data type stopwords."""
     stopwords = STOPWORDS.get("stopwords", [])
     stopwords = set(stopwords)
     return stopwords
