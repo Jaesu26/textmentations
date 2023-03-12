@@ -56,6 +56,9 @@ print(mixed_transforms(text=text)["text"])
 
 - [albumentations](https://github.com/albumentations-team/albumentations)
 
+- [EDA: Easy Data Augmentation Techniques for Boosting Performance on
+Text Classification Tasks](https://arxiv.org/pdf/1901.11196.pdf)
+
 - [Korean WordNet (KWN)](http://wordnet.kaist.ac.kr/)
 
 - [Korean Stopwords](https://www.ranks.nl/stopwords/korean)
