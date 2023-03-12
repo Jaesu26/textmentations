@@ -24,7 +24,7 @@ class TextTransform(BasicTransform):
         p (float): The probability of applying the transform. Default: 0.5.
     """
 
-    def __init__(self, ignore_first: bool = False, always_apply: bool = False, p: float = 0.5):
+    def __init__(self, ignore_first: bool = False, always_apply: bool = False, p: float = 0.5) -> None:
         super(TextTransform, self).__init__(always_apply, p)
         self.ignore_first = ignore_first
 
