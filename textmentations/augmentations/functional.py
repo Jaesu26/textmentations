@@ -173,6 +173,9 @@ def insert_synonyms_in_sentence(words: List[Word], insertion_prob: float, n_time
         for word in words:
             if word not in stopwords and random.random() < insertion_prob:
                 synonym = replace_word_with_synonym(word)
+                if synonym == word:
+                    continue
+                
                 insertion_index = random.randrange(num_words + 1)
                 new_words.insert(insertion_index, synonym)
                 num_words += 1
