@@ -8,6 +8,7 @@ from .wordnet import WORDNET
 def get_stopwords() -> List[Word]:
     """get stopwords."""
     stopwords = STOPWORDS.get("stopwords", [])
+    stopwords = set(stopwords)
     return stopwords
 
 
