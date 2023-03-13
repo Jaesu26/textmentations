@@ -58,7 +58,7 @@ class RandomDeletionWords(TextTransform):
         return F.delete_words(text, self.deletion_prob, self.min_words_each_sentence)
 
     def get_transform_init_args_names(self) -> Tuple[str, str]:
-        return "deletion_prob", "min_words_each_sentence"
+        return ("deletion_prob", "min_words_each_sentence")
     
     
 class RandomDeletionSentences(TextTransform):
@@ -123,7 +123,7 @@ class RandomDeletionSentences(TextTransform):
         }
 
     def get_transform_init_args_names(self) -> Tuple[str, str]:
-        return "deletion_prob", "min_sentences"
+        return ("deletion_prob", "min_sentences")
 
 
 class RandomSwapWords(TextTransform):
