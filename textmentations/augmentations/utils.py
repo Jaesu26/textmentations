@@ -70,13 +70,8 @@ def autopsy_sentence(
             A decorated function that performs the procedure.
 
     Examples:
-        >>> from typing import List, TypeVar
-        ...
-        >>> Word = TypeVar("Word", bound=str)
-        ...
-        ...
         >>> @autopsy_sentence
-        ... def remove_second_word(words: List[Word]) -> List[Word]:
+        ... def remove_second_word(words):
         ...    try:
         ...        del words[1]
         ...        return words
@@ -113,13 +108,8 @@ def autopsy_text(
             A decorated function that performs the procedure.
 
     Examples:
-        >>> from typing import List, TypeVar
-        ...
-        >>> Sentence = TypeVar("Sentence", bound=str)
-        ...
-        ...
         >>> @autopsy_text
-        ... def remove_second_sentence(sentences: List[Sentence]) -> List[Sentence]:
+        ... def remove_second_sentence(sentences):
         ...    try:
         ...        del sentences[1]
         ...        return sentences
@@ -178,7 +168,8 @@ def extract_nth_sentence(text: Text, n: int) -> Sentence:
     """Extracts the nth sentence from the text."""
     sentences = split_text(text)
     try:
-        return sentences[n]
+        nth_sentence = sentences[n]
+        return nth_sentence
     except IndexError:
         return ""
 

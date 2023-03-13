@@ -131,11 +131,11 @@ def _delete_sentences(
 
 
 def insert_synonyms(text: Text, insertion_prob: float, n_times: int) -> Text:
-    """Randomly inserts synonyms in the text.
+    """Repeats n times the task of randomly inserting synonyms in the text.
 
     Args:
         text (Text): The input text.
-        insertion_prob (float): The probability of insertion a synonym.
+        insertion_prob (float): The probability of inserting a synonym.
         n_times (int): The number of times to repeat the synonym-insertion process.
 
     Returns:
@@ -153,7 +153,9 @@ def insert_synonyms(text: Text, insertion_prob: float, n_times: int) -> Text:
 
 @autopsy_text
 def _insert_synonyms(sentences: List[Sentence], insertion_prob: float, n_times: int) -> List[Sentence]:
-    """Randomly inserts synonyms in the list of sentences. Decorated with `autopsy_text`."""
+    """Repeats n times the task of randomly inserting synonyms in the list of sentences.
+    Decorated with `autopsy_text`.
+    """
     new_sentences = []
     for sentence in sentences:
         sentence = insert_synonyms_in_sentence(sentence, insertion_prob, n_times)
@@ -164,7 +166,9 @@ def _insert_synonyms(sentences: List[Sentence], insertion_prob: float, n_times: 
 
 @autopsy_sentence
 def insert_synonyms_in_sentence(words: List[Word], insertion_prob: float, n_times: int) -> List[Word]:
-    """Randomly inserts synonyms in the list of words. Decorated with `autopsy_sentence`."""
+    """Repeats n times the task of randomly inserting synonyms in the list of words.
+    Decorated with `autopsy_sentence`.
+    """
     stopwords = get_stopwords()
     new_words = words[:]
     num_words = len(new_words)
@@ -176,7 +180,7 @@ def insert_synonyms_in_sentence(words: List[Word], insertion_prob: float, n_time
                 if synonym == word:
                     continue
                 
-                insertion_index = random.randrange(num_words + 1)
+                insertion_index = random.randint(num_words)
                 new_words.insert(insertion_index, synonym)
                 num_words += 1
 
