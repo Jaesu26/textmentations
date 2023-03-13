@@ -24,9 +24,6 @@ class RandomDeletionWords(TextTransform):
             If a `float`, then it is the minimum proportion of words to retain in each sentence after deletion.
             If an `int`, then it is the minimum number of words in each sentence. Default 5.
         p (float): The probability of applying the transform. Default: 0.5.
-        
-    Targets:
-        text
     """
 
     def __init__(
@@ -71,9 +68,6 @@ class RandomDeletionSentences(TextTransform):
             If a `float`, then it is the minimum proportion of sentences to retain in the text after deletion.
             If an `int`, then it is the minimum number of sentences in the text. Default 3.
         p (float): The probability of applying the transform. Default: 0.5.
-        
-    Targets:
-        text
     """
 
     def __init__(
@@ -134,9 +128,6 @@ class RandomInsertion(TextTransform):
         insertion_probability (float): The probability of inserting a synonym. Default 0.2.
         n_times (int): The number of times to repeat the operation. Default 1.
         p (float): The probability of applying the transform. Default: 0.5.
-
-    Targets:
-        text
     """
 
     def __init__(
@@ -164,9 +155,6 @@ class RandomSwapWords(TextTransform):
     Args:
         n_times (int): The number of times to repeat the operation. Default: 1.
         p (float): The probability of applying the transform. Default: 0.5.
-        
-    Targets:
-        text
     """
 
     def __init__(
@@ -192,9 +180,6 @@ class RandomSwapSentences(TextTransform):
     Args:
         n_times (int): The number of times to repeat the operation. Default: 1.
         p (float): The probability of applying the transform. Default: 0.5.
-        
-    Targets:
-        text
     """
 
     def __init__(
@@ -220,9 +205,6 @@ class SynonymsReplacement(TextTransform):
     Args:
         replacement_probability (float): The probability of replacing a word with a synonym. Default 0.2.
         p (float): The probability of applying the transform. Default: 0.5.
-        
-    Targets:
-        text
     """
 
     def __init__(
