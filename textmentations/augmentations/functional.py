@@ -63,7 +63,11 @@ def _delete_words(
 
 
 @autopsy_sentence
-def delete_words_in_sentence(words: List[Word], deletion_probability: float, min_words: Union[float, int]) -> List[Word]:
+def delete_words_in_sentence(
+    words: List[Word],
+    deletion_probability: float,
+    min_words: Union[float, int]
+) -> List[Word]:
     """Randomly deletes words in the list of words. Decorated with `autopsy_sentence`."""
     num_words = len(words)
     if isinstance(min_words, float):
