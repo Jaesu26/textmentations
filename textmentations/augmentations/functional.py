@@ -203,7 +203,7 @@ def insert_synonyms_into_another(
             if synonym == inserting_word:
                 continue
 
-            synonym_index = random.randint(current_num_words)
+            synonym_index = random.randint(0, current_num_words)
             target_words.insert(synonym_index, synonym)
             current_num_words += 1
 
