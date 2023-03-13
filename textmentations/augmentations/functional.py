@@ -1,3 +1,5 @@
+# TODO: 변수명 명확하게 바꾸기, docstring 세세히 적기 (프로젝트 공통 적용)
+
 import math
 import random
 from typing import Any, List, Union
@@ -20,12 +22,12 @@ __all__ = [
 ]
 
 
-def delete_words(text: Text, deletion_prob: float, min_words_each_sentence: Union[float, int]) -> Text:
+def delete_words(text: Text, deletion_probability: float, min_words_each_sentence: Union[float, int]) -> Text:
     """Randomly deletes words in the text.
 
     Args:
         text (Text): The input text.
-        deletion_prob (float): The probability of deleting a word.
+        deletion_probability (float): The probability of deleting a word.
         min_words_each_sentence (float or int):
             If a `float`, then it is the minimum proportion of words to retain in each sentence after deletion.
             If an `int`, then it is the minimum number of words in each sentence.
@@ -35,24 +37,25 @@ def delete_words(text: Text, deletion_prob: float, min_words_each_sentence: Unio
 
     Examples:
         >>> text = "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."
-        >>> deletion_prob = 0.7
+        >>> deletion_probability = 0.7
         >>> min_words_each_sentence = 1
-        >>> delete_words(text, deletion_prob, min_words_each_sentence)
+        >>> delete_words(text, deletion_probability, min_words_each_sentence)
         "짜장면을. 짬뽕도. 먹고 싶었다."
     """
-    return _delete_words(text, deletion_prob, min_words_each_sentence)
+    return _delete_words(text, deletion_probability, min_words_each_sentence)
 
 
 @autopsy_text
 def _delete_words(
     sentences: List[Sentence],
-    deletion_prob: float,
+    deletion_probability: float,
     min_words_each_sentence: Union[float, int]
 ) -> List[Sentence]:
     """Randomly deletes words in the list of sentences. Decorated with `autopsy_text`."""
     new_sentences = []
+
     for sentence in sentences:
-        sentence = delete_words_in_sentence(sentence, deletion_prob, min_words_each_sentence)
+        sentence = delete_words_in_sentence(sentence, deletion_probability, min_words_each_sentence)
         if sentence:
             new_sentences.append(sentence)
 
@@ -60,7 +63,7 @@ def _delete_words(
 
 
 @autopsy_sentence
-def delete_words_in_sentence(words: List[Word], deletion_prob: float, min_words: Union[float, int]) -> List[Word]:
+def delete_words_in_sentence(words: List[Word], deletion_probability: float, min_words: Union[float, int]) -> List[Word]:
     """Randomly deletes words in the list of words. Decorated with `autopsy_sentence`."""
     num_words = len(words)
     if isinstance(min_words, float):
@@ -73,7 +76,7 @@ def delete_words_in_sentence(words: List[Word], deletion_prob: float, min_words:
     deleted_counts = 0
     
     for word in words:
-        if random.random() < deletion_prob and deleted_counts < max_deletion_counts:
+        if random.random() < deletion_probability and deleted_counts < max_deletion_counts:
             deleted_counts += 1
             continue
         new_words.append(word)
@@ -81,12 +84,12 @@ def delete_words_in_sentence(words: List[Word], deletion_prob: float, min_words:
     return new_words
 
 
-def delete_sentences(text: Text, deletion_prob: float, min_sentences: Union[float, int]) -> Text:
+def delete_sentences(text: Text, deletion_probability: float, min_sentences: Union[float, int]) -> Text:
     """Randomly deletes sentences in the text.
 
     Args:
         text (Text): The input text.
-        deletion_prob (float): The probability of deleting a sentence.
+        deletion_probability (float): The probability of deleting a sentence.
         min_sentences (float or int):
             If a `float`, then it is the minimum proportion of sentences to retain in the text after deletion.
             If an `int`, then it is the minimum number of sentences in the text.
@@ -96,18 +99,18 @@ def delete_sentences(text: Text, deletion_prob: float, min_sentences: Union[floa
 
     Examples:
         >>> text = "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."
-        >>> deletion_prob = 0.5
+        >>> deletion_probability = 0.5
         >>> min_sentences = 1
-        >>> delete_sentences(text, deletion_prob, min_sentences)
+        >>> delete_sentences(text, deletion_probability, min_sentences)
         "짬짜면도 먹고 싶었다."
     """
-    return _delete_sentences(text, deletion_prob, min_sentences)
+    return _delete_sentences(text, deletion_probability, min_sentences)
 
 
 @autopsy_text
 def _delete_sentences(
     sentences: List[Sentence],
-    deletion_prob: float,
+    deletion_probability: float,
     min_sentences: Union[float, int]
 ) -> List[Sentence]:
     """Randomly deletes sentences in the list of sentences. Decorated with `autopsy_text`."""
@@ -117,25 +120,25 @@ def _delete_sentences(
     if num_sentences <= min_sentences:
         return sentences
 
-    new_sentences = []
+    augmented_sentences = []
     max_deletion_counts = num_sentences - min_sentences
     deleted_counts = 0
     
     for sentence in sentences:
-        if random.random() < deletion_prob and deleted_counts < max_deletion_counts:
+        if random.random() < deletion_probability and deleted_counts < max_deletion_counts:
             deleted_counts += 1
             continue
-        new_sentences.append(sentence)
+        augmented_sentences.append(sentence)
 
-    return new_sentences
+    return augmented_sentences
 
 
-def insert_synonyms(text: Text, insertion_prob: float, n_times: int) -> Text:
+def insert_synonyms(text: Text, insertion_probability: float, n_times: int) -> Text:
     """Repeats n times the task of randomly inserting synonyms in the text.
 
     Args:
         text (Text): The input text.
-        insertion_prob (float): The probability of inserting a synonym.
+        insertion_probability (float): The probability of inserting a synonym.
         n_times (int): The number of times to repeat the synonym-insertion process.
 
     Returns:
@@ -143,48 +146,68 @@ def insert_synonyms(text: Text, insertion_prob: float, n_times: int) -> Text:
 
     Examples:
         >>> text = "물 한잔만 주세요."
-        >>> insertion_prob = 0.7
+        >>> insertion_probability = 0.7
         >>> n_times = 2
-        >>> insert_synonyms(text, insertion_prob, n_times)
+        >>> insert_synonyms(text, insertion_probability, n_times)
         "음료 물 한잔만 상수도 주세요."
     """
-    return _insert_synonyms(text, insertion_prob, n_times)
+    return _insert_synonyms(text, insertion_probability, n_times)
 
 
 @autopsy_text
-def _insert_synonyms(sentences: List[Sentence], insertion_prob: float, n_times: int) -> List[Sentence]:
+def _insert_synonyms(sentences: List[Sentence], insertion_probability: float, n_times: int) -> List[Sentence]:
     """Repeats n times the task of randomly inserting synonyms in the list of sentences.
     Decorated with `autopsy_text`.
     """
     new_sentences = []
+
     for sentence in sentences:
-        sentence = insert_synonyms_in_sentence(sentence, insertion_prob, n_times)
+        sentence = insert_synonyms_in_sentence(sentence, insertion_probability, n_times)
         new_sentences.append(sentence)
 
     return new_sentences
 
 
 @autopsy_sentence
-def insert_synonyms_in_sentence(words: List[Word], insertion_prob: float, n_times: int) -> List[Word]:
+def insert_synonyms_in_sentence(words: List[Word], insertion_probability: float, n_times: int) -> List[Word]:
     """Repeats n times the task of randomly inserting synonyms in the list of words.
     Decorated with `autopsy_sentence`.
     """
+    augmented_words = words[:]
+    for _ in range(n_times):
+        augmented_words = insert_synonyms_into_another(words, augmented_words, insertion_probability)
+    return augmented_words
+
+
+def insert_synonyms_into_another(
+    inserting_words: List[Word],
+    target_words: List[Word],
+    insertion_probability: float
+) -> List[Word]:
+    """Randomly inserts synonyms of `inserting_words` into `target_words` at random position.
+
+    Args:
+        inserting_words (List[Word]): The words whose synonyms will be inserted into `target_words`.
+        target_words (List[Word]): The words into which the synonyms will be inserted.
+        insertion_probability (float): The probability of inserting a synonym for each word in `inserting_word`.
+
+    Returns:
+        List[Word]: `target_words` with synonyms of `inserting_words` randomly inserted.
+    """
     stopwords = get_stopwords()
-    new_words = words[:]
-    num_words = len(new_words)
+    current_num_words = len(target_words)
 
-    for _ in range(n_times):  # TODO: for문 내부 동작을 함수로 만들기
-        for word in words:
-            if word not in stopwords and random.random() < insertion_prob:
-                synonym = replace_word_with_synonym(word)
-                if synonym == word:
-                    continue
-                
-                insertion_index = random.randint(num_words)
-                new_words.insert(insertion_index, synonym)
-                num_words += 1
+    for inserting_word in inserting_words:
+        if inserting_word not in stopwords and random.random() < insertion_probability:
+            synonym = replace_word_with_synonym(inserting_word)
+            if synonym == inserting_word:
+                continue
 
-    return new_words
+            synonym_index = random.randint(current_num_words)
+            target_words.insert(synonym_index, synonym)
+            current_num_words += 1
+
+    return target_words
 
 
 def replace_word_with_synonym(word: Word) -> Word:
@@ -197,40 +220,41 @@ def replace_word_with_synonym(word: Word) -> Word:
     return synonym
 
 
-def replace_synonyms(text: Text, replacement_prob: float) -> Text:
+def replace_synonyms(text: Text, replacement_probability: float) -> Text:
     """Randomly replaces words that are not stopwords in the text with synonyms.
     
     Args:
         text (Text): The input text.
-        replacement_prob (float): The probability of replacing a word with a synonym.
+        replacement_probability (float): The probability of replacing a word with a synonym.
 
     Returns:
         text: A text with random words replaced by synonyms.
 
     Examples:
         >>> text = "물 한잔만 주세요."
-        >>> replacement_prob = 0.5
-        >>> replace_synonyms(text, replacement_prob)
+        >>> replacement_probability = 0.5
+        >>> replace_synonyms(text, replacement_probability)
         "음료 한잔만 주세요."
     """
-    return _replace_synonyms(text, replacement_prob)
+    return _replace_synonyms(text, replacement_probability)
 
 
 @autopsy_text
-def _replace_synonyms(sentences: List[Sentence], replacement_prob: float) -> List[Sentence]:
+def _replace_synonyms(sentences: List[Sentence], replacement_probability: float) -> List[Sentence]:
     """Randomly replaces words that are not stopwords in the list of sentences with synonyms.
     Decorated with `autopsy_text`.
     """
     new_sentences = []
+
     for sentence in sentences:
-        sentence = replace_synonyms_in_sentence(sentence, replacement_prob)
+        sentence = replace_synonyms_in_sentence(sentence, replacement_probability)
         new_sentences.append(sentence)
 
     return new_sentences
 
 
 @autopsy_sentence
-def replace_synonyms_in_sentence(words: List[Word], replacement_prob: float) -> List[Word]:
+def replace_synonyms_in_sentence(words: List[Word], replacement_probability: float) -> List[Word]:
     """Randomly replaces words that are not stopwords in the list of words with synonyms.
     Decorated with `autopsy_sentence`.
     """
@@ -238,7 +262,7 @@ def replace_synonyms_in_sentence(words: List[Word], replacement_prob: float) -> 
     new_words = []
 
     for word in words:
-        if word not in stopwords and random.random() < replacement_prob:
+        if word not in stopwords and random.random() < replacement_probability:
             synonym = replace_word_with_synonym(word)
             new_words.append(synonym)
 
@@ -310,9 +334,10 @@ def _swap_sentences(sentences: List[Sentence], n_times: int) -> List[Sentence]:
     """Repeats n times the task of randomly swapping two sentences in the list of sentences.
     Decorated with `autopsy_text`.
     """
+    augmented_sentences = sentences
     for _ in range(n_times):
-        sentences = swap_two_elements(sentences)
-    return sentences
+        augmented_sentences = swap_two_elements(augmented_sentences)
+    return augmented_sentences
 
 
 def swap_two_elements(elements: List[Any]) -> List[Any]:
