@@ -48,6 +48,7 @@ print(mixed_transforms(text=text)["text"])
 
 - `RandomDeletionWords`
 - `RandomDeletionSentences`
+- `RandomInsertion`
 - `RandomSwapWords`
 - `RandomSwapSentences`
 - `SynonymsReplacement`
