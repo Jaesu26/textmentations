@@ -15,8 +15,8 @@ from textmentations.augmentations.utils import split_text
         (0.0, 0.5, "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."),
     ]
 )
-def test_delete_words(text, deletion_probability, min_words_each_sentence, expected_text):
-    augmented_text = F.delete_words(text, deletion_probability, min_words_each_sentence)
+def test_delete_words(text_without_synonyms, deletion_probability, min_words_each_sentence, expected_text):
+    augmented_text = F.delete_words(text_without_synonyms, deletion_probability, min_words_each_sentence)
     assert augmented_text == expected_text
 
 
@@ -31,31 +31,44 @@ def test_delete_words(text, deletion_probability, min_words_each_sentence, expec
         (0.0, 0.5, "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."),
     ]
 )
-def test_delete_sentences(text, deletion_probability, min_sentences, expected_text):
-    augmented_text = F.delete_sentences(text, deletion_probability, min_sentences)
+def test_delete_sentences(text_without_synonyms, deletion_probability, min_sentences, expected_text):
+    augmented_text = F.delete_sentences(text_without_synonyms, deletion_probability, min_sentences)
     assert augmented_text == expected_text
 
 
-def test_insert_synonyms():
-    text = "물 한잔만 주세요."
+@pytest.mark.parametrize(
+    ["text", "is_same"],
+    [
+        ("text_with_synonyms", False),
+        ("text_without_synonyms", True)
+    ]
+)
+def test_insert_synonyms(text, is_same, request):
+    text = request.getfixturevalue(text)
     insertion_probability = 1.0
     n_times = 1
     augmented_text = F.insert_synonyms(text, insertion_probability, n_times)
-    assert augmented_text != text
+    assert (augmented_text == text) == is_same
 
 
-def test_replace_synonyms():
-    text = "물 한잔만 주세요."
+@pytest.mark.parametrize(
+    ["text", "is_same"],
+    [
+        ("text_with_synonyms", False),
+        ("text_without_synonyms", True)
+    ]
+)
+def test_replace_synonyms(text, is_same, request):
+    text = request.getfixturevalue(text)
     replacement_probability = 1.0
     augmented_text = F.replace_synonyms(text, replacement_probability)
-    assert augmented_text != text
+    assert (augmented_text == text) == is_same
 
 
 def test_swap_words(text):
     original_sentences = split_text(text)
     n = len(original_sentences)
     n_times = 1
-
     augmented_text = F.swap_words(text, n_times)
     augmented_sentences = split_text(augmented_text)
     assert sum([original == augmented for original, augmented in zip(original_sentences, augmented_sentences)]) == n - 1
@@ -65,7 +78,6 @@ def test_swap_sentences(text):
     original_sentences = split_text(text)
     n = len(original_sentences)
     n_times = 1
-
     augmented_text = F.swap_sentences(text, n_times)
     augmented_sentences = split_text(augmented_text)
     assert sum([original == augmented for original, augmented in zip(original_sentences, augmented_sentences)]) == n - 2
