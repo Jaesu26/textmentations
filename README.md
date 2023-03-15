@@ -26,7 +26,7 @@ dw = RandomDeletionWords(deletion_prob=0.5, min_words_each_sentence=1)
 ds = RandomDeletionSentences(deletion_prob=0.5, min_sentences=2)
 sw = RandomSwapWords(n_times=1)
 ss = RandomSwapSentences(n_times=2)
-mixed_transforms = Compose([sw, ss, dw, ds])
+augment = Compose([sw, ss, dw, ds])
 
 print(dw(text=text)["text"])
 # 먹었다. 점심에는 맛있게 먹었다. 저녁에는 짬짜면을 맛있게 먹었다.
@@ -40,7 +40,7 @@ print(sw(text=text)["text"])
 print(ss(text=text)["text"])
 # 점심에는 짬뽕을 맛있게 먹었다. 저녁에는 짬짜면을 맛있게 먹었다. 아침에는 짜장면을 맛있게 먹었다.
 
-print(mixed_transforms(text=text)["text"])
+print(augment(text=text)["text"])
 # 저녁에는 먹었다 짬짜면을. 점심에는 짬뽕을.
 ```
 
