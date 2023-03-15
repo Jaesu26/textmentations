@@ -1,21 +1,37 @@
+import pytest
+
 import textmentations.augmentations.functional as F
 from textmentations.augmentations.utils import split_text
 
 
-def test_delete_words():
-    text = "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."
-    expected_text = "먹었다. 먹었다. 싶었다."
-    deletion_probability = 1.0
-    min_words_each_sentence = 1
+@pytest.mark.parametrize(
+    ["deletion_probability", "min_words_each_sentence", "expected_text"],
+    [
+        (1.0, 0, ""),
+        (1.0, 1, "먹었다. 먹었다. 싶었다."),
+        (1.0, 0.0, ""),
+        (1.0, 0.5, "맛있게 먹었다. 맛있게 먹었다. 먹고 싶었다."),
+        (0.0, 1, "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."),
+        (0.0, 0.5, "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."),
+    ]
+)
+def test_delete_words(text, deletion_probability, min_words_each_sentence, expected_text):
     augmented_text = F.delete_words(text, deletion_probability, min_words_each_sentence)
     assert augmented_text == expected_text
 
 
-def test_delete_sentences():
-    text = "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."
-    expected_text = "짬짜면도 먹고 싶었다."
-    deletion_probability = 1.0
-    min_sentences = 1
+@pytest.mark.parametrize(
+    ["deletion_probability", "min_sentences", "expected_text"],
+    [
+        (1.0, 0, ""),
+        (1.0, 1, "짬짜면도 먹고 싶었다."),
+        (1.0, 0.0, ""),
+        (1.0, 0.5, "짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."),
+        (0.0, 1, "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."),
+        (0.0, 0.5, "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."),
+    ]
+)
+def test_delete_sentences(text, deletion_probability, min_sentences, expected_text):
     augmented_text = F.delete_sentences(text, deletion_probability, min_sentences)
     assert augmented_text == expected_text
 
@@ -35,23 +51,21 @@ def test_replace_synonyms():
     assert augmented_text != text
 
 
-def test_swap_words():
-    text = "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."
+def test_swap_words(text):
     original_sentences = split_text(text)
     n = len(original_sentences)
     n_times = 1
 
     augmented_text = F.swap_words(text, n_times)
     augmented_sentences = split_text(augmented_text)
-    assert sum([original == augment for original, augment in zip(original_sentences, augmented_sentences)]) == n - 1
+    assert sum([original == augmented for original, augmented in zip(original_sentences, augmented_sentences)]) == n - 1
 
 
-def test_swap_sentences():
-    text = "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."
+def test_swap_sentences(text):
     original_sentences = split_text(text)
     n = len(original_sentences)
     n_times = 1
 
     augmented_text = F.swap_sentences(text, n_times)
     augmented_sentences = split_text(augmented_text)
-    assert sum([original == augment for original, augment in zip(original_sentences, augmented_sentences)]) == n - 2
+    assert sum([original == augmented for original, augmented in zip(original_sentences, augmented_sentences)]) == n - 2
