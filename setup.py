@@ -25,10 +25,11 @@ setup(
     author="Jaesu Han",
     author_email="gkswotn9753@gmail.com",
     url="https://github.com/Jaesu26/textmentations",
-    packages=find_packages(),
+    packages=find_packages(exclude=["tests"]),
     license="MIT",
-    include_package_data=True,
     zip_safe=False,
+    include_package_data=True,
     install_requires=get_install_requires(),
+    extras_require={"tests": ["pytest"]},
     python_requires=">=3.6",
 )
