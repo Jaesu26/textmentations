@@ -7,12 +7,14 @@ from textmentations.augmentations.utils import split_text
 @pytest.mark.parametrize(
     ["deletion_probability", "min_words_each_sentence", "expected_text"],
     [
-        (1.0, 0, ""),
-        (1.0, 1, "먹었다. 먹었다. 싶었다."),
+        (0.0, 0.5, "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."),
+        (0.0, 1, "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."),
         (1.0, 0.0, ""),
         (1.0, 0.5, "맛있게 먹었다. 맛있게 먹었다. 먹고 싶었다."),
-        (0.0, 1, "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."),
-        (0.0, 0.5, "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."),
+        (1.0, 0, ""),
+        (1.0, 1, "먹었다. 먹었다. 싶었다."),
+        (True, False, ""),
+        (True, True, "먹었다. 먹었다. 싶었다."),
     ]
 )
 def test_delete_words(text_without_synonyms, deletion_probability, min_words_each_sentence, expected_text):
@@ -23,12 +25,14 @@ def test_delete_words(text_without_synonyms, deletion_probability, min_words_eac
 @pytest.mark.parametrize(
     ["deletion_probability", "min_sentences", "expected_text"],
     [
-        (1.0, 0, ""),
-        (1.0, 1, "짬짜면도 먹고 싶었다."),
+        (0.0, 0.5, "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."),
+        (0.0, 1, "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."),
         (1.0, 0.0, ""),
         (1.0, 0.5, "짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."),
-        (0.0, 1, "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."),
-        (0.0, 0.5, "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."),
+        (1.0, 0, ""),
+        (1.0, 1, "짬짜면도 먹고 싶었다."),
+        (True, False, ""),
+        (True, True, "짬짜면도 먹고 싶었다."),
     ]
 )
 def test_delete_sentences(text_without_synonyms, deletion_probability, min_sentences, expected_text):
