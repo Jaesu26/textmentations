@@ -56,18 +56,18 @@ def remove_empty_strings(strings):
 def autopsy_sentence(
     func: Callable[Concatenate[List[Word], P], List[Word]]
 ) -> Callable[Concatenate[Sentence, P], Sentence]:
-    """The decorator follows this procedure:
+    """The decorator follows these steps:
         1. Splits the input sentence into words.
         2. Applies the `func` to the words.
         3. Joins the words returned by 'func' into a sentence.
 
     Args:
         func (Callable[Concatenate[List[Word], P], List[Word]]):
-            The function to be decorated. It should take a list of words as its first argument.
+            The function to be decorated.
 
     Returns:
         Callable[Concatenate[Sentence, P], Sentence]:
-            A decorated function that performs the procedure.
+            A decorated function that performs the steps.
 
     Examples:
         >>> @autopsy_sentence
@@ -85,27 +85,27 @@ def autopsy_sentence(
     @wraps(func)
     def wrapped(sentence: Sentence, *args: P.args, **kwargs: P.kwargs) -> Sentence:
         words = split_sentence(sentence)
-        words = func(words, *args, **kwargs)
-        sentence = join_words(words)
-        return sentence
+        processed_words = func(words, *args, **kwargs)
+        processed_sentence = join_words(processed_words)
+        return processed_sentence
     return wrapped
 
 
 def autopsy_text(
     func: Callable[Concatenate[List[Sentence], P], List[Sentence]]
 ) -> Callable[Concatenate[Text, P], Text]:
-    """The decorator follows this procedure:
+    """The decorator follows these steps:
         1. Splits the input text into sentences.
         2. Applies the `func` to the sentences.
         3. Joins the sentences returned by 'func' into a text.
 
     Args:
         func (Callable[Concatenate[List[Sentence], P], List[Sentence]]):
-            The function to be decorated. It should take a list of sentences as its first argument.
+            The function to be decorated.
 
     Returns:
         Callable[Concatenate[Text, P], Text]:
-            A decorated function that performs the procedure.
+            A decorated function that performs the steps.
 
     Examples:
         >>> @autopsy_text
@@ -123,9 +123,9 @@ def autopsy_text(
     @wraps(func)
     def wrapped(text: Text, *args: P.args, **kwargs: P.kwargs) -> Text:
         sentences = split_text(text)
-        sentences = func(sentences, *args, **kwargs)
-        text = join_sentences(sentences)
-        return text
+        processed_sentences = func(sentences, *args, **kwargs)
+        processed_text = join_sentences(processed_sentences)
+        return processed_text
     return wrapped
 
 

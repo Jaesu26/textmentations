@@ -1,6 +1,5 @@
 # Textmentations
-
-Textmentations is a Python library for text augmentation that is specialized for Korean. 
+Textmentations is a Python library for augmenting Korean text. 
 Inspired by [albumentations](https://github.com/albumentations-team/albumentations). 
 Textmentations uses the albumentations as a dependency.
 
@@ -22,8 +21,8 @@ from albumentations import Compose
 from textmentations import RandomDeletionWords, RandomDeletionSentences, RandomSwapWords, RandomSwapSentences
 
 text = "아침에는 짜장면을 맛있게 먹었다. 점심에는 짬뽕을 맛있게 먹었다. 저녁에는 짬짜면을 맛있게 먹었다."
-dw = RandomDeletionWords(deletion_prob=0.5, min_words_each_sentence=1)
-ds = RandomDeletionSentences(deletion_prob=0.5, min_sentences=2)
+dw = RandomDeletionWords(deletion_probability=0.5, min_words_each_sentence=1)
+ds = RandomDeletionSentences(deletion_probability=0.5, min_sentences=2)
 sw = RandomSwapWords(n_times=1)
 ss = RandomSwapSentences(n_times=2)
 augment = Compose([sw, ss, dw, ds])

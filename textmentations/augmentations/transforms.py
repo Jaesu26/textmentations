@@ -21,8 +21,8 @@ class RandomDeletionWords(TextTransform):
     
     Args:
         deletion_probability (float): The probability of deleting a word. Default 0.1.
-        min_words_each_sentence (float or int):
-            If a `float`, then it is the minimum proportion of words to retain in each sentence after deletion.
+        min_words_each_sentence (Union[float, int]):
+            If a `float`, then it is the minimum proportion of words to retain in each sentence.
             If an `int`, then it is the minimum number of words in each sentence. Default 5.
         p (float): The probability of applying the transform. Default: 0.5.
     """
@@ -69,8 +69,8 @@ class RandomDeletionSentences(TextTransform):
     
     Args:
         deletion_probability (float): The probability of deleting a sentence. Default 0.1.
-        min_sentences (float or int):
-            If a `float`, then it is the minimum proportion of sentences to retain in the text after deletion.
+        min_sentences (Union[float, int]):
+            If a `float`, then it is the minimum proportion of sentences to retain in the text.
             If an `int`, then it is the minimum number of sentences in the text. Default 3.
         p (float): The probability of applying the transform. Default: 0.5.
     """
