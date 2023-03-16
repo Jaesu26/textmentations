@@ -326,9 +326,8 @@ def _swap_sentences(sentences: List[Sentence], n_times: int) -> List[Sentence]:
 def swap_two_elements(elements: List[Any]) -> List[Any]:
     """Randomly swaps two elements in the list of elements."""
     num_elements = len(elements)
-    if num_elements < 2:
+    if num_elements >= 2:
+        index1, index2 = random.sample(range(num_elements), k=2)
+        elements[index1], elements[index2] = elements[index2], elements[index1]
         return elements
-
-    index1, index2 = random.sample(range(num_elements), k=2)
-    elements[index1], elements[index2] = elements[index2], elements[index1]
     return elements
