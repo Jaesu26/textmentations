@@ -1,6 +1,6 @@
 import re
 from functools import wraps
-from typing import Callable, List, Optional, overload
+from typing import Callable, List, Optional, TypeVar
 
 from typing_extensions import Concatenate, ParamSpec
 
@@ -20,35 +20,16 @@ __all__ = [
     "wrap_text_with_sentences",
 ]
 
+T = TypeVar("T", Word, Sentence)
 P = ParamSpec("P")
 
 
-@overload
-def strip(strings: List[Word]) -> List[Word]:
-    ...
-
-
-@overload
-def strip(strings: List[Sentence]) -> List[Sentence]:
-    ...
-
-
-def strip(strings):
+def strip(strings: List[T]) -> List[T]:
     """Removes leading and trailing whitespaces from each string in the list."""
     return [s.strip() for s in strings]
 
 
-@overload
-def remove_empty_strings(strings: List[Word]) -> List[Word]:
-    ...
-
-
-@overload
-def remove_empty_strings(strings: List[Sentence]) -> List[Sentence]:
-    ...
-
-
-def remove_empty_strings(strings):
+def remove_empty_strings(strings: List[T]) -> List[T]:
     """Removes empty strings from the list of strings."""
     return [s for s in strings if s]
 
@@ -59,7 +40,7 @@ def autopsy_sentence(
     """The decorator follows these steps:
         1. Splits the input sentence into words.
         2. Applies the `func` to the words.
-        3. Joins the words returned by 'func' into a sentence.
+        3. Joins the words returned by `func` into a sentence.
 
     Args:
         func (Callable[Concatenate[List[Word], P], List[Word]]):
@@ -97,7 +78,7 @@ def autopsy_text(
     """The decorator follows these steps:
         1. Splits the input text into sentences.
         2. Applies the `func` to the sentences.
-        3. Joins the sentences returned by 'func' into a text.
+        3. Joins the sentences returned by `func` into a text.
 
     Args:
         func (Callable[Concatenate[List[Sentence], P], List[Sentence]]):

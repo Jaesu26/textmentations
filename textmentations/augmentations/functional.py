@@ -272,7 +272,7 @@ def swap_words(text: Text, n_times: int) -> Text:
 
 
 @autopsy_text
-def _swap_words(sentences: List[Sentence], n_times: int) -> Text:
+def _swap_words(sentences: List[Sentence], n_times: int) -> List[Sentence]:
     """Repeats n times the task of randomly swapping two words in a randomly selected sentence.
     Decorated with `autopsy_text`.
     """
@@ -291,6 +291,16 @@ def _swap_words(sentences: List[Sentence], n_times: int) -> Text:
 def swap_two_words_in_sentence(words: List[Word]) -> List[Word]:
     """Randomly swaps two words in the list of words. Decorated with `autopsy_sentence`."""
     return swap_two_elements(words)
+
+
+def swap_two_elements(elements: List[Any]) -> List[Any]:
+    """Randomly swaps two elements in the list of elements."""
+    num_elements = len(elements)
+    if num_elements >= 2:
+        index1, index2 = random.sample(range(num_elements), k=2)
+        elements[index1], elements[index2] = elements[index2], elements[index1]
+        return elements
+    return elements
 
 
 def swap_sentences(text: Text, n_times: int) -> Text:
@@ -321,13 +331,3 @@ def _swap_sentences(sentences: List[Sentence], n_times: int) -> List[Sentence]:
     for _ in range(n_times):
         augmented_sentences = swap_two_elements(augmented_sentences)
     return augmented_sentences
-
-
-def swap_two_elements(elements: List[Any]) -> List[Any]:
-    """Randomly swaps two elements in the list of elements."""
-    num_elements = len(elements)
-    if num_elements >= 2:
-        index1, index2 = random.sample(range(num_elements), k=2)
-        elements[index1], elements[index2] = elements[index2], elements[index1]
-        return elements
-    return elements
