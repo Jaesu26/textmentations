@@ -50,7 +50,9 @@ class RandomDeletionWords(TextTransform):
         min_words_each_sentence: Union[float, int],
     ) -> None:
         if not isinstance(deletion_probability, numbers.Real):
-            raise TypeError(f"deletion_probability must be a real number between 0 and 1. Got: {deletion_probability}")
+            raise TypeError(
+                f"deletion_probability must be a real number between 0 and 1. Got: {type(deletion_probability)}"
+            )
         if not (0.0 <= deletion_probability <= 1.0):
             raise ValueError(f"deletion_probability must be between 0 and 1. Got: {deletion_probability}")
         if not isinstance(min_words_each_sentence, (float, int)):
@@ -107,7 +109,9 @@ class RandomDeletionSentences(TextTransform):
         min_sentences: Union[float, int],
     ) -> None:
         if not isinstance(deletion_probability, numbers.Real):
-            raise TypeError(f"deletion_probability must be a real number between 0 and 1. Got: {deletion_probability}")
+            raise TypeError(
+                f"deletion_probability must be a real number between 0 and 1. Got: {type(deletion_probability)}"
+            )
         if not (0.0 <= deletion_probability <= 1.0):
             raise ValueError(f"deletion_probability must be between 0 and 1. Got: {deletion_probability}")
         if not isinstance(min_sentences, (float, int)):
@@ -181,7 +185,7 @@ class RandomInsertion(TextTransform):
     ) -> None:
         if not isinstance(insertion_probability, numbers.Real):
             raise TypeError(
-                f"insertion_probability must be a real number between 0 and 1. Got: {insertion_probability}"
+                f"insertion_probability must be a real number between 0 and 1. Got: {type(insertion_probability)}"
             )
         if not (0.0 <= insertion_probability <= 1.0):
             raise ValueError(f"insertion_probability must be between 0 and 1. Got: {insertion_probability}")
@@ -222,7 +226,7 @@ class RandomSwapWords(TextTransform):
         n_times: int,
     ) -> None:
         if not isinstance(n_times, int):
-            raise TypeError(f"n_times must be a positive integer. Got: {n_times}")
+            raise TypeError(f"n_times must be a positive integer. Got: {type(n_times)}")
         if n_times <= 0:
             raise ValueError(f"n_times must be positive. Got: {n_times}")
 
@@ -260,7 +264,7 @@ class RandomSwapSentences(TextTransform):
         n_times: int,
     ) -> None:
         if not isinstance(n_times, int):
-            raise TypeError(f"n_times must be a positive integer. Got: {n_times}")
+            raise TypeError(f"n_times must be a positive integer. Got: {type(n_times)}")
         if n_times <= 0:
             raise ValueError(f"n_times must be positive. Got: {n_times}")
 
@@ -299,7 +303,7 @@ class SynonymsReplacement(TextTransform):
     ) -> None:
         if not isinstance(replacement_probability, numbers.Real):
             raise TypeError(
-                f"replacement_probability must be a real number between 0 and 1. Got: {replacement_probability}"
+                f"replacement_probability must be a real number between 0 and 1. Got: {type(replacement_probability)}"
             )
         if not (0.0 <= replacement_probability <= 1.0):
             raise ValueError(f"replacement_probability must be between 0 and 1. Got: {replacement_probability}")
