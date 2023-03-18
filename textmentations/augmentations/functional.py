@@ -4,7 +4,7 @@ from typing import Any, List, Union
 
 from ..corpora.corpus_types import Word, Sentence, Text
 from ..corpora.utils import get_stopwords, get_synonyms
-from .utils import autopsy_sentence, autopsy_text
+from .utils import autopsy_sentence, autopsy_text, WS
 
 __all__ = [
     "delete_words",
@@ -56,27 +56,32 @@ def _delete_words(
 
 
 @autopsy_sentence
-def delete_words_in_sentence(
-    words: List[Word],
-    deletion_prob: float,
-    min_words: Union[float, int]
-) -> List[Word]:
+def delete_words_in_sentence(words: List[Word], deletion_prob: float, min_words: Union[float, int]) -> List[Word]:
     """Randomly deletes words in the list of words. Decorated with `autopsy_sentence`."""
-    num_words = len(words)
-    if isinstance(min_words, float):
-        min_words = math.ceil(num_words * min_words)
-    if num_words <= min_words:
-        return words
+    return delete_strings(words, deletion_prob, min_words)
 
-    augmented_words = []
-    max_deletion_counts = num_words - min_words
+
+def delete_strings(
+    strings: List[WS],
+    deletion_prob: float,
+    min_strings: Union[float, int]
+) -> List[WS]:
+    """Randomly deletes strings in the list of strings."""
+    num_strings = len(strings)
+    if isinstance(min_strings, float):
+        min_strings = math.ceil(num_strings * min_strings)
+    if num_strings <= min_strings:
+        return strings
+
+    augmented_strings = []
+    max_deletion_counts = num_strings - min_strings
     deleted_counts = 0
-    for word in words:
+    for string in strings:
         if random.random() < deletion_prob and deleted_counts < max_deletion_counts:
             deleted_counts += 1
             continue
-        augmented_words.append(word)
-    return augmented_words
+        augmented_strings.append(string)
+    return augmented_strings
 
 
 def delete_sentences(text: Text, deletion_prob: float, min_sentences: Union[float, int]) -> Text:
@@ -102,7 +107,6 @@ def delete_sentences(text: Text, deletion_prob: float, min_sentences: Union[floa
     return _delete_sentences(text, deletion_prob, min_sentences)
 
 
-# TODO: 구현이 본질적으로 delete_words_in_sentence 함수와 동일함, 공통 함수로 만들자
 @autopsy_text
 def _delete_sentences(
     sentences: List[Sentence],
@@ -110,21 +114,7 @@ def _delete_sentences(
     min_sentences: Union[float, int]
 ) -> List[Sentence]:
     """Randomly deletes sentences in the list of sentences. Decorated with `autopsy_text`."""
-    num_sentences = len(sentences)
-    if isinstance(min_sentences, float):
-        min_sentences = math.ceil(num_sentences * min_sentences)    
-    if num_sentences <= min_sentences:
-        return sentences
-
-    augmented_sentences = []
-    max_deletion_counts = num_sentences - min_sentences
-    deleted_counts = 0
-    for sentence in sentences:
-        if random.random() < deletion_prob and deleted_counts < max_deletion_counts:
-            deleted_counts += 1
-            continue
-        augmented_sentences.append(sentence)
-    return augmented_sentences
+    return delete_strings(sentences, deletion_prob, min_sentences)
 
 
 def insert_synonyms(text: Text, insertion_prob: float, n_times: int) -> Text:

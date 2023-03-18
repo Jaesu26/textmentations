@@ -20,16 +20,16 @@ __all__ = [
     "wrap_text_with_sentences",
 ]
 
-T = TypeVar("T", Word, Sentence)
+WS = TypeVar("WS", Word, Sentence)
 P = ParamSpec("P")
 
 
-def strip(strings: List[T]) -> List[T]:
+def strip(strings: List[WS]) -> List[WS]:
     """Removes leading and trailing whitespaces from each string in the list."""
     return [s.strip() for s in strings]
 
 
-def remove_empty_strings(strings: List[T]) -> List[T]:
+def remove_empty_strings(strings: List[WS]) -> List[WS]:
     """Removes empty strings from the list of strings."""
     return [s for s in strings if s]
 
