@@ -120,7 +120,7 @@ def split_sentence(sentence: Sentence) -> List[Word]:
 
 def split_text(text: Text) -> List[Sentence]:
     """Splits the text into sentences."""
-    sentences = re.split(r"[.?!]", text)
+    sentences = re.split(r"[.]", text)
     sentences = strip(sentences)
     sentences = remove_empty_strings(sentences)
     return sentences
