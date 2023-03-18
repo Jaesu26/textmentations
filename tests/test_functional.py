@@ -5,7 +5,7 @@ from textmentations.augmentations.utils import split_text
 
 
 @pytest.mark.parametrize(
-    ["deletion_probability", "min_words_each_sentence", "expected_text"],
+    ["deletion_prob", "min_words_each_sentence", "expected_text"],
     [
         (0.0, 0.5, "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."),
         (0.0, 1, "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."),
@@ -17,13 +17,13 @@ from textmentations.augmentations.utils import split_text
         (True, True, "먹었다. 먹었다. 싶었다."),
     ]
 )
-def test_delete_words(text_without_synonyms, deletion_probability, min_words_each_sentence, expected_text):
-    augmented_text = F.delete_words(text_without_synonyms, deletion_probability, min_words_each_sentence)
+def test_delete_words(text_without_synonyms, deletion_prob, min_words_each_sentence, expected_text):
+    augmented_text = F.delete_words(text_without_synonyms, deletion_prob, min_words_each_sentence)
     assert augmented_text == expected_text
 
 
 @pytest.mark.parametrize(
-    ["deletion_probability", "min_sentences", "expected_text"],
+    ["deletion_prob", "min_sentences", "expected_text"],
     [
         (0.0, 0.5, "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."),
         (0.0, 1, "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."),
@@ -35,8 +35,8 @@ def test_delete_words(text_without_synonyms, deletion_probability, min_words_eac
         (True, True, "짬짜면도 먹고 싶었다."),
     ]
 )
-def test_delete_sentences(text_without_synonyms, deletion_probability, min_sentences, expected_text):
-    augmented_text = F.delete_sentences(text_without_synonyms, deletion_probability, min_sentences)
+def test_delete_sentences(text_without_synonyms, deletion_prob, min_sentences, expected_text):
+    augmented_text = F.delete_sentences(text_without_synonyms, deletion_prob, min_sentences)
     assert augmented_text == expected_text
 
 
@@ -49,9 +49,9 @@ def test_delete_sentences(text_without_synonyms, deletion_probability, min_sente
 )
 def test_insert_synonyms(text, is_same, request):
     text = request.getfixturevalue(text)
-    insertion_probability = 1.0
+    insertion_prob = 1.0
     n_times = 1
-    augmented_text = F.insert_synonyms(text, insertion_probability, n_times)
+    augmented_text = F.insert_synonyms(text, insertion_prob, n_times)
     assert (augmented_text == text) == is_same
 
 
@@ -64,8 +64,8 @@ def test_insert_synonyms(text, is_same, request):
 )
 def test_replace_synonyms(text, is_same, request):
     text = request.getfixturevalue(text)
-    replacement_probability = 1.0
-    augmented_text = F.replace_synonyms(text, replacement_probability)
+    replacement_prob = 1.0
+    augmented_text = F.replace_synonyms(text, replacement_prob)
     assert (augmented_text == text) == is_same
 
 

@@ -20,7 +20,7 @@ class RandomDeletionWords(TextTransform):
     """Randomly deletes words in the input text.
     
     Args:
-        deletion_probability (float): The probability of deleting a word. Default 0.1.
+        deletion_prob (float): The probability of deleting a word. Default 0.1.
         min_words_each_sentence (Union[float, int]):
             If a `float`, then it is the minimum proportion of words to retain in each sentence.
             If an `int`, then it is the minimum number of words in each sentence. Default 5.
@@ -29,7 +29,7 @@ class RandomDeletionWords(TextTransform):
 
     def __init__(
         self,
-        deletion_probability: float = 0.1,
+        deletion_prob: float = 0.1,
         min_words_each_sentence: Union[float, int] = 5,
         ignore_first: bool = False,
         always_apply: bool = False, 
@@ -37,24 +37,22 @@ class RandomDeletionWords(TextTransform):
     ) -> None:
         super(RandomDeletionWords, self).__init__(ignore_first, always_apply, p)
         RandomDeletionWords._validate_params(
-            deletion_probability=deletion_probability,
+            deletion_prob=deletion_prob,
             min_words_each_sentence=min_words_each_sentence,
         )
-        self.deletion_probability = deletion_probability
+        self.deletion_prob = deletion_prob
         self.min_words_each_sentence = min_words_each_sentence
 
     @staticmethod
     def _validate_params(
         *,
-        deletion_probability: float,
+        deletion_prob: float,
         min_words_each_sentence: Union[float, int],
     ) -> None:
-        if not isinstance(deletion_probability, numbers.Real):
-            raise TypeError(
-                f"deletion_probability must be a real number between 0 and 1. Got: {type(deletion_probability)}"
-            )
-        if not (0.0 <= deletion_probability <= 1.0):
-            raise ValueError(f"deletion_probability must be between 0 and 1. Got: {deletion_probability}")
+        if not isinstance(deletion_prob, numbers.Real):
+            raise TypeError(f"deletion_prob must be a real number between 0 and 1. Got: {type(deletion_prob)}")
+        if not (0.0 <= deletion_prob <= 1.0):
+            raise ValueError(f"deletion_prob must be between 0 and 1. Got: {deletion_prob}")
         if not isinstance(min_words_each_sentence, (float, int)):
             raise TypeError(
                 f"min_words_each_sentence must be either an int or a float. Got: {type(min_words_each_sentence)}"
@@ -69,17 +67,17 @@ class RandomDeletionWords(TextTransform):
             )
 
     def apply(self, text: Text, **params: Any) -> Text:
-        return F.delete_words(text, self.deletion_probability, self.min_words_each_sentence)
+        return F.delete_words(text, self.deletion_prob, self.min_words_each_sentence)
 
     def get_transform_init_args_names(self) -> Tuple[str, str]:
-        return ("deletion_probability", "min_words_each_sentence")
+        return ("deletion_prob", "min_words_each_sentence")
     
     
 class RandomDeletionSentences(TextTransform):
     """Randomly deletes sentences in the input text.
     
     Args:
-        deletion_probability (float): The probability of deleting a sentence. Default 0.1.
+        deletion_prob (float): The probability of deleting a sentence. Default 0.1.
         min_sentences (Union[float, int]):
             If a `float`, then it is the minimum proportion of sentences to retain in the text.
             If an `int`, then it is the minimum number of sentences in the text. Default 3.
@@ -88,7 +86,7 @@ class RandomDeletionSentences(TextTransform):
 
     def __init__(
         self,
-        deletion_probability: float = 0.1,
+        deletion_prob: float = 0.1,
         min_sentences: Union[float, int] = 3,
         ignore_first: bool = False,
         always_apply: bool = False, 
@@ -96,24 +94,22 @@ class RandomDeletionSentences(TextTransform):
     ) -> None:
         super(RandomDeletionSentences, self).__init__(ignore_first, always_apply, p)
         RandomDeletionSentences._validate_params(
-            deletion_probability=deletion_probability,
+            deletion_prob=deletion_prob,
             min_sentences=min_sentences,
         )
-        self.deletion_probability = deletion_probability
+        self.deletion_prob = deletion_prob
         self.min_sentences = min_sentences
 
     @staticmethod
     def _validate_params(
         *,
-        deletion_probability: float,
+        deletion_prob: float,
         min_sentences: Union[float, int],
     ) -> None:
-        if not isinstance(deletion_probability, numbers.Real):
-            raise TypeError(
-                f"deletion_probability must be a real number between 0 and 1. Got: {type(deletion_probability)}"
-            )
-        if not (0.0 <= deletion_probability <= 1.0):
-            raise ValueError(f"deletion_probability must be between 0 and 1. Got: {deletion_probability}")
+        if not isinstance(deletion_prob, numbers.Real):
+            raise TypeError(f"deletion_prob must be a real number between 0 and 1. Got: {type(deletion_prob)}")
+        if not (0.0 <= deletion_prob <= 1.0):
+            raise ValueError(f"deletion_prob must be between 0 and 1. Got: {deletion_prob}")
         if not isinstance(min_sentences, (float, int)):
             raise TypeError(f"min_sentences must be either an int or a float. Got: {type(min_sentences)}")
         if isinstance(min_sentences, float) and not (0.0 <= min_sentences <= 1.0):
@@ -122,7 +118,7 @@ class RandomDeletionSentences(TextTransform):
             raise ValueError(f"If min_sentences is an int, it must be a non-negative. Got: {min_sentences}")
 
     def apply(self, text: Text, min_sentences: Union[float, int] = 3, **params: Any) -> Text:
-        return F.delete_sentences(text, self.deletion_probability, min_sentences)
+        return F.delete_sentences(text, self.deletion_prob, min_sentences)
 
     @property
     def targets_as_params(self) -> List[str]:
@@ -149,21 +145,21 @@ class RandomDeletionSentences(TextTransform):
         }
 
     def get_transform_init_args_names(self) -> Tuple[str, str]:
-        return ("deletion_probability", "min_sentences")
+        return ("deletion_prob", "min_sentences")
 
 
 class RandomInsertion(TextTransform):
     """Repeats n times the task of randomly inserting synonyms in the input text.
 
     Args:
-        insertion_probability (float): The probability of inserting a synonym. Default 0.2.
+        insertion_prob (float): The probability of inserting a synonym. Default 0.2.
         n_times (int): The number of times to repeat the operation. Default 1.
         p (float): The probability of applying the transform. Default: 0.5.
     """
 
     def __init__(
         self,
-        insertion_probability: float = 0.2,
+        insertion_prob: float = 0.2,
         n_times: int = 1,
         ignore_first: bool = False,
         always_apply: bool = False,
@@ -171,32 +167,30 @@ class RandomInsertion(TextTransform):
     ) -> None:
         super(RandomInsertion, self).__init__(ignore_first, always_apply, p)
         RandomInsertion._validate_params(
-            insertion_probability=insertion_probability,
+            insertion_prob=insertion_prob,
             n_times=n_times,
         )
-        self.insertion_probability = insertion_probability
+        self.insertion_prob = insertion_prob
         self.n_times = n_times
 
     @staticmethod
     def _validate_params(
         *,
-        insertion_probability: float,
+        insertion_prob: float,
         n_times: int,
     ) -> None:
-        if not isinstance(insertion_probability, numbers.Real):
-            raise TypeError(
-                f"insertion_probability must be a real number between 0 and 1. Got: {type(insertion_probability)}"
-            )
-        if not (0.0 <= insertion_probability <= 1.0):
-            raise ValueError(f"insertion_probability must be between 0 and 1. Got: {insertion_probability}")
+        if not isinstance(insertion_prob, numbers.Real):
+            raise TypeError(f"insertion_prob must be a real number between 0 and 1. Got: {type(insertion_prob)}")
+        if not (0.0 <= insertion_prob <= 1.0):
+            raise ValueError(f"insertion_prob must be between 0 and 1. Got: {insertion_prob}")
         if not isinstance(n_times, int) or n_times <= 0:
             raise ValueError(f"n_times must be a positive integer. Got: {n_times}")
 
     def apply(self, text: Text, **params: Any) -> Text:
-        return F.insert_synonyms(text, self.insertion_probability, self.n_times)
+        return F.insert_synonyms(text, self.insertion_prob, self.n_times)
 
     def get_transform_init_args_names(self) -> Tuple[str, str]:
-        return ("insertion_probability", "n_times")
+        return ("insertion_prob", "n_times")
 
 
 class RandomSwapWords(TextTransform):
@@ -279,37 +273,35 @@ class SynonymsReplacement(TextTransform):
     """Randomly replaces words in the input text with synonyms.
     
     Args:
-        replacement_probability (float): The probability of replacing a word with a synonym. Default 0.2.
+        replacement_prob (float): The probability of replacing a word with a synonym. Default 0.2.
         p (float): The probability of applying the transform. Default: 0.5.
     """
 
     def __init__(
         self, 
-        replacement_probability: float = 0.2,
+        replacement_prob: float = 0.2,
         ignore_first: bool = False,
         always_apply: bool = False, 
         p: float = 0.5
     ) -> None:
         super(SynonymsReplacement, self).__init__(ignore_first, always_apply, p)
         SynonymsReplacement._validate_params(
-            replacement_probability=replacement_probability,
+            replacement_prob=replacement_prob,
         )
-        self.replacement_probability = replacement_probability
+        self.replacement_prob = replacement_prob
 
     @staticmethod
     def _validate_params(
         *,
-        replacement_probability: float,
+        replacement_prob: float,
     ) -> None:
-        if not isinstance(replacement_probability, numbers.Real):
-            raise TypeError(
-                f"replacement_probability must be a real number between 0 and 1. Got: {type(replacement_probability)}"
-            )
-        if not (0.0 <= replacement_probability <= 1.0):
-            raise ValueError(f"replacement_probability must be between 0 and 1. Got: {replacement_probability}")
+        if not isinstance(replacement_prob, numbers.Real):
+            raise TypeError(f"replacement_prob must be a real number between 0 and 1. Got: {type(replacement_prob)}")
+        if not (0.0 <= replacement_prob <= 1.0):
+            raise ValueError(f"replacement_prob must be between 0 and 1. Got: {replacement_prob}")
 
     def apply(self, text: Text, **params: Any) -> Text:
-        return F.replace_synonyms(text, self.replacement_probability)
+        return F.replace_synonyms(text, self.replacement_prob)
 
     def get_transform_init_args_names(self) -> Tuple[str]:
-        return ("replacement_probability",)
+        return ("replacement_prob",)
