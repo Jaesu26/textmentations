@@ -11,6 +11,12 @@ AUGMENTATIONS = [
     T.SynonymsReplacement,
 ]
 
+AUGMENTATIONS_WITH_N_TIMES = [
+    T.RandomInsertion,
+    T.RandomSwapWords,
+    T.RandomSwapSentences,
+]
+
 AUGMENTATIONS_WITH_PROBABILITY = [
     T.RandomDeletionWords,
     T.RandomDeletionSentences,
@@ -21,6 +27,11 @@ AUGMENTATIONS_WITH_PROBABILITY = [
 
 @pytest.fixture(params=AUGMENTATIONS)
 def augmentation(request):
+    return request.param
+
+
+@pytest.fixture(params=AUGMENTATIONS_WITH_N_TIMES)
+def augmentation_with_n_times(request):
     return request.param
 
 
