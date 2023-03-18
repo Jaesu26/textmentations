@@ -30,12 +30,7 @@ class TextTransform(BasicTransform):
         self._validate_base_init_args(ignore_first, always_apply, p)
         self.ignore_first = ignore_first
 
-    def _validate_base_init_args(
-        self,
-        ignore_first: bool,
-        always_apply: bool,
-        p: float
-    ) -> None:
+    def _validate_base_init_args(self, ignore_first: bool, always_apply: bool, p: float) -> None:
         if not isinstance(ignore_first, bool):
             raise TypeError(f"ignore_first must be boolean. Got: {type(ignore_first)}")
         if not isinstance(always_apply, bool):
