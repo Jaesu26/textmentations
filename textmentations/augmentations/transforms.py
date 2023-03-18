@@ -59,7 +59,7 @@ class RandomDeletionWords(TextTransform):
             )
         if isinstance(min_words_each_sentence, int) and min_words_each_sentence < 0:
             raise ValueError(
-                f"If min_words_each_sentence is an int, it must be a non-negative. Got: {min_words_each_sentence}"
+                f"If min_words_each_sentence is an int, it must be non-negative. Got: {min_words_each_sentence}"
             )
 
     def apply(self, text: Text, **params: Any) -> Text:
@@ -103,7 +103,7 @@ class RandomDeletionSentences(TextTransform):
         if isinstance(min_sentences, float) and not (0.0 <= min_sentences <= 1.0):
             raise ValueError(f"If min_sentences is a float, it must be between 0 and 1. Got: {min_sentences}")
         if isinstance(min_sentences, int) and min_sentences < 0:
-            raise ValueError(f"If min_sentences is an int, it must be a non-negative. Got: {min_sentences}")
+            raise ValueError(f"If min_sentences is an int, it must be non-negative. Got: {min_sentences}")
 
     def apply(self, text: Text, min_sentences: Union[float, int] = 3, **params: Any) -> Text:
         return F.delete_sentences(text, self.deletion_prob, min_sentences)
@@ -122,7 +122,6 @@ class RandomDeletionSentences(TextTransform):
         # If not `ignore_first`: the minimum number of sentences after deleting is n * p
         # If `ignore_first`: the minimum number of sentences after deleting is 1 + (n - 1)*q
         # So, n * p == 1 + (n - 1)*q, ===> q = (n*p - 1) / (n - 1)
-
         text = params["text"]
         num_original_sentences = len(split_text(text)) + self.ignore_first
         if num_original_sentences < 2:
@@ -163,8 +162,10 @@ class RandomInsertion(TextTransform):
             raise TypeError(f"insertion_prob must be a real number between 0 and 1. Got: {type(insertion_prob)}")
         if not (0.0 <= insertion_prob <= 1.0):
             raise ValueError(f"insertion_prob must be between 0 and 1. Got: {insertion_prob}")
-        if not isinstance(n_times, int) or n_times <= 0:
-            raise ValueError(f"n_times must be a positive integer. Got: {n_times}")
+        if not isinstance(n_times, int):
+            raise TypeError(f"n_times must be a positive integer. Got: {type(n_times)}")
+        if n_times <= 0:
+            raise ValueError(f"n_times must be positive. Got: {n_times}")
 
     def apply(self, text: Text, **params: Any) -> Text:
         return F.insert_synonyms(text, self.insertion_prob, self.n_times)
