@@ -10,6 +10,12 @@ def test_empty_input_text(augmentation):
     assert data["text"] == ""
 
 
+def test_ignore_first(text, augmentation):
+    augment = augmentation(ignore_first=True, p=1.0)
+    data = augment(text=text)
+    assert extract_first_sentence(data["text"]) == extract_first_sentence(text)
+
+
 @pytest.mark.parametrize("incorrect_n_times", [2j, 1.5, "0.0", None])
 def test_incorrect_n_times_type(augmentation_with_n_times, incorrect_n_times):
     augmentation = augmentation_with_n_times
@@ -48,9 +54,3 @@ def test_incorrect_probability_value(augmentation_with_probability, incorrect_pr
     with pytest.raises(ValueError) as error_info:
         augmentation(**probability_params)
     assert "must be between 0 and 1" in str(error_info.value)
-
-
-def test_ignore_first(text, augmentation):
-    augment = augmentation(ignore_first=True, p=1.0)
-    data = augment(text=text)
-    assert extract_first_sentence(data["text"]) == extract_first_sentence(text)
