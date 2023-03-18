@@ -2,9 +2,9 @@ import math
 import random
 from typing import Any, List, Union
 
-from ..corpora.corpus_types import Word, Sentence, Text
+from ..corpora.corpus_types import Word, Sentence, Text, WS
 from ..corpora.utils import get_stopwords, get_synonyms
-from .utils import autopsy_sentence, autopsy_text, WS
+from .utils import autopsy_sentence, autopsy_text
 
 __all__ = [
     "delete_words",

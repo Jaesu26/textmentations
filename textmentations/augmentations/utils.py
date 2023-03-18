@@ -1,10 +1,10 @@
 import re
 from functools import wraps
-from typing import Callable, List, Optional, TypeVar
+from typing import Callable, List, Optional
 
 from typing_extensions import Concatenate, ParamSpec
 
-from ..corpora.corpus_types import Word, Sentence, Text
+from ..corpora.corpus_types import Word, Sentence, Text, WS
 
 __all__ = [
     "autopsy_sentence",
@@ -20,8 +20,7 @@ __all__ = [
     "wrap_text_with_sentences",
 ]
 
-WS = TypeVar("WS", Word, Sentence)
-P = ParamSpec("P")
+_P = ParamSpec("_P")
 
 
 def strip(strings: List[WS]) -> List[WS]:
@@ -35,19 +34,19 @@ def remove_empty_strings(strings: List[WS]) -> List[WS]:
 
 
 def autopsy_sentence(
-    func: Callable[Concatenate[List[Word], P], List[Word]]
-) -> Callable[Concatenate[Sentence, P], Sentence]:
+    func: Callable[Concatenate[List[Word], _P], List[Word]]
+) -> Callable[Concatenate[Sentence, _P], Sentence]:
     """The decorator follows these steps:
         1. Splits the input sentence into words.
         2. Applies the `func` to the words.
         3. Joins the words returned by `func` into a sentence.
 
     Args:
-        func (Callable[Concatenate[List[Word], P], List[Word]]):
+        func (Callable[Concatenate[List[Word], _P], List[Word]]):
             The function to be decorated.
 
     Returns:
-        Callable[Concatenate[Sentence, P], Sentence]:
+        Callable[Concatenate[Sentence, _P], Sentence]:
             A decorated function that performs the steps.
 
     Examples:
@@ -64,7 +63,7 @@ def autopsy_sentence(
         "짜장면을 먹었다"
     """
     @wraps(func)
-    def wrapped(sentence: Sentence, *args: P.args, **kwargs: P.kwargs) -> Sentence:
+    def wrapped(sentence: Sentence, *args: _P.args, **kwargs: _P.kwargs) -> Sentence:
         words = split_sentence(sentence)
         processed_words = func(words, *args, **kwargs)
         processed_sentence = join_words(processed_words)
@@ -73,19 +72,19 @@ def autopsy_sentence(
 
 
 def autopsy_text(
-    func: Callable[Concatenate[List[Sentence], P], List[Sentence]]
-) -> Callable[Concatenate[Text, P], Text]:
+    func: Callable[Concatenate[List[Sentence], _P], List[Sentence]]
+) -> Callable[Concatenate[Text, _P], Text]:
     """The decorator follows these steps:
         1. Splits the input text into sentences.
         2. Applies the `func` to the sentences.
         3. Joins the sentences returned by `func` into a text.
 
     Args:
-        func (Callable[Concatenate[List[Sentence], P], List[Sentence]]):
+        func (Callable[Concatenate[List[Sentence], _P], List[Sentence]]):
             The function to be decorated.
 
     Returns:
-        Callable[Concatenate[Text, P], Text]:
+        Callable[Concatenate[Text, _P], Text]:
             A decorated function that performs the steps.
 
     Examples:
@@ -102,7 +101,7 @@ def autopsy_text(
         "짜장면을 맛있게 먹었다."
     """
     @wraps(func)
-    def wrapped(text: Text, *args: P.args, **kwargs: P.kwargs) -> Text:
+    def wrapped(text: Text, *args: _P.args, **kwargs: _P.kwargs) -> Text:
         sentences = split_text(text)
         processed_sentences = func(sentences, *args, **kwargs)
         processed_text = join_sentences(processed_sentences)
