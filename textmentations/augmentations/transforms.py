@@ -32,22 +32,18 @@ class RandomDeletionWords(TextTransform):
         deletion_prob: float = 0.1,
         min_words_each_sentence: Union[float, int] = 5,
         ignore_first: bool = False,
-        always_apply: bool = False, 
+        always_apply: bool = False,
         p: float = 0.5
     ) -> None:
         super(RandomDeletionWords, self).__init__(ignore_first, always_apply, p)
-        RandomDeletionWords._validate_params(
-            deletion_prob=deletion_prob,
-            min_words_each_sentence=min_words_each_sentence,
-        )
+        self._validate_transform_init_args(deletion_prob, min_words_each_sentence)
         self.deletion_prob = deletion_prob
         self.min_words_each_sentence = min_words_each_sentence
 
-    @staticmethod
-    def _validate_params(
-        *,
+    def _validate_transform_init_args(
+        self,
         deletion_prob: float,
-        min_words_each_sentence: Union[float, int],
+        min_words_each_sentence: Union[float, int]
     ) -> None:
         if not isinstance(deletion_prob, numbers.Real):
             raise TypeError(f"deletion_prob must be a real number between 0 and 1. Got: {type(deletion_prob)}")
@@ -93,19 +89,11 @@ class RandomDeletionSentences(TextTransform):
         p: float = 0.5
     ) -> None:
         super(RandomDeletionSentences, self).__init__(ignore_first, always_apply, p)
-        RandomDeletionSentences._validate_params(
-            deletion_prob=deletion_prob,
-            min_sentences=min_sentences,
-        )
+        self._validate_transform_init_args(deletion_prob, min_sentences)
         self.deletion_prob = deletion_prob
         self.min_sentences = min_sentences
 
-    @staticmethod
-    def _validate_params(
-        *,
-        deletion_prob: float,
-        min_sentences: Union[float, int],
-    ) -> None:
+    def _validate_transform_init_args(self, deletion_prob: float, min_sentences: Union[float, int]) -> None:
         if not isinstance(deletion_prob, numbers.Real):
             raise TypeError(f"deletion_prob must be a real number between 0 and 1. Got: {type(deletion_prob)}")
         if not (0.0 <= deletion_prob <= 1.0):
@@ -166,19 +154,11 @@ class RandomInsertion(TextTransform):
         p: float = 0.5
     ) -> None:
         super(RandomInsertion, self).__init__(ignore_first, always_apply, p)
-        RandomInsertion._validate_params(
-            insertion_prob=insertion_prob,
-            n_times=n_times,
-        )
+        self._validate_transform_init_args(insertion_prob, n_times)
         self.insertion_prob = insertion_prob
         self.n_times = n_times
 
-    @staticmethod
-    def _validate_params(
-        *,
-        insertion_prob: float,
-        n_times: int,
-    ) -> None:
+    def _validate_transform_init_args(self, insertion_prob: float, n_times: int) -> None:
         if not isinstance(insertion_prob, numbers.Real):
             raise TypeError(f"insertion_prob must be a real number between 0 and 1. Got: {type(insertion_prob)}")
         if not (0.0 <= insertion_prob <= 1.0):
@@ -209,16 +189,10 @@ class RandomSwapWords(TextTransform):
         p: float = 0.5
     ) -> None:
         super(RandomSwapWords, self).__init__(ignore_first, always_apply, p)
-        RandomSwapWords._validate_params(
-            n_times=n_times,
-        )
+        self._validate_transform_init_args(n_times)
         self.n_times = n_times
 
-    @staticmethod
-    def _validate_params(
-        *,
-        n_times: int,
-    ) -> None:
+    def _validate_transform_init_args(self, n_times: int) -> None:
         if not isinstance(n_times, int):
             raise TypeError(f"n_times must be a positive integer. Got: {type(n_times)}")
         if n_times <= 0:
@@ -247,16 +221,10 @@ class RandomSwapSentences(TextTransform):
         p: float = 0.5
     ) -> None:
         super(RandomSwapSentences, self).__init__(ignore_first, always_apply, p)
-        RandomSwapSentences._validate_params(
-            n_times=n_times,
-        )
+        self._validate_transform_init_args(n_times)
         self.n_times = n_times
 
-    @staticmethod
-    def _validate_params(
-        *,
-        n_times: int,
-    ) -> None:
+    def _validate_transform_init_args(self, n_times: int) -> None:
         if not isinstance(n_times, int):
             raise TypeError(f"n_times must be a positive integer. Got: {type(n_times)}")
         if n_times <= 0:
@@ -285,16 +253,10 @@ class SynonymsReplacement(TextTransform):
         p: float = 0.5
     ) -> None:
         super(SynonymsReplacement, self).__init__(ignore_first, always_apply, p)
-        SynonymsReplacement._validate_params(
-            replacement_prob=replacement_prob,
-        )
+        self._validate_transform_init_args(replacement_prob)
         self.replacement_prob = replacement_prob
 
-    @staticmethod
-    def _validate_params(
-        *,
-        replacement_prob: float,
-    ) -> None:
+    def _validate_transform_init_args(self, replacement_prob: float) -> None:
         if not isinstance(replacement_prob, numbers.Real):
             raise TypeError(f"replacement_prob must be a real number between 0 and 1. Got: {type(replacement_prob)}")
         if not (0.0 <= replacement_prob <= 1.0):

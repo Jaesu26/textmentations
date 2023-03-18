@@ -1,3 +1,4 @@
+import numbers
 from typing import Any, Callable, Dict
 
 from albumentations.core.transforms_interface import BasicTransform
@@ -26,7 +27,23 @@ class TextTransform(BasicTransform):
 
     def __init__(self, ignore_first: bool = False, always_apply: bool = False, p: float = 0.5) -> None:
         super(TextTransform, self).__init__(always_apply, p)
+        self._validate_base_init_args(ignore_first, always_apply, p)
         self.ignore_first = ignore_first
+
+    def _validate_base_init_args(
+        self,
+        ignore_first: bool,
+        always_apply: bool,
+        p: float
+    ) -> None:
+        if not isinstance(ignore_first, bool):
+            raise TypeError(f"ignore_first must be boolean. Got: {type(ignore_first)}")
+        if not isinstance(always_apply, bool):
+            raise TypeError(f"always_apply must be boolean. Got: {type(always_apply)}")
+        if not isinstance(p, numbers.Real):
+            raise TypeError(f"p must be a real number between 0 and 1. Got: {type(p)}")
+        if not (0.0 <= p <= 1.0):
+            raise ValueError(f"p must be between 0 and 1. Got: {p}")
 
     def __call__(self, *args: Any, force_apply: bool = False, **kwargs: Text) -> Dict[str, Text]:
         if not self.ignore_first:
