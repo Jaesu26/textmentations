@@ -14,7 +14,7 @@ def test_empty_input_text(augmentation):
 def test_incorrect_probability_type(augmentation_with_probability, incorrect_probability):
     augmentation = augmentation_with_probability
     params_names = augmentation.__init__.__code__.co_varnames
-    probability_params = {name: incorrect_probability for name in params_names if 'prob' in name}
+    probability_params = {param: incorrect_probability for param in params_names if 'prob' in param}
     with pytest.raises(TypeError) as error_info:
         augmentation(**probability_params)
     assert "must be a real number between 0 and 1." in str(error_info.value)
@@ -24,7 +24,7 @@ def test_incorrect_probability_type(augmentation_with_probability, incorrect_pro
 def test_incorrect_probability_value(augmentation_with_probability, incorrect_probability):
     augmentation = augmentation_with_probability
     params_names = augmentation.__init__.__code__.co_varnames
-    probability_params = {name: incorrect_probability for name in params_names if 'prob' in name}
+    probability_params = {param: incorrect_probability for param in params_names if 'prob' in param}
     with pytest.raises(ValueError) as error_info:
         augmentation(**probability_params)
     assert "must be between 0 and 1" in str(error_info.value)
