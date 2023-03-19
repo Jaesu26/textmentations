@@ -17,20 +17,11 @@ __all__ = [
     "extract_nth_sentence",
     "remove_first_sentence",
     "remove_nth_sentence",
+    "pass_empty_text",
     "wrap_text_with_sentences",
 ]
 
 _P = ParamSpec("_P")
-
-
-def strip(strings: List[WS]) -> List[WS]:
-    """Removes leading and trailing whitespaces from each string in the list."""
-    return [s.strip() for s in strings]
-
-
-def remove_empty_strings(strings: List[WS]) -> List[WS]:
-    """Removes empty strings from the list of strings."""
-    return [s for s in strings if s]
 
 
 def autopsy_sentence(
@@ -47,7 +38,7 @@ def autopsy_sentence(
 
     Returns:
         Callable[Concatenate[Sentence, _P], Sentence]:
-            A decorated function that performs the steps.
+            A wrapper function that performs the steps.
 
     Examples:
         >>> @autopsy_sentence
@@ -85,7 +76,7 @@ def autopsy_text(
 
     Returns:
         Callable[Concatenate[Text, _P], Text]:
-            A decorated function that performs the steps.
+            A wrapper function that performs the steps.
 
     Examples:
         >>> @autopsy_text
@@ -139,6 +130,16 @@ def join_sentences(sentences: List[Sentence]) -> Text:
     return text
 
 
+def strip(strings: List[WS]) -> List[WS]:
+    """Removes leading and trailing whitespaces from each string in the list."""
+    return [s.strip() for s in strings]
+
+
+def remove_empty_strings(strings: List[WS]) -> List[WS]:
+    """Removes empty strings from the list of strings."""
+    return [s for s in strings if s]
+
+
 def extract_first_sentence(text: Text) -> Sentence:
     """Extracts the first sentence from the text."""
     return extract_nth_sentence(text, 0)
@@ -168,6 +169,23 @@ def remove_nth_sentence(text: Text, n: int) -> Text:
         return text_without_nth_sentence
     except IndexError:
         return text
+
+
+def pass_empty_text(func: Callable[Concatenate[Text, _P], Text]) -> Callable[Concatenate[Text, _P], Text]:
+    """Returns the input text directly if it is empty, otherwise calls the decorated function.
+
+    Args:
+        func(Callable[Concatenate[Text, _P], Text]): The function to be decorated.
+
+    Returns:
+        A wrapper function.
+    """
+    @wraps(func)
+    def wrapped(text: Text, *args: _P.args, **kwargs: _P.kwargs) -> Text:
+        if not text:
+            return text
+        return func(text, *args, **kwargs)
+    return wrapped
 
 
 def wrap_text_with_sentences(

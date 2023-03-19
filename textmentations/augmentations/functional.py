@@ -1,10 +1,10 @@
 import math
 import random
-from typing import Any, List, Union
+from typing import List, Union
 
 from ..corpora.corpus_types import Word, Sentence, Text, WS
 from ..corpora.utils import get_stopwords, get_synonyms
-from .utils import autopsy_sentence, autopsy_text
+from .utils import autopsy_sentence, autopsy_text, pass_empty_text
 
 __all__ = [
     "delete_words",
@@ -243,6 +243,7 @@ def replace_synonyms_in_sentence(words: List[Word], replacement_prob: float) -> 
     return augmented_words
 
 
+@pass_empty_text
 def swap_words(text: Text, n_times: int) -> Text:
     """Repeats n times the task of randomly swapping two words in a randomly selected sentence from the text.
 
@@ -268,9 +269,6 @@ def _swap_words(sentences: List[Sentence], n_times: int) -> List[Sentence]:
     Decorated with `autopsy_text`.
     """
     num_sentences = len(sentences)
-    if num_sentences < 1:
-        return sentences
-
     augmented_sentences = sentences
     for _ in range(n_times):
         index = random.randrange(num_sentences)
@@ -281,17 +279,16 @@ def _swap_words(sentences: List[Sentence], n_times: int) -> List[Sentence]:
 @autopsy_sentence
 def swap_two_words_in_sentence(words: List[Word]) -> List[Word]:
     """Randomly swaps two words in the list of words. Decorated with `autopsy_sentence`."""
-    return swap_two_elements(words)
+    return swap_two_strings(words)
 
 
-def swap_two_elements(elements: List[Any]) -> List[Any]:
-    """Randomly swaps two elements in the list of elements."""
-    num_elements = len(elements)
-    if num_elements >= 2:
-        index1, index2 = random.sample(range(num_elements), k=2)
-        elements[index1], elements[index2] = elements[index2], elements[index1]
-        return elements
-    return elements
+def swap_two_strings(strings: List[WS]) -> List[WS]:
+    """Randomly swaps two strings in the list of strings."""
+    num_strings = len(strings)
+    if num_strings >= 2:
+        index1, index2 = random.sample(range(num_strings), k=2)
+        strings[index1], strings[index2] = strings[index2], strings[index1]
+    return strings
 
 
 def swap_sentences(text: Text, n_times: int) -> Text:
@@ -320,5 +317,33 @@ def _swap_sentences(sentences: List[Sentence], n_times: int) -> List[Sentence]:
     """
     augmented_sentences = sentences
     for _ in range(n_times):
-        augmented_sentences = swap_two_elements(augmented_sentences)
+        augmented_sentences = swap_two_strings(augmented_sentences)
     return augmented_sentences
+
+
+@autopsy_text
+def _insert_punctuation(sentences: List[Sentence], n_times: int) -> List[Sentence]:
+    """Repeats n times the task of randomly swapping two words in a randomly selected sentence.
+    Decorated with `autopsy_text`.
+    """
+    num_sentences = len(sentences)
+    if num_sentences < 1:
+        return sentences
+
+    augmented_sentences = sentences
+    for _ in range(n_times):
+        index = random.randrange(num_sentences)
+        augmented_sentences[index] = swap_two_words_in_sentence(augmented_sentences[index])
+    return augmented_sentences
+
+
+# TODO: AEDA 함수 구현
+@autopsy_sentence
+def insert_punctuation_in_sentence(words, insertion_prob, punctuations):
+    augmented_words = []
+    for word in words:
+        if random.random() < insertion_prob:
+            punctuation = random.choice(punctuations)
+            augmented_words.append(punctuation)
+        augmented_words.append(word)
+    return augmented_words
