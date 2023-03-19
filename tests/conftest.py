@@ -3,25 +3,25 @@ import pytest
 import textmentations as T
 
 AUGMENTATIONS = [
-    T.RandomDeletionWords,
-    T.RandomDeletionSentences,
+    T.RandomDeletion,
+    T.RandomDeletionSentence,
     T.RandomInsertion,
-    T.RandomSwapWords,
-    T.RandomSwapSentences,
-    T.SynonymsReplacement,
+    T.RandomSwap,
+    T.RandomSwapSentence,
+    T.SynonymReplacement,
 ]
 
 AUGMENTATIONS_WITH_N_TIMES = [
     T.RandomInsertion,
-    T.RandomSwapWords,
-    T.RandomSwapSentences,
+    T.RandomSwap,
+    T.RandomSwapSentence,
 ]
 
 AUGMENTATIONS_WITH_PROBABILITY = [
-    T.RandomDeletionWords,
-    T.RandomDeletionSentences,
+    T.RandomDeletion,
+    T.RandomDeletionSentence,
     T.RandomInsertion,
-    T.SynonymsReplacement,
+    T.SynonymReplacement,
 ]
 
 

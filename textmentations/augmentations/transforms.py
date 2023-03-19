@@ -7,7 +7,7 @@ from . import functional as F
 from .utils import split_text
 
 
-class RandomDeletionWords(TextTransform):
+class RandomDeletion(TextTransform):
     """Randomly deletes words in the input text.
 
     Args:
@@ -16,6 +16,9 @@ class RandomDeletionWords(TextTransform):
             If a `float`, then it is the minimum proportion of words to retain in each sentence.
             If an `int`, then it is the minimum number of words in each sentence. Default 5.
         p (float): The probability of applying the transform. Default: 0.5.
+
+    References:
+        https://arxiv.org/pdf/1901.11196.pdf
     """
 
     def __init__(
@@ -26,7 +29,7 @@ class RandomDeletionWords(TextTransform):
         always_apply: bool = False,
         p: float = 0.5
     ) -> None:
-        super(RandomDeletionWords, self).__init__(ignore_first, always_apply, p)
+        super(RandomDeletion, self).__init__(ignore_first, always_apply, p)
         self._validate_transform_init_args(deletion_prob, min_words_each_sentence)
         self.deletion_prob = deletion_prob
         self.min_words_each_sentence = min_words_each_sentence
@@ -60,7 +63,7 @@ class RandomDeletionWords(TextTransform):
         return ("deletion_prob", "min_words_each_sentence")
 
 
-class RandomDeletionSentences(TextTransform):
+class RandomDeletionSentence(TextTransform):
     """Randomly deletes sentences in the input text.
 
     Args:
@@ -79,7 +82,7 @@ class RandomDeletionSentences(TextTransform):
         always_apply: bool = False,
         p: float = 0.5
     ) -> None:
-        super(RandomDeletionSentences, self).__init__(ignore_first, always_apply, p)
+        super(RandomDeletionSentence, self).__init__(ignore_first, always_apply, p)
         self._validate_transform_init_args(deletion_prob, min_sentences)
         self.deletion_prob = deletion_prob
         self.min_sentences = min_sentences
@@ -133,6 +136,9 @@ class RandomInsertion(TextTransform):
         insertion_prob (float): The probability of inserting a synonym. Default 0.2.
         n_times (int): The number of times to repeat the operation. Default 1.
         p (float): The probability of applying the transform. Default: 0.5.
+
+    References:
+        https://arxiv.org/pdf/1901.11196.pdf
     """
 
     def __init__(
@@ -165,12 +171,15 @@ class RandomInsertion(TextTransform):
         return ("insertion_prob", "n_times")
 
 
-class RandomSwapWords(TextTransform):
+class RandomSwap(TextTransform):
     """Repeats n times the task of randomly swapping two words in a randomly selected sentence from the input text.
 
     Args:
         n_times (int): The number of times to repeat the operation. Default: 1.
         p (float): The probability of applying the transform. Default: 0.5.
+
+    References:
+        https://arxiv.org/pdf/1901.11196.pdf
     """
 
     def __init__(
@@ -180,7 +189,7 @@ class RandomSwapWords(TextTransform):
         always_apply: bool = False,
         p: float = 0.5
     ) -> None:
-        super(RandomSwapWords, self).__init__(ignore_first, always_apply, p)
+        super(RandomSwap, self).__init__(ignore_first, always_apply, p)
         self._validate_transform_init_args(n_times)
         self.n_times = n_times
 
@@ -197,7 +206,7 @@ class RandomSwapWords(TextTransform):
         return ("n_times",)
 
 
-class RandomSwapSentences(TextTransform):
+class RandomSwapSentence(TextTransform):
     """Repeats n times the task of randomly swapping two sentences in the input text.
 
     Args:
@@ -212,7 +221,7 @@ class RandomSwapSentences(TextTransform):
         always_apply: bool = False,
         p: float = 0.5
     ) -> None:
-        super(RandomSwapSentences, self).__init__(ignore_first, always_apply, p)
+        super(RandomSwapSentence, self).__init__(ignore_first, always_apply, p)
         self._validate_transform_init_args(n_times)
         self.n_times = n_times
 
@@ -229,12 +238,15 @@ class RandomSwapSentences(TextTransform):
         return ("n_times",)
 
 
-class SynonymsReplacement(TextTransform):
+class SynonymReplacement(TextTransform):
     """Randomly replaces words in the input text with synonyms.
 
     Args:
         replacement_prob (float): The probability of replacing a word with a synonym. Default 0.2.
         p (float): The probability of applying the transform. Default: 0.5.
+
+    References:
+        https://arxiv.org/pdf/1901.11196.pdf
     """
 
     def __init__(
@@ -244,7 +256,7 @@ class SynonymsReplacement(TextTransform):
         always_apply: bool = False,
         p: float = 0.5
     ) -> None:
-        super(SynonymsReplacement, self).__init__(ignore_first, always_apply, p)
+        super(SynonymReplacement, self).__init__(ignore_first, always_apply, p)
         self._validate_transform_init_args(replacement_prob)
         self.replacement_prob = replacement_prob
 

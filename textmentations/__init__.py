@@ -1,20 +1,21 @@
-from ._version import __version__
 from .augmentations.transforms import (
-    RandomDeletionWords,
-    RandomDeletionSentences,
+    RandomDeletion,
+    RandomDeletionSentence,
     RandomInsertion,
-    RandomSwapWords,
-    RandomSwapSentences,
-    SynonymsReplacement,
+    RandomSwap,
+    RandomSwapSentence,
+    SynonymReplacement,
 )
 from .core.transforms_interface import TextTransform
 
+__version__ = "0.0.2"
+
 __all__ = [
     "TextTransform",
-    "RandomDeletionWords",
-    "RandomDeletionSentences",
+    "RandomDeletion",
+    "RandomDeletionSentence",
     "RandomInsertion",
-    "RandomSwapWords",
-    "RandomSwapSentences",
-    "SynonymsReplacement",
+    "RandomSwap",
+    "RandomSwapSentence",
+    "SynonymReplacement",
 ]

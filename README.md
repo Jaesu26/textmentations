@@ -11,46 +11,46 @@ pip install textmentations
 
 ## A simple example
 
-Textmentations provides various text augmentation techniques implemented using the [TextTransform](https://github.com/Jaesu26/textmentations/blob/main/textmentations/core/transforms_interface.py#L17), 
+Textmentations provides text augmentation techniques implemented using the [TextTransform](https://github.com/Jaesu26/textmentations/blob/v0.0.2/textmentations/core/transforms_interface.py#L17), 
 which inherits from the albumentations [BasicTransform](https://github.com/albumentations-team/albumentations/blob/1.2.1/albumentations/core/transforms_interface.py#L54). 
 
 This allows textmentations to reuse the existing functionalities of albumentations.
 
 ```python
 from albumentations import Compose
-from textmentations import RandomDeletionWords, RandomDeletionSentences, RandomSwapWords, RandomSwapSentences
+from textmentations import RandomDeletion, RandomInsertion, RandomSwap, SynonymReplacement
 
-text = "아침에는 짜장면을 맛있게 먹었다. 점심에는 짬뽕을 맛있게 먹었다. 저녁에는 짬짜면을 맛있게 먹었다."
-dw = RandomDeletionWords(deletion_prob=0.5, min_words_each_sentence=1)
-ds = RandomDeletionSentences(deletion_prob=0.5, min_sentences=2)
-sw = RandomSwapWords(n_times=1)
-ss = RandomSwapSentences(n_times=2)
-augment = Compose([sw, ss, dw, ds])
+text = "어제 식당에 갔다. 목이 너무 말랐다. 먼저 물 한잔을 마셨다. 그리고 탕수육을 맛있게 먹었다."
+rd = RandomDeletion(deletion_prob=0.3, min_words_each_sentence=1)
+ri = RandomInsertion(insertion_prob=0.3, n_times=1)
+rs = RandomSwap(n_times=3)
+sr = SynonymReplacement(replacement_prob=0.3)
+eda = Compose([rd, ri, rs, sr])
 
-print(dw(text=text)["text"])
-# 먹었다. 점심에는 맛있게 먹었다. 저녁에는 짬짜면을 맛있게 먹었다.
+print(rd(text=text)["text"])
+# 식당에 갔다. 목이 너무 말랐다. 먼저 물. 그리고 탕수육을 맛있게.
 
-print(ds(text=text)["text"])
-# 아침에는 짜장면을 맛있게 먹었다. 저녁에는 짬짜면을 맛있게 먹었다.
+print(ri(text=text)["text"])
+# 어제 최근 식당에 갔다. 목이 너무 말랐다. 먼저 물 한잔을 마셨다 음료수. 그리고 탕수육을 맛있게 먹었다.
 
-print(sw(text=text)["text"])
-# 짜장면을 아침에는 맛있게 먹었다. 점심에는 짬뽕을 맛있게 먹었다. 저녁에는 짬짜면을 맛있게 먹었다.
+print(rs(text=text)["text"])
+# 어제 갔다 식당에. 목이 너무 말랐다. 물 먼저 한잔을 마셨다. 그리고 먹었다 맛있게 탕수육을.
 
-print(ss(text=text)["text"])
-# 점심에는 짬뽕을 맛있게 먹었다. 저녁에는 짬짜면을 맛있게 먹었다. 아침에는 짜장면을 맛있게 먹었다.
+print(sr(text=text)["text"])
+# 과거 식당에 갔다. 목이 너무 말랐다. 먼저 소주 한잔을 마셨다. 그리고 탕수육을 맛있게 먹었다.
 
-print(augment(text=text)["text"])
-# 저녁에는 먹었다 짬짜면을. 점심에는 짬뽕을.
+print(eda(text=text)["text"])
+# 식당에 어제 과거. 너무 말랐다. 상수 한잔을 마셨다 맹물. 먹었다 그리고 맛있게.
 ```
 
 ## List of augmentations
 
-- `RandomDeletionWords`
-- `RandomDeletionSentences`
+- `RandomDeletion`
+- `RandomDeletionSentence`
 - `RandomInsertion`
-- `RandomSwapWords`
-- `RandomSwapSentences`
-- `SynonymsReplacement`
+- `RandomSwap`
+- `RandomSwapSentence`
+- `SynonymReplacement`
 
 ## References
 
