@@ -85,3 +85,11 @@ def test_swap_sentences(text):
     augmented_text = F.swap_sentences(text, n_times)
     augmented_sentences = split_text(augmented_text)
     assert sum([original == augmented for original, augmented in zip(original_sentences, augmented_sentences)]) == n - 2
+
+
+def test_insert_punctuations(text_without_synonyms):
+    insertion_prob = 1.0
+    punctuations = (";",)
+    augmented_text = F.insert_punctuations(text_without_synonyms, insertion_prob, punctuations)
+    expected_text = "; 짜장면을 ; 맛있게 ; 먹었다. ; 짬뽕도 ; 맛있게 ; 먹었다. ; 짬짜면도 ; 먹고 ; 싶었다."
+    assert augmented_text == expected_text
