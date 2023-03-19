@@ -4,11 +4,7 @@ from typing import Any, Callable, Dict
 from albumentations.core.transforms_interface import BasicTransform
 
 from ..corpora.corpus_types import Text
-from .utils import (
-    extract_first_sentence_by_key,
-    remove_first_sentence_by_key,
-    wrap_text_with_first_sentence_by_key
-)
+from .utils import extract_first_sentence_by_key, remove_first_sentence_by_key, wrap_text_with_first_sentence_by_key
 
 __all__ = [
     "TextTransform",

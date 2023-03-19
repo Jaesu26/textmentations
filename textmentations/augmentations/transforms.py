@@ -18,7 +18,7 @@ __all__ = [
 
 class RandomDeletionWords(TextTransform):
     """Randomly deletes words in the input text.
-    
+
     Args:
         deletion_prob (float): The probability of deleting a word. Default 0.1.
         min_words_each_sentence (Union[float, int]):
@@ -67,11 +67,11 @@ class RandomDeletionWords(TextTransform):
 
     def get_transform_init_args_names(self) -> Tuple[str, str]:
         return ("deletion_prob", "min_words_each_sentence")
-    
-    
+
+
 class RandomDeletionSentences(TextTransform):
     """Randomly deletes sentences in the input text.
-    
+
     Args:
         deletion_prob (float): The probability of deleting a sentence. Default 0.1.
         min_sentences (Union[float, int]):
@@ -85,7 +85,7 @@ class RandomDeletionSentences(TextTransform):
         deletion_prob: float = 0.1,
         min_sentences: Union[float, int] = 3,
         ignore_first: bool = False,
-        always_apply: bool = False, 
+        always_apply: bool = False,
         p: float = 0.5
     ) -> None:
         super(RandomDeletionSentences, self).__init__(ignore_first, always_apply, p)
@@ -176,7 +176,7 @@ class RandomInsertion(TextTransform):
 
 class RandomSwapWords(TextTransform):
     """Repeats n times the task of randomly swapping two words in a randomly selected sentence from the input text.
-    
+
     Args:
         n_times (int): The number of times to repeat the operation. Default: 1.
         p (float): The probability of applying the transform. Default: 0.5.
@@ -205,10 +205,10 @@ class RandomSwapWords(TextTransform):
     def get_transform_init_args_names(self) -> Tuple[str]:
         return ("n_times",)
 
-    
+
 class RandomSwapSentences(TextTransform):
     """Repeats n times the task of randomly swapping two sentences in the input text.
-    
+
     Args:
         n_times (int): The number of times to repeat the operation. Default: 1.
         p (float): The probability of applying the transform. Default: 0.5.
@@ -236,21 +236,21 @@ class RandomSwapSentences(TextTransform):
 
     def get_transform_init_args_names(self) -> Tuple[str]:
         return ("n_times",)
-    
-    
+
+
 class SynonymsReplacement(TextTransform):
     """Randomly replaces words in the input text with synonyms.
-    
+
     Args:
         replacement_prob (float): The probability of replacing a word with a synonym. Default 0.2.
         p (float): The probability of applying the transform. Default: 0.5.
     """
 
     def __init__(
-        self, 
+        self,
         replacement_prob: float = 0.2,
         ignore_first: bool = False,
-        always_apply: bool = False, 
+        always_apply: bool = False,
         p: float = 0.5
     ) -> None:
         super(SynonymsReplacement, self).__init__(ignore_first, always_apply, p)

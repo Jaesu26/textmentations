@@ -200,7 +200,7 @@ def replace_word_with_synonym(word: Word) -> Word:
 
 def replace_synonyms(text: Text, replacement_prob: float) -> Text:
     """Randomly replaces words that are not stopwords in the text with synonyms.
-    
+
     Args:
         text (Text): The input text.
         replacement_prob (float): The probability of replacing a word with a synonym.
