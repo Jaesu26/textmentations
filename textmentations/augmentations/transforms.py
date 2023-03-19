@@ -3,17 +3,8 @@ from typing import Any, Dict, List, Tuple, Union
 
 from ..core.transforms_interface import TextTransform
 from ..corpora.corpus_types import Text
-from .utils import split_text
 from . import functional as F
-
-__all__ = [
-    "RandomDeletionWords",
-    "RandomDeletionSentences",
-    "RandomInsertion",
-    "RandomSwapWords",
-    "RandomSwapSentences",
-    "SynonymsReplacement",
-]
+from .utils import split_text
 
 
 class RandomDeletionWords(TextTransform):

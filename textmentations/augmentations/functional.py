@@ -6,15 +6,6 @@ from ..corpora.corpus_types import Word, Sentence, Text, WS
 from ..corpora.utils import get_stopwords, get_synonyms
 from .utils import autopsy_sentence, autopsy_text, pass_empty_text
 
-__all__ = [
-    "delete_words",
-    "delete_sentences",
-    "insert_synonyms",
-    "replace_synonyms",
-    "swap_words",
-    "swap_sentences",
-]
-
 
 def delete_words(text: Text, deletion_prob: float, min_words_each_sentence: Union[float, int]) -> Text:
     """Randomly deletes words in the text.
