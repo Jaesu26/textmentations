@@ -11,7 +11,7 @@ pip install textmentations
 
 ## A simple example
 
-Textmentations provides text augmentation techniques implemented using the [TextTransform](https://github.com/Jaesu26/textmentations/blob/v0.0.2/textmentations/core/transforms_interface.py#L17), 
+Textmentations provides text augmentation techniques implemented using the [TextTransform](https://github.com/Jaesu26/textmentations/blob/v0.0.3/textmentations/core/transforms_interface.py#L17), 
 which inherits from the albumentations [BasicTransform](https://github.com/albumentations-team/albumentations/blob/1.2.1/albumentations/core/transforms_interface.py#L54). 
 
 This allows textmentations to reuse the existing functionalities of albumentations.
