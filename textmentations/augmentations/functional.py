@@ -34,7 +34,7 @@ def delete_words(text: Text, deletion_prob: float, min_words_each_sentence: Unio
 def _delete_words(
     sentences: List[Sentence],
     deletion_prob: float,
-    min_words_each_sentence: Union[float, int]
+    min_words_each_sentence: Union[float, int],
 ) -> List[Sentence]:
     """Randomly deletes words in each sentence. Decorated with `autopsy_text`."""
     augmented_sentences = []
@@ -55,7 +55,7 @@ def delete_words_in_sentence(words: List[Word], deletion_prob: float, min_words:
 def delete_strings(
     strings: List[WS],
     deletion_prob: float,
-    min_strings: Union[float, int]
+    min_strings: Union[float, int],
 ) -> List[WS]:
     """Randomly deletes strings in the list of strings."""
     num_strings = len(strings)
@@ -102,7 +102,7 @@ def delete_sentences(text: Text, deletion_prob: float, min_sentences: Union[floa
 def _delete_sentences(
     sentences: List[Sentence],
     deletion_prob: float,
-    min_sentences: Union[float, int]
+    min_sentences: Union[float, int],
 ) -> List[Sentence]:
     """Randomly deletes sentences in the list of sentences. Decorated with `autopsy_text`."""
     return delete_strings(sentences, deletion_prob, min_sentences)
@@ -155,7 +155,7 @@ def insert_synonyms_in_sentence(words: List[Word], insertion_prob: float, n_time
 def insert_synonyms_into_another(
     inserting_words: List[Word],
     augmented_words: List[Word],
-    insertion_prob: float
+    insertion_prob: float,
 ) -> List[Word]:
     """Randomly inserts synonyms of `inserting_words` that are not stopwords into `augmented_words` at random position.
 
@@ -198,7 +198,7 @@ def insert_punctuations(text: Text, insertion_prob: float, punctuations: Tuple[s
 def _insert_punctuations(
     sentences: List[Sentence],
     insertion_prob: float,
-    punctuations: Tuple[str, ...]
+    punctuations: Tuple[str, ...],
 ) -> List[Sentence]:
     augmented_sentences = []
     for sentence in sentences:
@@ -211,7 +211,7 @@ def _insert_punctuations(
 def insert_punctuations_in_sentence(
     words: List[Word],
     insertion_prob: float,
-    punctuations: Tuple[str, ...]
+    punctuations: Tuple[str, ...],
 ) -> List[Word]:
     augmented_words = []
     for word in words:
