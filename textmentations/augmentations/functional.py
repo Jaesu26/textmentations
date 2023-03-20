@@ -269,8 +269,8 @@ def _replace_synonyms(sentences: List[Sentence], replacement_prob: float) -> Lis
     """
     augmented_sentences = []
     for sentence in sentences:
-        sentence = replace_synonyms_in_sentence(sentence, replacement_prob)
-        augmented_sentences.append(sentence)
+        augmented_sentence = replace_synonyms_in_sentence(sentence, replacement_prob)
+        augmented_sentences.append(augmented_sentence)
     return augmented_sentences
 
 
@@ -285,6 +285,8 @@ def replace_synonyms_in_sentence(words: List[Word], replacement_prob: float) -> 
         if word not in stopwords and random.random() < replacement_prob:
             synonym = replace_word_with_synonym(word)
             augmented_words.append(synonym)
+            continue
+        augmented_words.append(word)
     return augmented_words
 
 
