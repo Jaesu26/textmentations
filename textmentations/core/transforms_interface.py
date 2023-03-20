@@ -34,7 +34,7 @@ class TextTransform(BasicTransform):
 
     def __call__(self, *args: Any, force_apply: bool = False, **kwargs: Text) -> Dict[str, Text]:
         if args:
-            raise KeyError("You have to pass data to augmentations as named arguments, for example: aug(text=text)")
+            raise KeyError("You have to pass data to augmentations as named arguments, for example: augment(text=text)")
         if not self.ignore_first:
             return super(TextTransform, self).__call__(*args, force_apply=force_apply, **kwargs)
         return self.apply_without_first(*args, force_apply=force_apply, **kwargs)
