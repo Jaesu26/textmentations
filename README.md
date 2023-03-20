@@ -60,4 +60,4 @@ print(eda(text=text)["text"])
 - [EDA: Easy Data Augmentation Techniques for Boosting Performance on
 Text Classification Tasks](https://arxiv.org/pdf/1901.11196.pdf)
 - [Korean Stopwords](https://www.ranks.nl/stopwords/korean)
-- [Korean WordNet (KWN)](http://wordnet.kaist.ac.kr/)
+- [Korean WordNet](http://wordnet.kaist.ac.kr/)
