@@ -1,6 +1,6 @@
 import math
 import random
-from typing import List, Tuple, Union
+from typing import List, Set, Tuple, Union
 
 from ..corpora.corpus_types import Word, Sentence, Text, WS
 from ..corpora.utils import get_stopwords, get_synonyms
@@ -146,9 +146,10 @@ def insert_synonyms_in_sentence(words: List[Word], insertion_prob: float, n_time
     """Repeats n times the task of randomly inserting synonyms of words that are not stopwords in the list of words.
     Decorated with `autopsy_sentence`.
     """
+    stopwords = get_stopwords()
     augmented_words = words[:]
     for _ in range(n_times):
-        augmented_words = insert_synonyms_into_another(words, augmented_words, insertion_prob)
+        augmented_words = insert_synonyms_into_another(words, augmented_words, insertion_prob, stopwords)
     return augmented_words
 
 
@@ -156,6 +157,7 @@ def insert_synonyms_into_another(
     inserting_words: List[Word],
     augmented_words: List[Word],
     insertion_prob: float,
+    stopwords: Set[Word],
 ) -> List[Word]:
     """Randomly inserts synonyms of `inserting_words` that are not stopwords into `augmented_words` at random position.
 
@@ -163,11 +165,11 @@ def insert_synonyms_into_another(
         inserting_words (List[Word]): The words whose synonyms will be inserted into `augmented_words`.
         augmented_words (List[Word]): The words into which the synonyms will be inserted.
         insertion_prob (float): The probability of inserting a synonym for each word in `inserting_word`.
+        stopwords (Set[Word]): The set of stopwords.
 
     Returns:
         List[Word]: `augmented_words` with synonyms of `inserting_words` randomly inserted.
     """
-    stopwords = get_stopwords()
     current_num_words = len(augmented_words)
     for inserting_word in inserting_words:
         if inserting_word not in stopwords and random.random() < insertion_prob:
@@ -191,6 +193,23 @@ def replace_word_with_synonym(word: Word) -> Word:
 
 @pass_empty_text
 def insert_punctuations(text: Text, insertion_prob: float, punctuations: Tuple[str, ...]) -> Text:
+    """Randomly inserts punctuations in the text.
+
+    Args:
+        text (Text): The input text.
+        insertion_prob (float): The probability of inserting a punctuation.
+        punctuations (Tuple[str, ...]): Punctuations to be inserted at random.
+
+    Returns:
+        Text: A text with randomly inserted synonyms.
+
+    Examples:
+        >>> text = "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."
+        >>> insertion_prob = 0.5
+        >>> punctuations = (".", ";", "?", ":", "!", ",")
+        >>> insert_punctuations(text, insertion_prob, punctuations)
+        "짜장면을 , 맛있게 먹었다. ; 짬뽕도 ? 맛있게 먹었다. ! 짬짜면도 먹고 , 싶었다."
+    """
     return _insert_punctuations(text, insertion_prob, punctuations)
 
 
@@ -200,6 +219,7 @@ def _insert_punctuations(
     insertion_prob: float,
     punctuations: Tuple[str, ...],
 ) -> List[Sentence]:
+    """Randomly inserts punctuations in each sentence. Decorated with `autopsy_text`."""
     augmented_sentences = []
     for sentence in sentences:
         augmented_sentence = insert_punctuations_in_sentence(sentence, insertion_prob, punctuations)
@@ -213,6 +233,7 @@ def insert_punctuations_in_sentence(
     insertion_prob: float,
     punctuations: Tuple[str, ...],
 ) -> List[Word]:
+    """Randomly inserts punctuations in the list of word."""
     augmented_words = []
     for word in words:
         if random.random() < insertion_prob:
