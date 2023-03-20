@@ -233,7 +233,7 @@ def insert_punctuations_in_sentence(
     insertion_prob: float,
     punctuations: Tuple[str, ...],
 ) -> List[Word]:
-    """Randomly inserts punctuations in the list of word."""
+    """Randomly inserts punctuations in the list of word. Decorated with `autopsy_sentence`."""
     augmented_words = []
     for word in words:
         if random.random() < insertion_prob:
