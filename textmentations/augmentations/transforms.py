@@ -135,14 +135,14 @@ class RandomDeletionSentence(TextTransform):
         deletion_prob (float): The probability of deleting a sentence. Default 0.1.
         min_sentences (Union[float, int]):
             If a `float`, then it is the minimum proportion of sentences to retain in the text.
-            If an `int`, then it is the minimum number of sentences in the text. Default 3.
+            If an `int`, then it is the minimum number of sentences in the text. Default 0.8.
         p (float): The probability of applying the transform. Default: 0.5.
     """
 
     def __init__(
         self,
         deletion_prob: float = 0.1,
-        min_sentences: Union[float, int] = 3,
+        min_sentences: Union[float, int] = 0.8,
         ignore_first: bool = False,
         always_apply: bool = False,
         p: float = 0.5
@@ -166,7 +166,7 @@ class RandomDeletionSentence(TextTransform):
             if min_sentences < 0:
                 raise ValueError(f"If min_sentences is an int, it must be non-negative. Got: {min_sentences}")
 
-    def apply(self, text: Text, min_sentences: Union[float, int] = 3, **params: Any) -> Text:
+    def apply(self, text: Text, min_sentences: Union[float, int] = 0.8, **params: Any) -> Text:
         return F.delete_sentences(text, self.deletion_prob, min_sentences)
 
     @property
