@@ -46,7 +46,7 @@ print(eda(text=text)["text"])
 ## List of augmentations
 
 - [AEDA](https://github.com/Jaesu26/textmentations/blob/v1.0.0/textmentations/augmentations/transforms.py#L12)
-- [RandomDeletion`](https://github.com/Jaesu26/textmentations/blob/v1.0.0/textmentations/augmentations/transforms.py#L73)
+- [RandomDeletion](https://github.com/Jaesu26/textmentations/blob/v1.0.0/textmentations/augmentations/transforms.py#L73)
 - [RandomDeletionSentence](https://github.com/Jaesu26/textmentations/blob/v1.0.0/textmentations/augmentations/transforms.py#L131)
 - [RandomInsertion](https://github.com/Jaesu26/textmentations/blob/v1.0.0/textmentations/augmentations/transforms.py#L199)
 - [RandomSwap](https://github.com/Jaesu26/textmentations/blob/v1.0.0/textmentations/augmentations/transforms.py#L241)
