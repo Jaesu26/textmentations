@@ -3,7 +3,7 @@ from setuptools import find_packages, setup
 
 setup(
     name="textmentations",
-    version="0.0.3",
+    version="1.0.0",
     description="A Python library for augmenting Korean text.",
     long_description=open("README.md", encoding="utf-8").read(),
     long_description_content_type="text/markdown",
