@@ -33,6 +33,8 @@ class TextTransform(BasicTransform):
             raise ValueError(f"p must be between 0 and 1. Got: {p}")
 
     def __call__(self, *args: Any, force_apply: bool = False, **kwargs: Text) -> Dict[str, Text]:
+        if args:
+            raise KeyError("You have to pass data to augmentations as named arguments, for example: aug(text=text)")
         if not self.ignore_first:
             return super(TextTransform, self).__call__(*args, force_apply=force_apply, **kwargs)
         return self.apply_without_first(*args, force_apply=force_apply, **kwargs)
@@ -49,8 +51,11 @@ class TextTransform(BasicTransform):
         )
         return key2augmented_text
 
+    def apply(self, text: Text, **params: Any) -> Text:
+        raise NotImplementedError
+
     @property
-    def targets(self) -> Dict[str, Callable[[Text, Dict[str, Any]], Text]]:
+    def targets(self) -> Dict[str, Callable[..., Text]]:
         return {"text": self.apply}
 
     def update_params(self, params: Dict[str, Any], **kwargs: Any) -> Dict[str, Any]:

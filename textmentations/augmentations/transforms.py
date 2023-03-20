@@ -1,10 +1,73 @@
-import numbers
+import random
 from typing import Any, Dict, List, Tuple, Union
+
+from albumentations.core.transforms_interface import to_tuple
 
 from ..core.transforms_interface import TextTransform
 from ..corpora.corpus_types import Text
 from . import functional as F
 from .utils import split_text
+
+
+class AEDA(TextTransform):
+    """Randomly inserts punctuations in the input text.
+
+    Args:
+        insertion_prob_limit (Union[float, Tuple[float, float]]): The probability of inserting a punctuation.
+            If insertion_prob_limit is a single float, the range will be (0, insertion_prob_limit). Default (0, 0.3).
+        punctuations (Tuple[str, ...]): Punctuations to be inserted at random. Default: (".", ";", "?", ":", "!", ",")
+        p (float): The probability of applying the transform. Default: 0.5.
+
+    References:
+        https://arxiv.org/pdf/2108.13230.pdf
+    """
+    def __init__(
+        self,
+        insertion_prob_limit: Union[float, Tuple[float, float]] = (0.0, 0.3),
+        punctuations: Tuple[str, ...] = (".", ";", "?", ":", "!", ","),
+        ignore_first: bool = False,
+        always_apply: bool = False,
+        p: float = 0.5
+    ) -> None:
+        super(AEDA, self).__init__(ignore_first, always_apply, p)
+        self._validate_transform_init_args(insertion_prob_limit, punctuations)
+        self.insertion_prob_limit = to_tuple(insertion_prob_limit, low=0.0)
+        self.punctuations = punctuations
+
+    def _validate_transform_init_args(
+        self,
+        insertion_prob_limit: Union[float, Tuple[float, float]],
+        punctuations: Tuple[str, ...]
+    ) -> None:
+        if not isinstance(insertion_prob_limit, (float, int, tuple)):
+            raise TypeError(
+                "insertion_prob_limit must be a real number between 0 and 1 or a tuple with length 2. "
+                f"Got: {type(insertion_prob_limit)}"
+            )
+        if isinstance(insertion_prob_limit, (float, int)):
+            if not (0.0 <= insertion_prob_limit <= 1.0):
+                raise ValueError(
+                    "If insertion_prob_limit is a real number, "
+                    f"it must be between 0 and 1. Got: {insertion_prob_limit}"
+                )
+        elif isinstance(insertion_prob_limit, tuple):
+            if len(insertion_prob_limit) != 2:
+                raise ValueError(
+                    f"If insertion_prob_limit is a tuple, it's length must be 2. Got: {insertion_prob_limit}"
+                )
+            if not (0.0 <= insertion_prob_limit[0] <= insertion_prob_limit[1] <= 1.0):
+                raise ValueError(f"insertion_prob_limit values must be between 0 and 1. Got: {insertion_prob_limit}")
+        if not (isinstance(punctuations, tuple) and all([isinstance(punc, str) for punc in punctuations])):
+            raise TypeError(f"punctuations must be a tuple and all elements must be strings. Got: {punctuations}")
+
+    def apply(self, text: Text, insertion_prob: float = 0.3, **params: Any) -> Text:
+        return F.insert_punctuations(text, insertion_prob, self.punctuations)
+
+    def get_params(self) -> Dict[str, float]:
+        return {"insertion_prob": random.uniform(self.insertion_prob_limit[0], self.insertion_prob_limit[1])}
+
+    def get_transform_init_args_names(self) -> Tuple[str, str]:
+        return ("insertion_prob_limit", "punctuations")
 
 
 class RandomDeletion(TextTransform):
@@ -14,7 +77,7 @@ class RandomDeletion(TextTransform):
         deletion_prob (float): The probability of deleting a word. Default 0.1.
         min_words_each_sentence (Union[float, int]):
             If a `float`, then it is the minimum proportion of words to retain in each sentence.
-            If an `int`, then it is the minimum number of words in each sentence. Default 5.
+            If an `int`, then it is the minimum number of words in each sentence. Default 0.8.
         p (float): The probability of applying the transform. Default: 0.5.
 
     References:
@@ -24,7 +87,7 @@ class RandomDeletion(TextTransform):
     def __init__(
         self,
         deletion_prob: float = 0.1,
-        min_words_each_sentence: Union[float, int] = 5,
+        min_words_each_sentence: Union[float, int] = 0.8,
         ignore_first: bool = False,
         always_apply: bool = False,
         p: float = 0.5
@@ -39,7 +102,7 @@ class RandomDeletion(TextTransform):
         deletion_prob: float,
         min_words_each_sentence: Union[float, int]
     ) -> None:
-        if not isinstance(deletion_prob, numbers.Real):
+        if not isinstance(deletion_prob, (float, int)):
             raise TypeError(f"deletion_prob must be a real number between 0 and 1. Got: {type(deletion_prob)}")
         if not (0.0 <= deletion_prob <= 1.0):
             raise ValueError(f"deletion_prob must be between 0 and 1. Got: {deletion_prob}")
@@ -47,14 +110,16 @@ class RandomDeletion(TextTransform):
             raise TypeError(
                 f"min_words_each_sentence must be either an int or a float. Got: {type(min_words_each_sentence)}"
             )
-        if isinstance(min_words_each_sentence, float) and not (0.0 <= min_words_each_sentence <= 1.0):
-            raise ValueError(
-                f"If min_words_each_sentence is a float, it must be between 0 and 1. Got: {min_words_each_sentence}"
-            )
-        if isinstance(min_words_each_sentence, int) and min_words_each_sentence < 0:
-            raise ValueError(
-                f"If min_words_each_sentence is an int, it must be non-negative. Got: {min_words_each_sentence}"
-            )
+        if isinstance(min_words_each_sentence, float):
+            if not (0.0 <= min_words_each_sentence <= 1.0):
+                raise ValueError(
+                    f"If min_words_each_sentence is a float, it must be between 0 and 1. Got: {min_words_each_sentence}"
+                )
+        elif isinstance(min_words_each_sentence, int):
+            if min_words_each_sentence < 0:
+                raise ValueError(
+                    f"If min_words_each_sentence is an int, it must be non negative. Got: {min_words_each_sentence}"
+                )
 
     def apply(self, text: Text, **params: Any) -> Text:
         return F.delete_words(text, self.deletion_prob, self.min_words_each_sentence)
@@ -88,16 +153,18 @@ class RandomDeletionSentence(TextTransform):
         self.min_sentences = min_sentences
 
     def _validate_transform_init_args(self, deletion_prob: float, min_sentences: Union[float, int]) -> None:
-        if not isinstance(deletion_prob, numbers.Real):
+        if not isinstance(deletion_prob, (float, int)):
             raise TypeError(f"deletion_prob must be a real number between 0 and 1. Got: {type(deletion_prob)}")
         if not (0.0 <= deletion_prob <= 1.0):
             raise ValueError(f"deletion_prob must be between 0 and 1. Got: {deletion_prob}")
         if not isinstance(min_sentences, (float, int)):
             raise TypeError(f"min_sentences must be either an int or a float. Got: {type(min_sentences)}")
-        if isinstance(min_sentences, float) and not (0.0 <= min_sentences <= 1.0):
-            raise ValueError(f"If min_sentences is a float, it must be between 0 and 1. Got: {min_sentences}")
-        if isinstance(min_sentences, int) and min_sentences < 0:
-            raise ValueError(f"If min_sentences is an int, it must be non-negative. Got: {min_sentences}")
+        if isinstance(min_sentences, float):
+            if not (0.0 <= min_sentences <= 1.0):
+                raise ValueError(f"If min_sentences is a float, it must be between 0 and 1. Got: {min_sentences}")
+        elif isinstance(min_sentences, int):
+            if min_sentences < 0:
+                raise ValueError(f"If min_sentences is an int, it must be non-negative. Got: {min_sentences}")
 
     def apply(self, text: Text, min_sentences: Union[float, int] = 3, **params: Any) -> Text:
         return F.delete_sentences(text, self.deletion_prob, min_sentences)
@@ -155,7 +222,7 @@ class RandomInsertion(TextTransform):
         self.n_times = n_times
 
     def _validate_transform_init_args(self, insertion_prob: float, n_times: int) -> None:
-        if not isinstance(insertion_prob, numbers.Real):
+        if not isinstance(insertion_prob, (float, int)):
             raise TypeError(f"insertion_prob must be a real number between 0 and 1. Got: {type(insertion_prob)}")
         if not (0.0 <= insertion_prob <= 1.0):
             raise ValueError(f"insertion_prob must be between 0 and 1. Got: {insertion_prob}")
@@ -261,7 +328,7 @@ class SynonymReplacement(TextTransform):
         self.replacement_prob = replacement_prob
 
     def _validate_transform_init_args(self, replacement_prob: float) -> None:
-        if not isinstance(replacement_prob, numbers.Real):
+        if not isinstance(replacement_prob, (float, int)):
             raise TypeError(f"replacement_prob must be a real number between 0 and 1. Got: {type(replacement_prob)}")
         if not (0.0 <= replacement_prob <= 1.0):
             raise ValueError(f"replacement_prob must be between 0 and 1. Got: {replacement_prob}")

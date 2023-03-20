@@ -189,6 +189,39 @@ def replace_word_with_synonym(word: Word) -> Word:
     return word
 
 
+@pass_empty_text
+def insert_punctuations(text: Text, insertion_prob: float, punctuations: Tuple[str, ...]) -> Text:
+    return _insert_punctuations(text, insertion_prob, punctuations)
+
+
+@autopsy_text
+def _insert_punctuations(
+    sentences: List[Sentence],
+    insertion_prob: float,
+    punctuations: Tuple[str, ...]
+) -> List[Sentence]:
+    augmented_sentences = []
+    for sentence in sentences:
+        augmented_sentence = insert_punctuations_in_sentence(sentence, insertion_prob, punctuations)
+        augmented_sentences.append(augmented_sentence)
+    return augmented_sentences
+
+
+@autopsy_sentence
+def insert_punctuations_in_sentence(
+    words: List[Word],
+    insertion_prob: float,
+    punctuations: Tuple[str, ...]
+) -> List[Word]:
+    augmented_words = []
+    for word in words:
+        if random.random() < insertion_prob:
+            punctuation = random.choice(punctuations)
+            augmented_words.append(punctuation)
+        augmented_words.append(word)
+    return augmented_words
+
+
 def replace_synonyms(text: Text, replacement_prob: float) -> Text:
     """Randomly replaces words that are not stopwords in the text with synonyms.
 
@@ -310,37 +343,3 @@ def _swap_sentences(sentences: List[Sentence], n_times: int) -> List[Sentence]:
     for _ in range(n_times):
         augmented_sentences = swap_two_strings(augmented_sentences)
     return augmented_sentences
-
-
-# TODO: AEDA 트랜스폼 구현
-@pass_empty_text
-def insert_punctuations(text: Text, insertion_prob: float, punctuations: Tuple[str, ...]) -> Text:
-    return _insert_punctuations(text, insertion_prob, punctuations)
-
-
-@autopsy_text
-def _insert_punctuations(
-    sentences: List[Sentence],
-    insertion_prob: float,
-    punctuations: Tuple[str, ...]
-) -> List[Sentence]:
-    augmented_sentences = []
-    for sentence in sentences:
-        augmented_sentence = insert_punctuations_in_sentence(sentence, insertion_prob, punctuations)
-        augmented_sentences.append(augmented_sentence)
-    return augmented_sentences
-
-
-@autopsy_sentence
-def insert_punctuations_in_sentence(
-    words: List[Word],
-    insertion_prob: float,
-    punctuations: Tuple[str, ...]
-) -> List[Word]:
-    augmented_words = []
-    for word in words:
-        if random.random() < insertion_prob:
-            punctuation = random.choice(punctuations)
-            augmented_words.append(punctuation)
-        augmented_words.append(word)
-    return augmented_words

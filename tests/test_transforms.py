@@ -43,7 +43,7 @@ def test_incorrect_probability_type(augmentation_with_probability, incorrect_pro
     probability_params = {param: incorrect_probability for param in params_names if 'prob' in param}
     with pytest.raises(TypeError) as error_info:
         augmentation(**probability_params)
-    assert "must be a real number between 0 and 1." in str(error_info.value)
+    assert "must be a real number between 0 and 1" in str(error_info.value)
 
 
 @pytest.mark.parametrize("incorrect_probability", [-1.0, 2])

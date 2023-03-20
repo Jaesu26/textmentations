@@ -1,4 +1,5 @@
 from .augmentations.transforms import (
+    AEDA,
     RandomDeletion,
     RandomDeletionSentence,
     RandomInsertion,
@@ -12,6 +13,7 @@ __version__ = "0.0.2"
 
 __all__ = [
     "TextTransform",
+    "AEDA",
     "RandomDeletion",
     "RandomDeletionSentence",
     "RandomInsertion",
