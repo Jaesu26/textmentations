@@ -4,6 +4,7 @@ Word -> (), Sentence -> {}, Text -> [], then it's expressed as follows.
 """
 
 from typing import TypeVar
+
 from typing_extensions import TypeAlias
 
 Word: TypeAlias = str
