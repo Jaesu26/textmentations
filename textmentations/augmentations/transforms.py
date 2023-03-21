@@ -14,7 +14,7 @@ class AEDA(TextTransform):
 
     Args:
         insertion_prob_limit (Union[float, Tuple[float, float]]): The probability of inserting a punctuation.
-            If insertion_prob_limit is a single float, the range will be (0, insertion_prob_limit). Default (0, 0.3).
+            If insertion_prob_limit is a float, the range will be (0.0, insertion_prob_limit). Default (0.0, 0.3).
         punctuations (Tuple[str, ...]): Punctuations to be inserted at random. Default: (".", ";", "?", ":", "!", ",")
         p (float): The probability of applying the transform. Default: 0.5.
 
