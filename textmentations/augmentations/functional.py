@@ -82,8 +82,8 @@ def delete_sentences(text: Text, deletion_prob: float, min_sentences: Union[floa
         text (Text): The input text.
         deletion_prob (float): The probability of deleting a sentence.
         min_sentences (Union[float, int]):
-            If a `float`, then it is the minimum proportion of sentences to retain in the text.
-            If an `int`, then it is the minimum number of sentences in the text.
+            If a `float`, it is the minimum proportion of sentences to retain in the text.
+            If an `int`, it is the minimum number of sentences in the text.
 
     Returns:
         Text: A text with randomly deleted sentences.
