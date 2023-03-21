@@ -267,19 +267,19 @@ def _replace_synonyms(sentences: List[Sentence], replacement_prob: float) -> Lis
     """Randomly replaces words that are not stopwords in each sentence with synonyms.
     Decorated with `autopsy_text`.
     """
+    stopwords = get_stopwords()
     augmented_sentences = []
     for sentence in sentences:
-        augmented_sentence = replace_synonyms_in_sentence(sentence, replacement_prob)
+        augmented_sentence = replace_synonyms_in_sentence(sentence, replacement_prob, stopwords)
         augmented_sentences.append(augmented_sentence)
     return augmented_sentences
 
 
 @autopsy_sentence
-def replace_synonyms_in_sentence(words: List[Word], replacement_prob: float) -> List[Word]:
+def replace_synonyms_in_sentence(words: List[Word], replacement_prob: float, stopwords: Set[Word]) -> List[Word]:
     """Randomly replaces words that are not stopwords in the list of words with synonyms.
     Decorated with `autopsy_sentence`.
     """
-    stopwords = get_stopwords()
     augmented_words = []
     for word in words:
         if word not in stopwords and random.random() < replacement_prob:

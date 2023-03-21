@@ -1,4 +1,3 @@
-import numbers
 from typing import Any, Callable, Dict
 
 from albumentations.core.transforms_interface import BasicTransform
@@ -27,7 +26,7 @@ class TextTransform(BasicTransform):
             raise TypeError(f"ignore_first must be boolean. Got: {type(ignore_first)}")
         if not isinstance(always_apply, bool):
             raise TypeError(f"always_apply must be boolean. Got: {type(always_apply)}")
-        if not isinstance(p, numbers.Real):
+        if not isinstance(p, (float, int)):
             raise TypeError(f"p must be a real number between 0 and 1. Got: {type(p)}")
         if not (0.0 <= p <= 1.0):
             raise ValueError(f"p must be between 0 and 1. Got: {p}")
@@ -36,14 +35,14 @@ class TextTransform(BasicTransform):
         if args:
             raise KeyError("You have to pass data to augmentations as named arguments, for example: augment(text=text)")
         if not self.ignore_first:
-            return super(TextTransform, self).__call__(*args, force_apply=force_apply, **kwargs)
-        return self.apply_without_first(*args, force_apply=force_apply, **kwargs)
+            return super(TextTransform, self).__call__(force_apply=force_apply, **kwargs)
+        return self.apply_without_first(force_apply=force_apply, **kwargs)
 
-    def apply_without_first(self, *args: Any, force_apply: bool = False, **kwargs: Text) -> Dict[str, Text]:
+    def apply_without_first(self, force_apply: bool = False, **kwargs: Text) -> Dict[str, Text]:
         key2first_sentence = extract_first_sentence_by_key(kwargs)
         key2text_without_first_sentence = remove_first_sentence_by_key(kwargs)
         key2augmented_text_without_first_sentence = super(TextTransform, self).__call__(
-            *args, force_apply=force_apply, **key2text_without_first_sentence
+            force_apply=force_apply, **key2text_without_first_sentence
         )
         key2augmented_text = wrap_text_with_first_sentence_by_key(
             key2augmented_text_without_first_sentence,
@@ -60,6 +59,9 @@ class TextTransform(BasicTransform):
 
     def update_params(self, params: Dict[str, Any], **kwargs: Any) -> Dict[str, Any]:
         return params
+
+    def get_params_dependent_on_targets(self, params: Dict[str, Any]) -> Dict[str, Any]:
+        return {}
 
     def get_base_init_args(self) -> Dict[str, Any]:
         return {"ignore_first": self.ignore_first, "always_apply": self.always_apply, "p": self.p}
