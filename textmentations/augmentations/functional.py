@@ -14,8 +14,8 @@ def delete_words(text: Text, deletion_prob: float, min_words_each_sentence: Unio
         text (Text): The input text.
         deletion_prob (float): The probability of deleting a word.
         min_words_each_sentence (Union[float, int]):
-            If a `float`, then it is the minimum proportion of words to retain in each sentence.
-            If an `int`, then it is the minimum number of words in each sentence.
+            If a `float`, it is the minimum proportion of words to retain in each sentence.
+            If an `int`, it is the minimum number of words in each sentence.
 
     Returns:
         Text: A text with randomly deleted words.
