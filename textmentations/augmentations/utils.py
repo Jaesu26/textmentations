@@ -1,6 +1,6 @@
 import re
 from functools import wraps
-from typing import Callable, List, Optional
+from typing import Callable, Iterable, List, Optional
 
 from typing_extensions import Concatenate, ParamSpec
 
@@ -10,7 +10,7 @@ _P = ParamSpec("_P")
 
 
 def autopsy_sentence(
-    func: Callable[Concatenate[List[Word], _P], List[Word]]
+    func: Callable[Concatenate[List[Word], _P], Iterable[Word]]
 ) -> Callable[Concatenate[Sentence, _P], Sentence]:
     """The decorator follows these steps:
         1. Splits the input sentence into words.
@@ -48,7 +48,7 @@ def autopsy_sentence(
 
 
 def autopsy_text(
-    func: Callable[Concatenate[List[Sentence], _P], List[Sentence]]
+    func: Callable[Concatenate[List[Sentence], _P], Iterable[Sentence]]
 ) -> Callable[Concatenate[Text, _P], Text]:
     """The decorator follows these steps:
         1. Splits the input text into sentences.
@@ -101,13 +101,13 @@ def split_text(text: Text) -> List[Sentence]:
     return sentences
 
 
-def join_words(words: List[Word]) -> Sentence:
+def join_words(words: Iterable[Word]) -> Sentence:
     """Joins words into a sentence."""
     sentence = " ".join(words)
     return sentence
 
 
-def join_sentences(sentences: List[Sentence]) -> Text:
+def join_sentences(sentences: Iterable[Sentence]) -> Text:
     """Joins sentences into a text."""
     text = ". ".join(sentences)
     if text:
