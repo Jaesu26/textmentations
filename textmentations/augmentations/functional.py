@@ -10,6 +10,7 @@ from ..corpora.utils import get_stopwords, get_synonyms
 from .utils import autopsy_sentence, autopsy_text, pass_empty_text
 
 
+@pass_empty_text
 def back_translate(text: Text, from_lang: str, to_lang: str, translator: Translator) -> Text:
     try:
         translated_text = translator.translate(text, src=from_lang, dest=to_lang).text

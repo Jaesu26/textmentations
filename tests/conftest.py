@@ -4,6 +4,7 @@ import textmentations as T
 
 AUGMENTATIONS = [
     T.AEDA,
+    T.BackTranslation,
     T.RandomDeletion,
     T.RandomDeletionSentence,
     T.RandomInsertion,

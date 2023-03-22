@@ -2,6 +2,7 @@ import random
 from typing import Any, Dict, List, Tuple, Union
 
 from albumentations.core.transforms_interface import to_tuple
+from googletrans import Translator
 
 from ..core.transforms_interface import TextTransform
 from ..corpora.corpus_types import Text
@@ -68,6 +69,27 @@ class AEDA(TextTransform):
 
     def get_transform_init_args_names(self) -> Tuple[str, str]:
         return ("insertion_prob_limit", "punctuations")
+
+
+class BackTranslation(TextTransform):
+    def __init__(
+        self,
+        from_lang: str = "ko",
+        to_lang: str = "en",
+        ignore_first: bool = False,
+        always_apply: bool = False,
+        p: float = 0.5,
+    ) -> None:
+        super(BackTranslation, self).__init__(ignore_first, always_apply, p)
+        self.from_lang = from_lang
+        self.to_lang = to_lang
+        self.translator = Translator()
+
+    def apply(self, text: Text, **params: Any) -> Text:
+        return F.back_translate(text, self.from_lang, self.to_lang, self.translator)
+
+    def get_transform_init_args_names(self) -> Tuple[str, str]:
+        return ("from_lang", "to_lang")
 
 
 class RandomDeletion(TextTransform):

@@ -1,7 +1,15 @@
 import pytest
+from googletrans import Translator
 
 import textmentations.augmentations.functional as F
 from textmentations.augmentations.utils import split_text
+
+
+def test_back_translate():
+    translator = Translator()
+    text = "나는 목이 말라서 물을 마셨다."
+    augmented_text = F.back_translate(text, from_lang="ko", to_lang="en", translator=translator)
+    assert augmented_text != text
 
 
 @pytest.mark.parametrize(
