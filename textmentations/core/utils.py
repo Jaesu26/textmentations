@@ -8,11 +8,10 @@ def extract_first_sentence_by_key(key2text: Dict[str, Text]) -> Dict[str, Senten
     """Extracts the first sentence from a dictionary of text inputs.
 
     Args:
-        key2text (Dict[str, Text]): A dictionary with string keys and Text values.
+        key2text: A dictionary with string keys and Text values.
 
     Returns:
-        Dict[str, Sentence]: A dictionary with the same keys as `key2text`,
-            but with the values replaced by their first sentence.
+        A dictionary with the same keys as `key2text`, but with the values replaced by their first sentence.
     """
     key2first_sentence = {}
     for key, text in key2text.items():
@@ -27,10 +26,10 @@ def remove_first_sentence_by_key(key2text: Dict[str, Text]) -> Dict[str, Text]:
     """Removes the first sentence from the dictionary of text inputs.
 
     Args:
-        key2text (Dict[str, Text]): The dictionary with string keys and Text values.
+        key2text: The dictionary with string keys and Text values.
 
     Returns:
-        Dict[str, Text]: A dictionary with the same keys as `key2text`,
+        A dictionary with the same keys as `key2text`,
             but with the values replaced by the input text with the first sentence removed.
     """
     key2text_without_first_sentence = {}
@@ -50,13 +49,13 @@ def wrap_text_with_first_sentence_by_key(
     """Wraps text inputs with their corresponding first sentence.
 
     Args:
-        key2text_without_first_sentence (Dict[str, Text]): The dictionary with string keys and Text
-            values that represent text inputs with their first sentences removed.
-        key2first_sentence (Dict[str, Sentence]): The dictionary with string keys and Sentence values that
+        key2text_without_first_sentence: The dictionary with string keys and Text values that
+            represent text inputs with their first sentences removed.
+        key2first_sentence: The dictionary with string keys and Sentence values that
             represent the first sentences of the original text inputs.
 
     Returns:
-        Dict[str, Text]: A dictionary with the same keys as `key2text_without_first_sentence`,
+        A dictionary with the same keys as `key2text_without_first_sentence`,
             but with the values wrapped with their corresponding first sentence as a prefix.
     """
     key2text = {}

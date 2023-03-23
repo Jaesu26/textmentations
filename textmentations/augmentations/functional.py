@@ -24,14 +24,14 @@ def delete_words(text: Text, deletion_prob: float, min_words_each_sentence: Unio
     """Randomly deletes words in the text.
 
     Args:
-        text (Text): The input text.
-        deletion_prob (float): The probability of deleting a word.
-        min_words_each_sentence (Union[float, int]):
+        text: The input text.
+        deletion_prob: The probability of deleting a word.
+        min_words_each_sentence:
             If a `float`, it is the minimum proportion of words to retain in each sentence.
             If an `int`, it is the minimum number of words in each sentence.
 
     Returns:
-        Text: A text with randomly deleted words.
+        A text with randomly deleted words.
 
     Examples:
         >>> text = "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."
@@ -88,14 +88,14 @@ def delete_sentences(text: Text, deletion_prob: float, min_sentences: Union[floa
     """Randomly deletes sentences in the text.
 
     Args:
-        text (Text): The input text.
-        deletion_prob (float): The probability of deleting a sentence.
-        min_sentences (Union[float, int]):
+        text: The input text.
+        deletion_prob: The probability of deleting a sentence.
+        min_sentences:
             If a `float`, it is the minimum proportion of sentences to retain in the text.
             If an `int`, it is the minimum number of sentences in the text.
 
     Returns:
-        Text: A text with randomly deleted sentences.
+        A text with randomly deleted sentences.
 
     Examples:
         >>> text = "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."
@@ -121,12 +121,12 @@ def insert_synonyms(text: Text, insertion_prob: float, n_times: int) -> Text:
     """Repeats n times the task of randomly inserting synonyms of words that are not stopwords in the text.
 
     Args:
-        text (Text): The input text.
-        insertion_prob (float): The probability of inserting a synonym.
-        n_times (int): The number of times to repeat the synonym-insertion process.
+        text: The input text.
+        insertion_prob: The probability of inserting a synonym.
+        n_times: The number of times to repeat the synonym-insertion process.
 
     Returns:
-        Text: A text with randomly inserted synonyms.
+        A text with randomly inserted synonyms.
 
     Examples:
         >>> text = "물 한잔만 주세요."
@@ -174,13 +174,13 @@ def _insert_synonyms_into_another(
     """Randomly inserts synonyms of `inserting_words` that are not stopwords into `augmented_words` at random position.
 
     Args:
-        inserting_words (List[Word]): The words whose synonyms will be inserted into `augmented_words`.
-        augmented_words (List[Word]): The words into which the synonyms will be inserted.
-        insertion_prob (float): The probability of inserting a synonym for each word in `inserting_word`.
-        stopwords (Set[Word]): The set of stopwords.
+        inserting_words: The words whose synonyms will be inserted into `augmented_words`.
+        augmented_words: The words into which the synonyms will be inserted.
+        insertion_prob: The probability of inserting a synonym for each word in `inserting_word`.
+        stopwords: The set of stopwords.
 
     Returns:
-        List[Word]: `augmented_words` with synonyms of `inserting_words` randomly inserted.
+        `augmented_words` with synonyms of `inserting_words` randomly inserted.
     """
     current_num_words = len(augmented_words)
     for inserting_word in inserting_words:
@@ -208,12 +208,12 @@ def insert_punctuations(text: Text, insertion_prob: float, punctuations: Tuple[s
     """Randomly inserts punctuations in the text.
 
     Args:
-        text (Text): The input text.
-        insertion_prob (float): The probability of inserting a punctuation.
-        punctuations (Tuple[str, ...]): Punctuations to be inserted at random.
+        text: The input text.
+        insertion_prob: The probability of inserting a punctuation.
+        punctuations: Punctuations to be inserted at random.
 
     Returns:
-        Text: A text with randomly inserted synonyms.
+        A text with randomly inserted synonyms.
 
     Examples:
         >>> text = "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."
@@ -255,11 +255,11 @@ def replace_synonyms(text: Text, replacement_prob: float) -> Text:
     """Randomly replaces words that are not stopwords in the text with synonyms.
 
     Args:
-        text (Text): The input text.
-        replacement_prob (float): The probability of replacing a word with a synonym.
+        text: The input text.
+        replacement_prob: The probability of replacing a word with a synonym.
 
     Returns:
-        Text: A text with random words replaced by synonyms.
+        A text with random words replaced by synonyms.
 
     Examples:
         >>> text = "물 한잔만 주세요."
@@ -299,11 +299,11 @@ def swap_words(text: Text, n_times: int) -> Text:
     """Repeats n times the task of randomly swapping two words in a randomly selected sentence from the text.
 
     Args:
-        text (Text): The input text.
-        n_times (int): The number of times to repeat the word-swapping process in a randomly selected sentence.
+        text: The input text.
+        n_times: The number of times to repeat the word-swapping process in a randomly selected sentence.
 
     Returns:
-        Text: A text with randomly shuffled words each sentence.
+        A text with randomly shuffled words each sentence.
 
     Examples:
         >>> text = "짜장면을 맛있게 먹었다. 짬뽕도 먹고 싶었다."
@@ -346,11 +346,11 @@ def swap_sentences(text: Text, n_times: int) -> Text:
     """Repeats n times the task of randomly swapping two sentences in the text.
 
     Args:
-        text (Text): The input text.
-        n_times (int): The number of times to repeat the sentence-swapping process.
+        text: The input text.
+        n_times: The number of times to repeat the sentence-swapping process.
 
     Returns:
-        Text: A text with randomly shuffled sentences.
+        A text with randomly shuffled sentences.
 
     Examples:
         >>> text = "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."

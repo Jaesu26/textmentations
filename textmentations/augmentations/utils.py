@@ -18,12 +18,10 @@ def autopsy_sentence(
         3. Joins the words returned by `func` into a sentence.
 
     Args:
-        func (Callable[Concatenate[List[Word], _P], List[Word]]):
-            The function to be decorated.
+        func: The function to be decorated.
 
     Returns:
-        Callable[Concatenate[Sentence, _P], Sentence]:
-            A wrapper function that performs the steps.
+        A wrapper function that performs the steps.
 
     Examples:
         >>> @autopsy_sentence
@@ -56,12 +54,10 @@ def autopsy_text(
         3. Joins the sentences returned by `func` into a text.
 
     Args:
-        func (Callable[Concatenate[List[Sentence], _P], List[Sentence]]):
-            The function to be decorated.
+        func: The function to be decorated.
 
     Returns:
-        Callable[Concatenate[Text, _P], Text]:
-            A wrapper function that performs the steps.
+        A wrapper function that performs the steps.
 
     Examples:
         >>> @autopsy_text
@@ -160,7 +156,7 @@ def pass_empty_text(func: Callable[Concatenate[Text, _P], Text]) -> Callable[Con
     """Returns the input text directly if it is empty, otherwise calls the decorated function.
 
     Args:
-        func(Callable[Concatenate[Text, _P], Text]): The function to be decorated.
+        func: The function to be decorated.
 
     Returns:
         A wrapper function.
@@ -182,12 +178,12 @@ def wrap_text_with_sentences(
     """Wraps the text with the specified prefix and suffix sentences.
 
     Args:
-        text (Text): The input text to wrap with sentences.
-        prefix_sentences (List[Sentence]): List of sentences to add at the beginning of the text.
-        suffix_sentences (List[Sentence]): List of sentences to add at the end of the text.
+        text: The input text to wrap with sentences.
+        prefix_sentences: List of sentences to add at the beginning of the text.
+        suffix_sentences: List of sentences to add at the end of the text.
 
     Returns:
-        Text: The wrapped text.
+        A wrapped text.
     """
     prefix_text = join_sentences(prefix_sentences) if prefix_sentences else ""
     suffix_text = join_sentences(suffix_sentences) if suffix_sentences else ""

@@ -14,10 +14,10 @@ class AEDA(TextTransform):
     """Randomly inserts punctuations in the input text.
 
     Args:
-        insertion_prob_limit (Union[float, Tuple[float, float]]): The probability of inserting a punctuation.
+        insertion_prob_limit: The probability of inserting a punctuation.
             If insertion_prob_limit is a float, the range will be (0.0, insertion_prob_limit). Default (0.0, 0.3).
-        punctuations (Tuple[str, ...]): Punctuations to be inserted at random. Default: (".", ";", "?", ":", "!", ",")
-        p (float): The probability of applying the transform. Default: 0.5.
+        punctuations: Punctuations to be inserted at random. Default: (".", ";", "?", ":", "!", ",")
+        p: The probability of applying the transform. Default: 0.5.
 
     References:
         https://arxiv.org/pdf/2108.13230.pdf
@@ -71,6 +71,7 @@ class AEDA(TextTransform):
         return ("insertion_prob_limit", "punctuations")
 
 
+# TODO: REAMD.md 파일에 추가
 class BackTranslation(TextTransform):
     def __init__(
         self,
@@ -96,11 +97,11 @@ class RandomDeletion(TextTransform):
     """Randomly deletes words in the input text.
 
     Args:
-        deletion_prob (float): The probability of deleting a word. Default 0.1.
-        min_words_each_sentence (Union[float, int]):
+        deletion_prob: The probability of deleting a word. Default 0.1.
+        min_words_each_sentence:
             If a `float`, it is the minimum proportion of words to retain in each sentence.
             If an `int`, it is the minimum number of words in each sentence. Default 0.8.
-        p (float): The probability of applying the transform. Default: 0.5.
+        p: The probability of applying the transform. Default: 0.5.
 
     References:
         https://arxiv.org/pdf/1901.11196.pdf
@@ -154,11 +155,11 @@ class RandomDeletionSentence(TextTransform):
     """Randomly deletes sentences in the input text.
 
     Args:
-        deletion_prob (float): The probability of deleting a sentence. Default 0.1.
-        min_sentences (Union[float, int]):
+        deletion_prob: The probability of deleting a sentence. Default 0.1.
+        min_sentences:
             If a `float`, it is the minimum proportion of sentences to retain in the text.
             If an `int`, it is the minimum number of sentences in the text. Default 0.8.
-        p (float): The probability of applying the transform. Default: 0.5.
+        p: The probability of applying the transform. Default: 0.5.
     """
 
     def __init__(
@@ -222,9 +223,9 @@ class RandomInsertion(TextTransform):
     """Repeats n times the task of randomly inserting synonyms in the input text.
 
     Args:
-        insertion_prob (float): The probability of inserting a synonym. Default 0.2.
-        n_times (int): The number of times to repeat the operation. Default 1.
-        p (float): The probability of applying the transform. Default: 0.5.
+        insertion_prob: The probability of inserting a synonym. Default 0.2.
+        n_times: The number of times to repeat the operation. Default 1.
+        p: The probability of applying the transform. Default: 0.5.
 
     References:
         https://arxiv.org/pdf/1901.11196.pdf
@@ -264,8 +265,8 @@ class RandomSwap(TextTransform):
     """Repeats n times the task of randomly swapping two words in a randomly selected sentence from the input text.
 
     Args:
-        n_times (int): The number of times to repeat the operation. Default: 1.
-        p (float): The probability of applying the transform. Default: 0.5.
+        n_times: The number of times to repeat the operation. Default: 1.
+        p: The probability of applying the transform. Default: 0.5.
 
     References:
         https://arxiv.org/pdf/1901.11196.pdf
@@ -299,8 +300,8 @@ class RandomSwapSentence(TextTransform):
     """Repeats n times the task of randomly swapping two sentences in the input text.
 
     Args:
-        n_times (int): The number of times to repeat the operation. Default: 1.
-        p (float): The probability of applying the transform. Default: 0.5.
+        n_times: The number of times to repeat the operation. Default: 1.
+        p: The probability of applying the transform. Default: 0.5.
     """
 
     def __init__(
@@ -331,8 +332,8 @@ class SynonymReplacement(TextTransform):
     """Randomly replaces words in the input text with synonyms.
 
     Args:
-        replacement_prob (float): The probability of replacing a word with a synonym. Default 0.2.
-        p (float): The probability of applying the transform. Default: 0.5.
+        replacement_prob: The probability of replacing a word with a synonym. Default 0.2.
+        p: The probability of applying the transform. Default: 0.5.
 
     References:
         https://arxiv.org/pdf/1901.11196.pdf
