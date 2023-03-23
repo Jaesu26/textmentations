@@ -71,7 +71,7 @@ class AEDA(TextTransform):
         return ("insertion_prob_limit", "punctuations")
 
 
-# TODO: REAMD.md 파일에 추가
+# TODO: REAMD.md 파일에 추가, docstring 추가
 class BackTranslation(TextTransform):
     def __init__(
         self,
@@ -84,10 +84,9 @@ class BackTranslation(TextTransform):
         super(BackTranslation, self).__init__(ignore_first, always_apply, p)
         self.from_lang = from_lang
         self.to_lang = to_lang
-        self.translator = Translator()
 
     def apply(self, text: Text, **params: Any) -> Text:
-        return F.back_translate(text, self.from_lang, self.to_lang, self.translator)
+        return F.back_translate(text, self.from_lang, self.to_lang)
 
     def get_transform_init_args_names(self) -> Tuple[str, str]:
         return ("from_lang", "to_lang")

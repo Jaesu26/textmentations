@@ -1,20 +1,22 @@
 import math
 import random
-from typing import Iterator, List, Set, Tuple, Union
+from typing import Iterator, List, Tuple, Union
 
 from googletrans import Translator
 from urllib.error import HTTPError
 
 from ..corpora.corpus_types import Word, Sentence, Text, WS
-from ..corpora.utils import get_stopwords, get_synonyms
+from ..corpora.utils import get_synonyms, is_stopword
 from .utils import autopsy_sentence, autopsy_text, pass_empty_text
+
+TRANSLATOR = Translator()
 
 
 @pass_empty_text
-def back_translate(text: Text, from_lang: str, to_lang: str, translator: Translator) -> Text:
+def back_translate(text: Text, from_lang: str, to_lang: str) -> Text:
     try:
-        translated_text = translator.translate(text, src=from_lang, dest=to_lang).text
-        back_translated_text = translator.translate(translated_text, src=to_lang, dest=from_lang).text
+        translated_text = TRANSLATOR.translate(text, src=from_lang, dest=to_lang).text
+        back_translated_text = TRANSLATOR.translate(translated_text, src=to_lang, dest=from_lang).text
         return back_translated_text
     except HTTPError:
         return text
@@ -143,25 +145,19 @@ def _insert_synonyms(sentences: List[Sentence], insertion_prob: float, n_times: 
     """Repeats n times the task of randomly inserting synonyms of words that are not stopwords in each sentence.
     Decorated with `autopsy_text`.
     """
-    stopwords = get_stopwords()
     for sentence in sentences:
-        augmented_sentence = _insert_synonyms_in_sentence(sentence, insertion_prob, n_times, stopwords)
+        augmented_sentence = _insert_synonyms_in_sentence(sentence, insertion_prob, n_times)
         yield augmented_sentence
 
 
 @autopsy_sentence
-def _insert_synonyms_in_sentence(
-    words: List[Word],
-    insertion_prob: float,
-    n_times: int,
-    stopwords: Set[Word],
-) -> Iterator[Word]:
+def _insert_synonyms_in_sentence(words: List[Word], insertion_prob: float, n_times: int) -> Iterator[Word]:
     """Repeats n times the task of randomly inserting synonyms of words that are not stopwords in the list of words.
     Decorated with `autopsy_sentence`.
     """
     augmented_words = words[:]
     for _ in range(n_times):
-        augmented_words = _insert_synonyms_into_another(words, augmented_words, insertion_prob, stopwords)
+        augmented_words = _insert_synonyms_into_another(words, augmented_words, insertion_prob)
     yield from augmented_words
 
 
@@ -169,7 +165,6 @@ def _insert_synonyms_into_another(
     inserting_words: List[Word],
     augmented_words: List[Word],
     insertion_prob: float,
-    stopwords: Set[Word],
 ) -> List[Word]:
     """Randomly inserts synonyms of `inserting_words` that are not stopwords into `augmented_words` at random position.
 
@@ -177,14 +172,13 @@ def _insert_synonyms_into_another(
         inserting_words: The words whose synonyms will be inserted into `augmented_words`.
         augmented_words: The words into which the synonyms will be inserted.
         insertion_prob: The probability of inserting a synonym for each word in `inserting_word`.
-        stopwords: The set of stopwords.
 
     Returns:
         `augmented_words` with synonyms of `inserting_words` randomly inserted.
     """
     current_num_words = len(augmented_words)
     for inserting_word in inserting_words:
-        if inserting_word not in stopwords and random.random() < insertion_prob:
+        if not is_stopword(inserting_word) and random.random() < insertion_prob:
             synonym = replace_word_with_synonym(inserting_word)
             if synonym == inserting_word:
                 continue
@@ -275,19 +269,18 @@ def _replace_synonyms(sentences: List[Sentence], replacement_prob: float) -> Ite
     """Randomly replaces words that are not stopwords in each sentence with synonyms.
     Decorated with `autopsy_text`.
     """
-    stopwords = get_stopwords()
     for sentence in sentences:
-        augmented_sentence = _replace_synonyms_in_sentence(sentence, replacement_prob, stopwords)
+        augmented_sentence = _replace_synonyms_in_sentence(sentence, replacement_prob)
         yield augmented_sentence
 
 
 @autopsy_sentence
-def _replace_synonyms_in_sentence(words: List[Word], replacement_prob: float, stopwords: Set[Word]) -> Iterator[Word]:
+def _replace_synonyms_in_sentence(words: List[Word], replacement_prob: float) -> Iterator[Word]:
     """Randomly replaces words that are not stopwords in the list of words with synonyms.
     Decorated with `autopsy_sentence`.
     """
     for word in words:
-        if word not in stopwords and random.random() < replacement_prob:
+        if not is_stopword(word) and random.random() < replacement_prob:
             synonym = replace_word_with_synonym(word)
             yield synonym
             continue

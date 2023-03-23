@@ -1,18 +1,17 @@
-from typing import List, Set
+from typing import List
 
+from .corpora import STOPWORDS
 from .corpus_types import Word
-from .stopwords import STOPWORDS
-from .wordnet import WORDNET
+from .raw_corpora import RAW_WORDNET
 
 
-def get_stopwords() -> Set[Word]:
-    """get the set data type stopwords."""
-    stopwords = STOPWORDS.get("stopwords", [])
-    stopwords = set(stopwords)
-    return stopwords
-
-
+# TODO: corpora 폴더 구조 최적화
 def get_synonyms(word: Word) -> List[Word]:
-    """get synonyms of the word from WordNet."""
-    synonyms = WORDNET.get(word, [])
+    """Gets synonyms of the word from WordNet."""
+    synonyms = RAW_WORDNET.get(word, [])
     return synonyms
+
+
+def is_stopword(word: Word) -> bool:
+    """Checks whether the word is a stopword."""
+    return word in STOPWORDS
