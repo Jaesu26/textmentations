@@ -1,4 +1,10 @@
-from .raw_corpora import RAW_STOPWORDS
+import json
+import os
 
-# TODO: final로 선언
-STOPWORDS = set(RAW_STOPWORDS.get("stopwords", []))
+STOPWORDS_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "corpora/stopwords.txt")
+with open(STOPWORDS_PATH, encoding="utf-8") as f:
+    STOPWORDS = frozenset(f.read().splitlines())
+
+WORDNET_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "corpora/wordnet.json")
+with open(WORDNET_PATH, encoding="utf-8") as f:
+    WORDNET = json.load(f)

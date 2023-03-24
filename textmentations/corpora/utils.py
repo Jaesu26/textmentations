@@ -1,14 +1,12 @@
 from typing import List
 
-from .corpora import STOPWORDS
-from .corpus_types import Word
-from .raw_corpora import RAW_WORDNET
+from .corpora import STOPWORDS, WORDNET
+from .types import Word
 
 
-# TODO: corpora 폴더 구조 최적화
 def get_synonyms(word: Word) -> List[Word]:
     """Gets synonyms of the word from WordNet."""
-    synonyms = RAW_WORDNET.get(word, [])
+    synonyms = WORDNET.get(word, [])
     return synonyms
 
 

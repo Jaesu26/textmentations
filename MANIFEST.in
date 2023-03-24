@@ -1,1 +1,1 @@
-include textmentations/corpora/raw_corpora/*.json
+graft textmentations/corpora/corpora

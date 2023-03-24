@@ -1,7 +1,7 @@
 from typing import Dict
 
 from ..augmentations.utils import extract_first_sentence, remove_first_sentence, wrap_text_with_sentences
-from ..corpora.corpus_types import Sentence, Text
+from ..corpora.types import Sentence, Text
 
 
 def extract_first_sentence_by_key(key2text: Dict[str, Text]) -> Dict[str, Sentence]:

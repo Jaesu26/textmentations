@@ -2,10 +2,9 @@ import random
 from typing import Any, Dict, List, Tuple, Union
 
 from albumentations.core.transforms_interface import to_tuple
-from googletrans import Translator
 
 from ..core.transforms_interface import TextTransform
-from ..corpora.corpus_types import Text
+from ..corpora.types import Language, Text
 from . import functional as F
 from .utils import split_text
 
@@ -75,8 +74,8 @@ class AEDA(TextTransform):
 class BackTranslation(TextTransform):
     def __init__(
         self,
-        from_lang: str = "ko",
-        to_lang: str = "en",
+        from_lang: Language = "ko",
+        to_lang: Language = "en",
         ignore_first: bool = False,
         always_apply: bool = False,
         p: float = 0.5,

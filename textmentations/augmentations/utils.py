@@ -4,7 +4,7 @@ from typing import Callable, Iterable, List, Optional
 
 from typing_extensions import Concatenate, ParamSpec
 
-from ..corpora.corpus_types import Word, Sentence, Text, WS
+from ..corpora.types import Word, Sentence, Text, WS
 
 _P = ParamSpec("_P")
 

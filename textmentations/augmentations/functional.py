@@ -5,15 +5,16 @@ from typing import Iterator, List, Tuple, Union
 from googletrans import Translator
 from urllib.error import HTTPError
 
-from ..corpora.corpus_types import Word, Sentence, Text, WS
+from ..corpora.types import Language, Word, Sentence, Text, WS
 from ..corpora.utils import get_synonyms, is_stopword
 from .utils import autopsy_sentence, autopsy_text, pass_empty_text
 
+# TODO: 전역 변수 대신 가독성을 위해 함수로 만들기
 TRANSLATOR = Translator()
 
 
 @pass_empty_text
-def back_translate(text: Text, from_lang: str, to_lang: str) -> Text:
+def back_translate(text: Text, from_lang: Language, to_lang: Language) -> Text:
     try:
         translated_text = TRANSLATOR.translate(text, src=from_lang, dest=to_lang).text
         back_translated_text = TRANSLATOR.translate(translated_text, src=to_lang, dest=from_lang).text
@@ -72,15 +73,14 @@ def _delete_strings(
 ) -> Iterator[WS]:
     """Randomly deletes strings in the list of strings."""
     num_strings = len(strings)
-    if isinstance(min_strings, float):
-        min_strings = math.ceil(num_strings * min_strings)
-    if num_strings <= min_strings:
-        yield from strings
-
+    min_strings = math.ceil(len(strings) * min_strings) if isinstance(min_strings, float) else min_strings
     max_deletion_counts = num_strings - min_strings
     deleted_counts = 0
-    for string in strings:
-        if deleted_counts < max_deletion_counts and random.random() < deletion_prob:
+    for index, string in enumerate(strings):
+        if deleted_counts >= max_deletion_counts:
+            yield from strings[index:]
+            break
+        if random.random() < deletion_prob:
             deleted_counts += 1
             continue
         yield string
