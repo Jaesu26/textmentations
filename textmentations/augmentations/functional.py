@@ -2,22 +2,39 @@ import math
 import random
 from typing import Iterator, List, Tuple, Union
 
-from googletrans import Translator
 from urllib.error import HTTPError
 
 from ..corpora.types import Language, Word, Sentence, Text, WS
-from ..corpora.utils import get_synonyms, is_stopword
-from .utils import autopsy_sentence, autopsy_text, pass_empty_text
-
-# TODO: 전역 변수 대신 가독성을 위해 함수로 만들기
-TRANSLATOR = Translator()
+from ..corpora.utils import get_random_synonym, is_stopword
+from .utils import autopsy_sentence, autopsy_text, get_translator, pass_empty_text
 
 
 @pass_empty_text
 def back_translate(text: Text, from_lang: Language, to_lang: Language) -> Text:
+    """Back-translates the text by translating it to the target language and then back to the original.
+
+    Args:
+        text: The input text to be back-translated.
+        from_lang: The language of the input text.
+        to_lang: The language to which the input text will be translated.
+
+    Returns:
+        The back-translated text.
+
+    Raises:
+        HTTPError: If there is an error while connecting to the translation API.
+
+    Examples:
+        >>> text = "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."
+        >>> from_lang = "ko"
+        >>> to_lang = "en"
+        >>> back_translate(text, from_lang, to_lang)
+        "나는 짜장면을 즐겼다. 짬뽕도 맛있게 먹었습니다. 짬짜면도 먹고 싶었어요."
+    """
+    translator = get_translator()
     try:
-        translated_text = TRANSLATOR.translate(text, src=from_lang, dest=to_lang).text
-        back_translated_text = TRANSLATOR.translate(translated_text, src=to_lang, dest=from_lang).text
+        translated_text = translator.translate(text, src=from_lang, dest=to_lang).text
+        back_translated_text = translator.translate(translated_text, src=to_lang, dest=from_lang).text
         return back_translated_text
     except HTTPError:
         return text
@@ -52,7 +69,7 @@ def _delete_words(
     deletion_prob: float,
     min_words_each_sentence: Union[float, int],
 ) -> Iterator[Sentence]:
-    """Randomly deletes words in each sentence. Decorated with `autopsy_text`."""
+    """Randomly deletes words in each sentence."""
     for sentence in sentences:
         augmented_sentence = _delete_words_in_sentence(sentence, deletion_prob, min_words_each_sentence)
         if not augmented_sentence:
@@ -62,15 +79,11 @@ def _delete_words(
 
 @autopsy_sentence
 def _delete_words_in_sentence(words: List[Word], deletion_prob: float, min_words: Union[float, int]) -> Iterator[Word]:
-    """Randomly deletes words in the list of words. Decorated with `autopsy_sentence`."""
+    """Randomly deletes words in the list of words."""
     return _delete_strings(words, deletion_prob, min_words)
 
 
-def _delete_strings(
-    strings: List[WS],
-    deletion_prob: float,
-    min_strings: Union[float, int],
-) -> Iterator[WS]:
+def _delete_strings(strings: List[WS], deletion_prob: float, min_strings: Union[float, int]) -> Iterator[WS]:
     """Randomly deletes strings in the list of strings."""
     num_strings = len(strings)
     min_strings = math.ceil(len(strings) * min_strings) if isinstance(min_strings, float) else min_strings
@@ -115,7 +128,7 @@ def _delete_sentences(
     deletion_prob: float,
     min_sentences: Union[float, int],
 ) -> Iterator[Sentence]:
-    """Randomly deletes sentences in the list of sentences. Decorated with `autopsy_text`."""
+    """Randomly deletes sentences in the list of sentences."""
     return _delete_strings(sentences, deletion_prob, min_sentences)
 
 
@@ -142,9 +155,7 @@ def insert_synonyms(text: Text, insertion_prob: float, n_times: int) -> Text:
 
 @autopsy_text
 def _insert_synonyms(sentences: List[Sentence], insertion_prob: float, n_times: int) -> Iterator[Sentence]:
-    """Repeats n times the task of randomly inserting synonyms of words that are not stopwords in each sentence.
-    Decorated with `autopsy_text`.
-    """
+    """Repeats n times the task of randomly inserting synonyms of words that are not stopwords in each sentence."""
     for sentence in sentences:
         augmented_sentence = _insert_synonyms_in_sentence(sentence, insertion_prob, n_times)
         yield augmented_sentence
@@ -152,49 +163,39 @@ def _insert_synonyms(sentences: List[Sentence], insertion_prob: float, n_times: 
 
 @autopsy_sentence
 def _insert_synonyms_in_sentence(words: List[Word], insertion_prob: float, n_times: int) -> Iterator[Word]:
-    """Repeats n times the task of randomly inserting synonyms of words that are not stopwords in the list of words.
-    Decorated with `autopsy_sentence`.
-    """
+    """Repeats n times the task of randomly inserting synonyms of words that are not stopwords in the list of words."""
     augmented_words = words[:]
     for _ in range(n_times):
-        augmented_words = _insert_synonyms_into_another(words, augmented_words, insertion_prob)
+        augmented_words = _insert_synonyms_into_target(words, augmented_words, insertion_prob)
     yield from augmented_words
 
 
-def _insert_synonyms_into_another(
-    inserting_words: List[Word],
-    augmented_words: List[Word],
+def _insert_synonyms_into_target(
+    source_words: List[Word],
+    target_words: List[Word],
     insertion_prob: float,
 ) -> List[Word]:
-    """Randomly inserts synonyms of `inserting_words` that are not stopwords into `augmented_words` at random position.
+    """Randomly inserts synonyms of `source_words` that are not stopwords into `target_words` at a random position.
 
     Args:
-        inserting_words: The words whose synonyms will be inserted into `augmented_words`.
-        augmented_words: The words into which the synonyms will be inserted.
-        insertion_prob: The probability of inserting a synonym for each word in `inserting_word`.
+        source_words: A list of words to be replaced by synonyms and inserted into `target_words`.
+        target_words: A list of words into which synonyms of `source_words` will be inserted at a random position.
+        insertion_prob: The probability of inserting a synonym for each word in `source_word`.
 
     Returns:
-        `augmented_words` with synonyms of `inserting_words` randomly inserted.
+        A list of words with synonyms of `source_words` randomly inserted into `target_words`.
     """
-    current_num_words = len(augmented_words)
-    for inserting_word in inserting_words:
-        if not is_stopword(inserting_word) and random.random() < insertion_prob:
-            synonym = replace_word_with_synonym(inserting_word)
-            if synonym == inserting_word:
-                continue
-            synonym_index = random.randint(0, current_num_words)
-            augmented_words.insert(synonym_index, synonym)
-            current_num_words += 1
-    return augmented_words
-
-
-def replace_word_with_synonym(word: Word) -> Word:
-    """Replaces the word with one of synonyms at random."""
-    synonyms = get_synonyms(word)
-    if synonyms:
-        synonym = random.choice(synonyms)
-        return synonym
-    return word
+    current_num_words = len(target_words)
+    for source_word in source_words:
+        if is_stopword(source_word) or random.random() >= insertion_prob:
+            continue
+        synonym = get_random_synonym(source_word)
+        if synonym == source_word:
+            continue
+        synonym_index = random.randint(0, current_num_words)
+        target_words.insert(synonym_index, synonym)
+        current_num_words += 1
+    return target_words
 
 
 @pass_empty_text
@@ -225,7 +226,7 @@ def _insert_punctuations(
     insertion_prob: float,
     punctuations: Tuple[str, ...],
 ) -> Iterator[Sentence]:
-    """Randomly inserts punctuations in each sentence. Decorated with `autopsy_text`."""
+    """Randomly inserts punctuations in each sentence."""
     for sentence in sentences:
         augmented_sentence = _insert_punctuations_in_sentence(sentence, insertion_prob, punctuations)
         yield augmented_sentence
@@ -237,7 +238,7 @@ def _insert_punctuations_in_sentence(
     insertion_prob: float,
     punctuations: Tuple[str, ...],
 ) -> Iterator[Word]:
-    """Randomly inserts punctuations in the list of word. Decorated with `autopsy_sentence`."""
+    """Randomly inserts punctuations in the list of word."""
     for word in words:
         if random.random() < insertion_prob:
             punctuation = random.choice(punctuations)
@@ -266,9 +267,7 @@ def replace_synonyms(text: Text, replacement_prob: float) -> Text:
 
 @autopsy_text
 def _replace_synonyms(sentences: List[Sentence], replacement_prob: float) -> Iterator[Sentence]:
-    """Randomly replaces words that are not stopwords in each sentence with synonyms.
-    Decorated with `autopsy_text`.
-    """
+    """Randomly replaces words that are not stopwords in each sentence with synonyms."""
     for sentence in sentences:
         augmented_sentence = _replace_synonyms_in_sentence(sentence, replacement_prob)
         yield augmented_sentence
@@ -276,12 +275,10 @@ def _replace_synonyms(sentences: List[Sentence], replacement_prob: float) -> Ite
 
 @autopsy_sentence
 def _replace_synonyms_in_sentence(words: List[Word], replacement_prob: float) -> Iterator[Word]:
-    """Randomly replaces words that are not stopwords in the list of words with synonyms.
-    Decorated with `autopsy_sentence`.
-    """
+    """Randomly replaces words that are not stopwords in the list of words with synonyms."""
     for word in words:
         if not is_stopword(word) and random.random() < replacement_prob:
-            synonym = replace_word_with_synonym(word)
+            synonym = get_random_synonym(word)
             yield synonym
             continue
         yield word
@@ -309,9 +306,7 @@ def swap_words(text: Text, n_times: int) -> Text:
 
 @autopsy_text
 def _swap_words(sentences: List[Sentence], n_times: int) -> Iterator[Sentence]:
-    """Repeats n times the task of randomly swapping two words in a randomly selected sentence.
-    Decorated with `autopsy_text`.
-    """
+    """Repeats n times the task of randomly swapping two words in a randomly selected sentence."""
     num_sentences = len(sentences)
     augmented_sentences = sentences
     for _ in range(n_times):
@@ -322,7 +317,7 @@ def _swap_words(sentences: List[Sentence], n_times: int) -> Iterator[Sentence]:
 
 @autopsy_sentence
 def _swap_two_words_in_sentence(words: List[Word]) -> Iterator[Word]:
-    """Randomly swaps two words in the list of words. Decorated with `autopsy_sentence`."""
+    """Randomly swaps two words in the list of words."""
     yield from swap_two_strings(words)
 
 
@@ -356,9 +351,7 @@ def swap_sentences(text: Text, n_times: int) -> Text:
 
 @autopsy_text
 def _swap_sentences(sentences: List[Sentence], n_times: int) -> Iterator[Sentence]:
-    """Repeats n times the task of randomly swapping two sentences in the list of sentences.
-    Decorated with `autopsy_text`.
-    """
+    """Repeats n times the task of randomly swapping two sentences in the list of sentences."""
     augmented_sentences = sentences
     for _ in range(n_times):
         augmented_sentences = swap_two_strings(augmented_sentences)

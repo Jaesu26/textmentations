@@ -2,6 +2,7 @@ import random
 from typing import Any, Dict, List, Tuple, Union
 
 from albumentations.core.transforms_interface import to_tuple
+from googletrans.constants import LANGUAGES
 
 from ..core.transforms_interface import TextTransform
 from ..corpora.types import Language, Text
@@ -70,8 +71,15 @@ class AEDA(TextTransform):
         return ("insertion_prob_limit", "punctuations")
 
 
-# TODO: REAMD.md 파일에 추가, docstring 추가
+# TODO: README.md 파일에 추가
 class BackTranslation(TextTransform):
+    """Back-translates the input text by translating it to the target language and then back to the original.
+
+    Args:
+        from_lang: The language of the input text. Default: "ko".
+        to_lang: The language to which the input text will be translated. Default: "en".
+        p: The probability of applying the transform. Default: 0.5.
+    """
     def __init__(
         self,
         from_lang: Language = "ko",
@@ -81,8 +89,15 @@ class BackTranslation(TextTransform):
         p: float = 0.5,
     ) -> None:
         super(BackTranslation, self).__init__(ignore_first, always_apply, p)
+        self._validate_transform_init_args(from_lang, to_lang)
         self.from_lang = from_lang
         self.to_lang = to_lang
+
+    def _validate_transform_init_args(self, from_lang: Language, to_lang: Language) -> None:
+        if from_lang not in LANGUAGES:
+            raise ValueError(f"from_lang must be one of ({list(LANGUAGES.keys())}). Got: {from_lang}")
+        if to_lang not in LANGUAGES:
+            raise ValueError(f"to_lang must be one of ({list(LANGUAGES.keys())}). Got: {to_lang}")
 
     def apply(self, text: Text, **params: Any) -> Text:
         return F.back_translate(text, self.from_lang, self.to_lang)
@@ -118,11 +133,7 @@ class RandomDeletion(TextTransform):
         self.deletion_prob = deletion_prob
         self.min_words_each_sentence = min_words_each_sentence
 
-    def _validate_transform_init_args(
-        self,
-        deletion_prob: float,
-        min_words_each_sentence: Union[float, int]
-    ) -> None:
+    def _validate_transform_init_args(self, deletion_prob: float, min_words_each_sentence: Union[float, int]) -> None:
         if not isinstance(deletion_prob, (float, int)):
             raise TypeError(f"deletion_prob must be a real number between 0 and 1. Got: {type(deletion_prob)}")
         if not (0.0 <= deletion_prob <= 1.0):

@@ -2,10 +2,12 @@ import re
 from functools import wraps
 from typing import Callable, Iterable, List, Optional
 
+from googletrans import Translator
 from typing_extensions import Concatenate, ParamSpec
 
 from ..corpora.types import Word, Sentence, Text, WS
 
+TRANSLATOR = Translator()
 _P = ParamSpec("_P")
 
 
@@ -153,7 +155,7 @@ def remove_nth_sentence(text: Text, n: int) -> Text:
 
 
 def pass_empty_text(func: Callable[Concatenate[Text, _P], Text]) -> Callable[Concatenate[Text, _P], Text]:
-    """Returns the input text directly if it is empty, otherwise calls the decorated function.
+    """Returns the text directly if it is empty, otherwise calls the decorated function.
 
     Args:
         func: The function to be decorated.
@@ -189,3 +191,8 @@ def wrap_text_with_sentences(
     suffix_text = join_sentences(suffix_sentences) if suffix_sentences else ""
     wrapped_text = " ".join([prefix_text, text, suffix_text]).strip()
     return wrapped_text
+
+
+def get_translator() -> Translator:
+    """Returns an instance of Translator class"""
+    return TRANSLATOR
