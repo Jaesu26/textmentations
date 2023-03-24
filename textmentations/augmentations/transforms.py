@@ -209,12 +209,17 @@ class RandomDeletionSentence(TextTransform):
         if isinstance(self.min_sentences, int):
             return {"min_sentences": self.min_sentences - self.ignore_first}
 
+        # When `min_sentences` is a float and `ignore_first` is True,
+        # the proportion of sentences to retain in the text after deletion is grater than `min_sentences`
+        # So, it is necessary to adjust `min_sentences` before passing it to the function's parameter
         # n: Length of original sentences (>= 2)
-        # p: `min_sentences` ([0, 1))
+        # p: `min_sentences` ([0, 1]) If `ignore_first` is False
         # q: The minimum proportion of sentences to retain in the text after deletion if `ignore_first` is True
-        # If not `ignore_first`: the minimum number of sentences after deleting is n * p
-        # If `ignore_first`: the minimum number of sentences after deleting is 1 + (n - 1)*q
-        # So, n * p == 1 + (n - 1)*q, ===> q = (n*p - 1) / (n - 1)
+        # If `ignore_first` is False: p == q
+        # If `ignore_first` is True: See below
+        # If not `ignore_first`: The minimum number of sentences after deleting is n * p
+        # If `ignore_first`: The minimum number of sentences after deleting is 1 + (n - 1)*q
+        # Therefore, n * p == 1 + (n - 1)*q, ===> q = (n*p - 1) / (n - 1)
         text = params["text"]
         num_original_sentences = len(split_text(text)) + self.ignore_first
         if num_original_sentences < 2:
