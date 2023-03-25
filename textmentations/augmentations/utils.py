@@ -38,12 +38,14 @@ def autopsy_sentence(
         >>> remove_second_word(sentence)
         "짜장면을 먹었다"
     """
+
     @wraps(func)
     def wrapped(sentence: Sentence, *args: _P.args, **kwargs: _P.kwargs) -> Sentence:
         words = split_sentence(sentence)
         processed_words = func(words, *args, **kwargs)
         processed_sentence = join_words(processed_words)
         return processed_sentence
+
     return wrapped
 
 
@@ -74,12 +76,14 @@ def autopsy_text(
         >>> remove_second_sentence(text)
         "짜장면을 맛있게 먹었다."
     """
+
     @wraps(func)
     def wrapped(text: Text, *args: _P.args, **kwargs: _P.kwargs) -> Text:
         sentences = split_text(text)
         processed_sentences = func(sentences, *args, **kwargs)
         processed_text = join_sentences(processed_sentences)
         return processed_text
+
     return wrapped
 
 
@@ -163,19 +167,18 @@ def pass_empty_text(func: Callable[Concatenate[Text, _P], Text]) -> Callable[Con
     Returns:
         A wrapper function.
     """
+
     @wraps(func)
     def wrapped(text: Text, *args: _P.args, **kwargs: _P.kwargs) -> Text:
         if not text:
             return text
         return func(text, *args, **kwargs)
+
     return wrapped
 
 
 def wrap_text_with_sentences(
-    text: Text,
-    *,
-    prefix_sentences: Optional[List[Sentence]] = None,
-    suffix_sentences: Optional[List[Sentence]] = None
+    text: Text, *, prefix_sentences: Optional[List[Sentence]] = None, suffix_sentences: Optional[List[Sentence]] = None
 ) -> Text:
     """Wraps the text with the specified prefix and suffix sentences.
 

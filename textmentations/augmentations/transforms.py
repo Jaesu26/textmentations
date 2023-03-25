@@ -22,6 +22,7 @@ class AEDA(TextTransform):
     References:
         https://arxiv.org/pdf/2108.13230.pdf
     """
+
     def __init__(
         self,
         insertion_prob_limit: Union[float, Tuple[float, float]] = (0.0, 0.3),
@@ -36,9 +37,7 @@ class AEDA(TextTransform):
         self.punctuations = punctuations
 
     def _validate_transform_init_args(
-        self,
-        insertion_prob_limit: Union[float, Tuple[float, float]],
-        punctuations: Tuple[str, ...]
+        self, insertion_prob_limit: Union[float, Tuple[float, float]], punctuations: Tuple[str, ...]
     ) -> None:
         if not isinstance(insertion_prob_limit, (float, int, tuple)):
             raise TypeError(
@@ -80,6 +79,7 @@ class BackTranslation(TextTransform):
         to_lang: The language to which the input text will be translated.
         p: The probability of applying the transform.
     """
+
     def __init__(
         self,
         from_lang: Language = "ko",

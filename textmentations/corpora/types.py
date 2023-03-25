@@ -118,5 +118,5 @@ Language: TypeAlias = Literal[
     "yo",
     "zh-cn",
     "zh-tw",
-    "zu"
+    "zu",
 ]

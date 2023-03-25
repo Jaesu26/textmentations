@@ -47,8 +47,7 @@ class TextTransform(BasicTransform):
             force_apply=force_apply, **key2text_without_first_sentence
         )
         key2augmented_text = wrap_text_with_first_sentence_by_key(
-            key2augmented_text_without_first_sentence,
-            key2first_sentence
+            key2augmented_text_without_first_sentence, key2first_sentence
         )
         return key2augmented_text
 

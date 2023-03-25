@@ -21,7 +21,7 @@ def test_back_translate():
         (1.0, 1, "먹었다. 먹었다. 싶었다."),
         (True, False, ""),
         (True, True, "먹었다. 먹었다. 싶었다."),
-    ]
+    ],
 )
 def test_delete_words(text_without_synonyms, deletion_prob, min_words_each_sentence, expected_text):
     augmented_text = F.delete_words(text_without_synonyms, deletion_prob, min_words_each_sentence)
@@ -39,20 +39,14 @@ def test_delete_words(text_without_synonyms, deletion_prob, min_words_each_sente
         (1.0, 1, "짬짜면도 먹고 싶었다."),
         (True, False, ""),
         (True, True, "짬짜면도 먹고 싶었다."),
-    ]
+    ],
 )
 def test_delete_sentences(text_without_synonyms, deletion_prob, min_sentences, expected_text):
     augmented_text = F.delete_sentences(text_without_synonyms, deletion_prob, min_sentences)
     assert augmented_text == expected_text
 
 
-@pytest.mark.parametrize(
-    ["text", "is_same"],
-    [
-        ("text_with_synonyms", False),
-        ("text_without_synonyms", True)
-    ]
-)
+@pytest.mark.parametrize(["text", "is_same"], [("text_with_synonyms", False), ("text_without_synonyms", True)])
 def test_insert_synonyms(text, is_same, request):
     text = request.getfixturevalue(text)
     insertion_prob = 1.0
@@ -69,13 +63,7 @@ def test_insert_punctuations(text_without_synonyms):
     assert augmented_text == expected_text
 
 
-@pytest.mark.parametrize(
-    ["text", "is_same"],
-    [
-        ("text_with_synonyms", False),
-        ("text_without_synonyms", True)
-    ]
-)
+@pytest.mark.parametrize(["text", "is_same"], [("text_with_synonyms", False), ("text_without_synonyms", True)])
 def test_replace_synonyms(text, is_same, request):
     text = request.getfixturevalue(text)
     replacement_prob = 1.0
