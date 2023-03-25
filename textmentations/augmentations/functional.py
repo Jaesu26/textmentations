@@ -1,10 +1,9 @@
 import math
 import random
 from typing import Iterator, List, Tuple, Union
-
 from urllib.error import HTTPError
 
-from ..corpora.types import Language, Word, Sentence, Text, WS
+from ..corpora.types import Corpus, Language, Sentence, Text, Word
 from ..corpora.utils import get_random_synonym, is_stopword
 from .utils import autopsy_sentence, autopsy_text, get_translator, pass_empty_text
 
@@ -83,7 +82,7 @@ def _delete_words_in_sentence(words: List[Word], deletion_prob: float, min_words
     return _delete_strings(words, deletion_prob, min_words)
 
 
-def _delete_strings(strings: List[WS], deletion_prob: float, min_strings: Union[float, int]) -> Iterator[WS]:
+def _delete_strings(strings: List[Corpus], deletion_prob: float, min_strings: Union[float, int]) -> Iterator[Corpus]:
     """Randomly deletes strings in the list of strings."""
     num_strings = len(strings)
     min_strings = math.ceil(len(strings) * min_strings) if isinstance(min_strings, float) else min_strings
@@ -321,7 +320,7 @@ def _swap_two_words_in_sentence(words: List[Word]) -> Iterator[Word]:
     yield from swap_two_strings(words)
 
 
-def swap_two_strings(strings: List[WS]) -> List[WS]:
+def swap_two_strings(strings: List[Corpus]) -> List[Corpus]:
     """Randomly swaps two strings in the list of strings."""
     num_strings = len(strings)
     if num_strings >= 2:

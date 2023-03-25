@@ -5,7 +5,7 @@ from typing import Callable, Iterable, List, Optional
 from googletrans import Translator
 from typing_extensions import Concatenate, ParamSpec
 
-from ..corpora.types import Word, Sentence, Text, WS
+from ..corpora.types import Corpus, Sentence, Text, Word
 
 TRANSLATOR = Translator()
 _P = ParamSpec("_P")
@@ -113,12 +113,12 @@ def join_sentences(sentences: Iterable[Sentence]) -> Text:
     return text
 
 
-def strip(strings: List[WS]) -> List[WS]:
+def strip(strings: List[Corpus]) -> List[Corpus]:
     """Removes leading and trailing whitespaces from each string in the list."""
     return [s.strip() for s in strings]
 
 
-def remove_empty_strings(strings: List[WS]) -> List[WS]:
+def remove_empty_strings(strings: List[Corpus]) -> List[Corpus]:
     """Removes empty strings from the list of strings."""
     return [s for s in strings if s]
 
