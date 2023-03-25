@@ -17,7 +17,7 @@ class AEDA(TextTransform):
         insertion_prob_limit: The probability of inserting a punctuation.
             If insertion_prob_limit is a float, the range will be (0.0, insertion_prob_limit).
         punctuations: Punctuations to be inserted at random.
-        p: The probability of applying the transform.
+        p: The probability of applying this transform.
 
     References:
         https://arxiv.org/pdf/2108.13230.pdf
@@ -77,7 +77,7 @@ class BackTranslation(TextTransform):
     Args:
         from_lang: The language of the input text.
         to_lang: The language to which the input text will be translated.
-        p: The probability of applying the transform.
+        p: The probability of applying this transform.
     """
 
     def __init__(
@@ -114,7 +114,7 @@ class RandomDeletion(TextTransform):
         min_words_each_sentence:
             If a `float`, it is the minimum proportion of words to retain in each sentence.
             If an `int`, it is the minimum number of words in each sentence.
-        p: The probability of applying the transform.
+        p: The probability of applying this transform.
 
     References:
         https://arxiv.org/pdf/1901.11196.pdf
@@ -168,7 +168,7 @@ class RandomDeletionSentence(TextTransform):
         min_sentences:
             If a `float`, it is the minimum proportion of sentences to retain in the text.
             If an `int`, it is the minimum number of sentences in the text.
-        p: The probability of applying the transform.
+        p: The probability of applying this transform.
     """
 
     def __init__(
@@ -239,7 +239,7 @@ class RandomInsertion(TextTransform):
     Args:
         insertion_prob: The probability of inserting a synonym.
         n_times: The number of times to repeat the operation.
-        p: The probability of applying the transform.
+        p: The probability of applying this transform.
 
     References:
         https://arxiv.org/pdf/1901.11196.pdf
@@ -280,7 +280,7 @@ class RandomSwap(TextTransform):
 
     Args:
         n_times: The number of times to repeat the operation.
-        p: The probability of applying the transform.
+        p: The probability of applying this transform.
 
     References:
         https://arxiv.org/pdf/1901.11196.pdf
@@ -315,7 +315,7 @@ class RandomSwapSentence(TextTransform):
 
     Args:
         n_times: The number of times to repeat the operation.
-        p: The probability of applying the transform.
+        p: The probability of applying this transform.
     """
 
     def __init__(
@@ -347,7 +347,7 @@ class SynonymReplacement(TextTransform):
 
     Args:
         replacement_prob: The probability of replacing a word with a synonym.
-        p: The probability of applying the transform.
+        p: The probability of applying this transform.
 
     References:
         https://arxiv.org/pdf/1901.11196.pdf
