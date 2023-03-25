@@ -18,7 +18,7 @@ def back_translate(text: Text, from_lang: Language, to_lang: Language) -> Text:
         to_lang: The language to which the input text will be translated.
 
     Returns:
-        The back-translated text.
+        A back-translated text.
 
     Raises:
         HTTPError: If there is an error while connecting to the translation API.
