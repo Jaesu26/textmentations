@@ -2,6 +2,13 @@
 line-length = 120
 target-version = ['py38']
 
+[tool.coverage.run]
+source = ["textmentations"]
+
+[tool.coverage.report]
+exclude_lines = ["raise NotImplementedError"]
+ignore_errors = true
+
 [tool.isort]
 line_length = 120
 profile = "black"
@@ -10,3 +17,6 @@ profile = "black"
 files = ["textmentations"]
 ignore_missing_imports = true
 python_version = 3.8
+
+[tool.pytest.ini_options]
+testpaths = "tests"
