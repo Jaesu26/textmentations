@@ -1,6 +1,6 @@
 import re
 from functools import wraps
-from typing import Callable, Iterable, List, Optional
+from typing import Callable, List, Optional
 
 from googletrans import Translator
 from typing_extensions import Concatenate, ParamSpec
@@ -12,7 +12,7 @@ _P = ParamSpec("_P")
 
 
 def autopsy_sentence(
-    func: Callable[Concatenate[List[Word], _P], Iterable[Word]]
+    func: Callable[Concatenate[List[Word], _P], List[Word]]
 ) -> Callable[Concatenate[Sentence, _P], Sentence]:
     """The decorator follows these steps:
         1. Splits the input sentence into words.
@@ -50,7 +50,7 @@ def autopsy_sentence(
 
 
 def autopsy_text(
-    func: Callable[Concatenate[List[Sentence], _P], Iterable[Sentence]]
+    func: Callable[Concatenate[List[Sentence], _P], List[Sentence]]
 ) -> Callable[Concatenate[Text, _P], Text]:
     """The decorator follows these steps:
         1. Splits the input text into sentences.
@@ -103,20 +103,6 @@ def split_text(text: Text) -> List[Sentence]:
     return sentences
 
 
-def join_words(words: Iterable[Word]) -> Sentence:
-    """Joins words into a sentence."""
-    sentence = " ".join(words)
-    return sentence
-
-
-def join_sentences(sentences: Iterable[Sentence]) -> Text:
-    """Joins sentences into a text."""
-    text = ". ".join(sentences)
-    if text:
-        text = ".".join([text, ""])
-    return text
-
-
 def strip(strings: List[Corpus]) -> List[Corpus]:
     """Removes leading and trailing whitespaces from each string in the list."""
     return [s.strip() for s in strings]
@@ -125,6 +111,19 @@ def strip(strings: List[Corpus]) -> List[Corpus]:
 def remove_empty_strings(strings: List[Corpus]) -> List[Corpus]:
     """Removes empty strings from the list of strings."""
     return [s for s in strings if s]
+
+
+def join_words(words: List[Word]) -> Sentence:
+    """Joins words into a sentence."""
+    sentence = " ".join(words)
+    return sentence
+
+
+def join_sentences(sentences: List[Sentence]) -> Text:
+    """Joins sentences into a text."""
+    text = ". ".join(sentences)
+    text = ".".join([text, ""]) if text else text
+    return text
 
 
 def extract_first_sentence(text: Text) -> Sentence:
