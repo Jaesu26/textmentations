@@ -7,7 +7,7 @@ from googletrans.constants import LANGUAGES
 from ..core.transforms_interface import TextTransform
 from ..corpora.types import Language, Text
 from . import functional as F
-from .utils import split_text
+from .utils import split_text_into_sentences
 
 
 class AEDA(TextTransform):
@@ -221,7 +221,7 @@ class RandomDeletionSentence(TextTransform):
         # If `ignore_first`: The minimum number of sentences after deleting is 1 + (n - 1)*q
         # Therefore, n * p == 1 + (n - 1)*q, ===> q = (n*p - 1) / (n - 1)
         text = params["text"]
-        num_original_sentences = len(split_text(text)) + self.ignore_first
+        num_original_sentences = len(split_text_into_sentences(text)) + self.ignore_first
         if num_original_sentences < 2:
             return {"min_sentences": self.min_sentences}
         return {

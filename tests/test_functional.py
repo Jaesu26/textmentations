@@ -1,7 +1,7 @@
 import pytest
 
 import textmentations.augmentations.functional as F
-from textmentations.augmentations.utils import split_text
+from textmentations.augmentations.utils import split_text_into_sentences
 
 
 def test_back_translate():
@@ -72,18 +72,18 @@ def test_replace_synonyms(text, is_same, request):
 
 
 def test_swap_words(text):
-    original_sentences = split_text(text)
+    original_sentences = split_text_into_sentences(text)
     n = len(original_sentences)
     n_times = 1
     augmented_text = F.swap_words(text, n_times)
-    augmented_sentences = split_text(augmented_text)
+    augmented_sentences = split_text_into_sentences(augmented_text)
     assert sum([original == augmented for original, augmented in zip(original_sentences, augmented_sentences)]) == n - 1
 
 
 def test_swap_sentences(text):
-    original_sentences = split_text(text)
+    original_sentences = split_text_into_sentences(text)
     n = len(original_sentences)
     n_times = 1
     augmented_text = F.swap_sentences(text, n_times)
-    augmented_sentences = split_text(augmented_text)
+    augmented_sentences = split_text_into_sentences(augmented_text)
     assert sum([original == augmented for original, augmented in zip(original_sentences, augmented_sentences)]) == n - 2

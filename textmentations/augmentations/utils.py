@@ -41,9 +41,9 @@ def autopsy_sentence(
 
     @wraps(func)
     def wrapped(sentence: Sentence, *args: _P.args, **kwargs: _P.kwargs) -> Sentence:
-        words = split_sentence(sentence)
+        words = split_sentence_into_words(sentence)
         processed_words = func(words, *args, **kwargs)
-        processed_sentence = join_words(processed_words)
+        processed_sentence = join_words_into_sentence(processed_words)
         return processed_sentence
 
     return wrapped
@@ -79,15 +79,15 @@ def autopsy_text(
 
     @wraps(func)
     def wrapped(text: Text, *args: _P.args, **kwargs: _P.kwargs) -> Text:
-        sentences = split_text(text)
+        sentences = split_text_into_sentences(text)
         processed_sentences = func(sentences, *args, **kwargs)
-        processed_text = join_sentences(processed_sentences)
+        processed_text = join_sentences_into_text(processed_sentences)
         return processed_text
 
     return wrapped
 
 
-def split_sentence(sentence: Sentence) -> List[Word]:
+def split_sentence_into_words(sentence: Sentence) -> List[Word]:
     """Splits the sentence into words."""
     words = sentence.split()
     words = strip(words)
@@ -95,7 +95,7 @@ def split_sentence(sentence: Sentence) -> List[Word]:
     return words
 
 
-def split_text(text: Text) -> List[Sentence]:
+def split_text_into_sentences(text: Text) -> List[Sentence]:
     """Splits the text into sentences."""
     sentences = re.split(r"[.]", text)
     sentences = strip(sentences)
@@ -113,13 +113,13 @@ def remove_empty_strings(strings: List[Corpus]) -> List[Corpus]:
     return [s for s in strings if s]
 
 
-def join_words(words: List[Word]) -> Sentence:
+def join_words_into_sentence(words: List[Word]) -> Sentence:
     """Joins words into a sentence."""
     sentence = " ".join(words)
     return sentence
 
 
-def join_sentences(sentences: List[Sentence]) -> Text:
+def join_sentences_into_text(sentences: List[Sentence]) -> Text:
     """Joins sentences into a text."""
     text = ". ".join(sentences)
     text = ".".join([text, ""]) if text else text
@@ -133,7 +133,7 @@ def extract_first_sentence(text: Text) -> Sentence:
 
 def extract_nth_sentence(text: Text, n: int) -> Sentence:
     """Extracts the nth sentence from the text."""
-    sentences = split_text(text)
+    sentences = split_text_into_sentences(text)
     try:
         nth_sentence = sentences[n]
         return nth_sentence
@@ -148,10 +148,10 @@ def remove_first_sentence(text: Text) -> Text:
 
 def remove_nth_sentence(text: Text, n: int) -> Text:
     """Removes the nth sentence from the text"""
-    sentences = split_text(text)
+    sentences = split_text_into_sentences(text)
     try:
         del sentences[n]
-        text_without_nth_sentence = join_sentences(sentences)
+        text_without_nth_sentence = join_sentences_into_text(sentences)
         return text_without_nth_sentence
     except IndexError:
         return text
@@ -189,8 +189,8 @@ def wrap_text_with_sentences(
     Returns:
         A wrapped text.
     """
-    prefix_text = join_sentences(prefix_sentences) if prefix_sentences else ""
-    suffix_text = join_sentences(suffix_sentences) if suffix_sentences else ""
+    prefix_text = join_sentences_into_text(prefix_sentences) if prefix_sentences else ""
+    suffix_text = join_sentences_into_text(suffix_sentences) if suffix_sentences else ""
     wrapped_text = " ".join([prefix_text, text, suffix_text]).strip()
     return wrapped_text
 
