@@ -86,6 +86,7 @@ def _delete_words_in_sentence(words: List[Word], deletion_prob: float, min_words
 
 
 def _delete_strings(strings: List[Corpus], deletion_prob: float, min_strings: Union[float, int]) -> List[Corpus]:
+    """Randomly deletes strings in the list of strings."""
     num_strings = len(strings)
     min_strings = math.ceil(len(strings) * min_strings) if isinstance(min_strings, float) else min_strings
     if num_strings <= min_strings:
