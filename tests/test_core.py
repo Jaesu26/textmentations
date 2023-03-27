@@ -1,5 +1,6 @@
 import pytest
 
+import textmentations as T
 from textmentations.core.transforms_interface import TextTransform
 
 
@@ -29,3 +30,21 @@ def test_incorrect_p_value(text, incorrect_p):
     with pytest.raises(ValueError) as error_info:
         TextTransform(p=incorrect_p)
     assert str(error_info.value) == f"p must be between 0 and 1. Got: {incorrect_p}"
+
+
+def test_named_args():
+    text = "짜장면을 맛있게 먹었다."
+    augment = T.RandomSwap(p=1.0)
+    with pytest.raises(KeyError) as error_info:
+        augment(text)
+    assert str(error_info.value) == (
+        "'You have to pass data to augmentations as named arguments, for example: augment(text=text)'"
+    )
+
+
+def test_target_type():
+    incorrect_text = 123456789
+    augment = T.RandomSwap(p=1.0)
+    with pytest.raises(TypeError) as error_info:
+        augment(text=incorrect_text)
+    assert str(error_info.value) == "You have to pass string data to augmentations."
