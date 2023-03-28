@@ -1,5 +1,5 @@
 import random
-from typing import Any, Dict, List, Tuple, Union
+from typing import Any, Dict, Optional, Tuple, Union
 
 from albumentations.core.transforms_interface import to_tuple
 from googletrans.constants import LANGUAGES
@@ -7,7 +7,6 @@ from googletrans.constants import LANGUAGES
 from ..core.transforms_interface import TextTransform
 from ..corpora.types import Language, Text
 from . import functional as F
-from .utils import split_text_into_sentences
 
 
 class AEDA(TextTransform):
@@ -105,6 +104,37 @@ class BackTranslation(TextTransform):
         return ("from_lang", "to_lang")
 
 
+# TODO: docstring 추가
+class CutText(TextTransform):
+    def __init__(
+        self,
+        cutting_length: int = 512,
+        start_from_beginning: bool = True,
+        ignore_first: bool = False,
+        always_apply: bool = False,
+        p: float = 1.0,
+    ) -> None:
+        super(CutText, self).__init__(ignore_first, always_apply, p)
+        self.cutting_length = cutting_length
+        self.start_from_beginning = start_from_beginning
+
+    def apply(
+        self, text: Text, start_index: Optional[int] = None, end_index: Optional[int] = None, **params: Any
+    ) -> Text:
+        return F.cut_text(text, start_index, end_index)
+
+    def get_params_dependent_on_targets(self, params: Dict[str, Text]) -> Dict[str, int]:
+        text = params["text"]
+        if len(text) <= self.cutting_length:
+            return {}
+        if self.start_from_beginning:
+            return {"end_index": self.cutting_length}
+        return {"start_index": -self.cutting_length}
+
+    def get_transform_init_args_names(self) -> Tuple[str, str]:
+        return ("cutting_length", "start_from_beginning")
+
+
 class RandomDeletion(TextTransform):
     """Randomly deletes words in the input text.
 
@@ -197,36 +227,8 @@ class RandomDeletionSentence(TextTransform):
             if min_sentences < 0:
                 raise ValueError(f"If min_sentences is an int, it must be non-negative. Got: {min_sentences}")
 
-    def apply(self, text: Text, min_sentences: Union[float, int] = 0.8, **params: Any) -> Text:
-        return F.delete_sentences(text, self.deletion_prob, min_sentences)
-
-    @property
-    def targets_as_params(self) -> List[str]:
-        return ["text"]
-
-    def get_params_dependent_on_targets(self, params: Dict[str, Text]) -> Dict[str, Union[float, int]]:
-        if isinstance(self.min_sentences, int):
-            return {"min_sentences": self.min_sentences - self.ignore_first}
-
-        # When `min_sentences` is a float and `ignore_first` is True,
-        # the proportion of sentences to retain in the text after deletion is grater than `min_sentences`
-        # So, it is necessary to adjust `min_sentences` before passing it to the function's parameter
-        # n: Length of original sentences (>= 2)
-        # p: `min_sentences` ([0, 1]) If `ignore_first` is False
-        # q: The minimum proportion of sentences to retain in the text after deletion if `ignore_first` is True
-        # If `ignore_first` is False: p == q
-        # If `ignore_first` is True: See below
-        # If not `ignore_first`: The minimum number of sentences after deleting is n * p
-        # If `ignore_first`: The minimum number of sentences after deleting is 1 + (n - 1)*q
-        # Therefore, n * p == 1 + (n - 1)*q, ===> q = (n*p - 1) / (n - 1)
-        text = params["text"]
-        num_original_sentences = len(split_text_into_sentences(text)) + self.ignore_first
-        if num_original_sentences < 2:
-            return {"min_sentences": self.min_sentences}
-        return {
-            "min_sentences": (num_original_sentences * self.min_sentences - self.ignore_first)
-            / (num_original_sentences - self.ignore_first)
-        }
+    def apply(self, text: Text, **params: Any) -> Text:
+        return F.delete_sentences(text, self.deletion_prob, self.min_sentences)
 
     def get_transform_init_args_names(self) -> Tuple[str, str]:
         return ("deletion_prob", "min_sentences")
@@ -237,7 +239,7 @@ class RandomInsertion(TextTransform):
 
     Args:
         insertion_prob: The probability of inserting a synonym.
-        n_times: The number of times to repeat the operation.
+        n_times: The number of times to repeat the process.
         p: The probability of applying this transform.
 
     References:
@@ -278,7 +280,7 @@ class RandomSwap(TextTransform):
     """Repeats n times the task of randomly swapping two words in a randomly selected sentence from the input text.
 
     Args:
-        n_times: The number of times to repeat the operation.
+        n_times: The number of times to repeat the process.
         p: The probability of applying this transform.
 
     References:
@@ -313,7 +315,7 @@ class RandomSwapSentence(TextTransform):
     """Repeats n times the task of randomly swapping two sentences in the input text.
 
     Args:
-        n_times: The number of times to repeat the operation.
+        n_times: The number of times to repeat the process.
         p: The probability of applying this transform.
     """
 

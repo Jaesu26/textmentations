@@ -1,6 +1,7 @@
 from .augmentations.transforms import (
     AEDA,
     BackTranslation,
+    CutText,
     RandomDeletion,
     RandomDeletionSentence,
     RandomInsertion,
@@ -15,6 +16,7 @@ __version__ = "1.1.0"
 __all__ = [
     "AEDA",
     "BackTranslation",
+    "CutText",
     "RandomDeletion",
     "RandomDeletionSentence",
     "RandomInsertion",

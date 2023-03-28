@@ -1,6 +1,6 @@
 import math
 import random
-from typing import List, Tuple, Union
+from typing import List, Optional, Tuple, Union
 from urllib.error import HTTPError
 
 from ..corpora.types import Corpus, Language, Sentence, Text, Word
@@ -37,6 +37,21 @@ def back_translate(text: Text, from_lang: Language, to_lang: Language) -> Text:
         return back_translated_text
     except HTTPError:
         return text
+
+
+# TODO: cut 함수에 docstring 추가
+def cut_text(string: Text, start_index: Optional[int] = None, end_index: Optional[int] = None) -> Text:
+    return _cut_string(string, start_index, end_index)
+
+
+def _cut_string(string: Text, start_index: Optional[int] = None, end_index: Optional[int] = None) -> Text:
+    if start_index is not None and end_index is not None:
+        return string[start_index:end_index]
+    if start_index is None and end_index is not None:
+        return string[:end_index]
+    if start_index is not None and end_index is None:
+        return string[start_index:]
+    return string
 
 
 def delete_words(text: Text, deletion_prob: float, min_words_each_sentence: Union[float, int]) -> Text:
