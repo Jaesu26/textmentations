@@ -10,7 +10,7 @@ from .augmentations.transforms import (
 )
 from .core.transforms_interface import TextTransform
 
-__version__ = "1.0.1"
+__version__ = "1.1.0"
 
 __all__ = [
     "AEDA",

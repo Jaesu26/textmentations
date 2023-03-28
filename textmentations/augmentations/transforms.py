@@ -70,7 +70,6 @@ class AEDA(TextTransform):
         return ("insertion_prob_limit", "punctuations")
 
 
-# TODO: README.md 파일에 추가
 class BackTranslation(TextTransform):
     """Back-translates the input text by translating it to the target language and then back to the original.
 
