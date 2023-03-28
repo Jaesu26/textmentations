@@ -3,9 +3,10 @@ import pytest
 from textmentations.augmentations.utils import extract_first_sentence
 
 
-def test_empty_input_text(augmentation):
+@pytest.mark.parametrize("ignore_first", [False, True])
+def test_empty_input_text(augmentation, ignore_first):
     text = ""
-    augment = augmentation(p=1.0)
+    augment = augmentation(ignore_first=ignore_first, p=1.0)
     data = augment(text=text)
     assert data["text"] == ""
 
