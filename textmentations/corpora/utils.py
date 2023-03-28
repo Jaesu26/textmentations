@@ -12,7 +12,7 @@ def get_synonyms(word: Word) -> List[Word]:
 
 
 def get_random_synonym(word: Word) -> Word:
-    """Returns a random synonym for the word."""
+    """Gets a random synonym for the word."""
     synonyms = get_synonyms(word)
     if synonyms:
         synonym = random.choice(synonyms)
