@@ -40,11 +40,31 @@ def back_translate(text: Text, from_lang: Language, to_lang: Language) -> Text:
 
 
 # TODO: cut 함수에 docstring 추가
-def cut_text(string: Text, start_index: Optional[int] = None, end_index: Optional[int] = None) -> Text:
-    return _cut_string(string, start_index, end_index)
+def cut_words(text: Text, cutting_length: int, start_from_beginning: bool) -> Text:
+    return _cut_words(text, cutting_length, start_from_beginning)
 
 
-def _cut_string(string: Text, start_index: Optional[int] = None, end_index: Optional[int] = None) -> Text:
+@autopsy_text
+def _cut_words(sentences: List[Sentence], cutting_length: int, start_from_beginning: bool) -> List[Sentence]:
+    return [_cut_words_in_sentence(sentence, cutting_length, start_from_beginning) for sentence in sentences]
+
+
+@autopsy_sentence
+def _cut_words_in_sentence(words: List[Word], cutting_length: int, start_from_beginning: bool) -> List[Word]:
+    return [_cut_string_by_length(word, cutting_length, start_from_beginning) for word in words]
+
+
+def _cut_string_by_length(string: Corpus, cutting_length: int, start_from_beginning: bool) -> Corpus:
+    if len(string) <= cutting_length:
+        params = {}
+    elif start_from_beginning:
+        params = {"end_index": cutting_length}
+    else:
+        params = {"start_index": -cutting_length}
+    return _cut_string_by_index(string, **params)
+
+
+def _cut_string_by_index(string: Corpus, start_index: Optional[int] = None, end_index: Optional[int] = None) -> Corpus:
     if start_index is not None and end_index is not None:
         return string[start_index:end_index]
     if start_index is None and end_index is not None:
@@ -52,6 +72,19 @@ def _cut_string(string: Text, start_index: Optional[int] = None, end_index: Opti
     if start_index is not None and end_index is None:
         return string[start_index:]
     return string
+
+
+def cut_sentences(text: Text, start_index: Optional[int] = None, end_index: Optional[int] = None) -> Text:
+    return _cut_sentences(text, start_index, end_index)
+
+
+@autopsy_text
+def _cut_sentences(sentences: List[Sentence], cutting_length: int, start_from_beginning: bool) -> List[Sentence]:
+    return [_cut_string_by_length(sentence, cutting_length, start_from_beginning) for sentence in sentences]
+
+
+def cut_text(text: Text, cutting_length: int, start_from_beginning: bool) -> Text:
+    return _cut_string_by_length(text, cutting_length, start_from_beginning)
 
 
 def delete_words(text: Text, deletion_prob: float, min_words_each_sentence: Union[float, int]) -> Text:
