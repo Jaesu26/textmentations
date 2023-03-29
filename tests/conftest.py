@@ -6,15 +6,15 @@ import textmentations as T
 AUGMENTATIONS = [
     T.AEDA,
     T.BackTranslation,
+    T.CutSentence,
+    T.CutText,
+    T.CutWord,
     T.RandomDeletion,
     T.RandomDeletionSentence,
     T.RandomInsertion,
     T.RandomSwap,
     T.RandomSwapSentence,
-    T.SentenceCutter,
     T.SynonymReplacement,
-    T.TextCutter,
-    T.WordCutter,
 ]
 
 AUGMENTATIONS_WITH_N_TIMES = [

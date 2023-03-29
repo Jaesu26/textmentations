@@ -104,6 +104,77 @@ class BackTranslation(TextTransform):
         return ("from_lang", "to_lang")
 
 
+# TODO: cut 클래스에 docstring 추가
+class CutTransform(TextTransform):
+    def apply(self, text: Text, **params: Any) -> Text:
+        raise NotImplementedError
+
+    def _validate_transform_init_args(self, cutting_length: int, start_from_beginning: bool) -> None:
+        if not isinstance(cutting_length, int):
+            raise TypeError(f"cutting_length must be a positive integer. Got: {cutting_length}")
+        if cutting_length <= 0:
+            raise ValueError(f"cutting_length must be positive. Got: {cutting_length}")
+        if not isinstance(start_from_beginning, bool):
+            raise TypeError(f"start_from_beginning must be boolean. Got: {type(start_from_beginning)}")
+
+    def get_transform_init_args_names(self) -> Tuple[str, str]:
+        return ("cutting_length", "start_from_beginning")
+
+
+class CutWord(CutTransform):
+    def __init__(
+        self,
+        cutting_length: int = 8,
+        start_from_beginning: bool = True,
+        ignore_first: bool = False,
+        always_apply: bool = False,
+        p: float = 1.0,
+    ) -> None:
+        super(CutTransform, self).__init__(ignore_first, always_apply, p)
+        self._validate_transform_init_args(cutting_length, start_from_beginning)
+        self.cutting_length = cutting_length
+        self.start_from_beginning = start_from_beginning
+
+    def apply(self, text: Text, **params: Any) -> Text:
+        return F.cut_words(text, self.cutting_length, self.start_from_beginning)
+
+
+class CutSentence(CutTransform):
+    def __init__(
+        self,
+        cutting_length: int = 128,
+        start_from_beginning: bool = True,
+        ignore_first: bool = False,
+        always_apply: bool = False,
+        p: float = 1.0,
+    ) -> None:
+        super(CutSentence, self).__init__(ignore_first, always_apply, p)
+        self._validate_transform_init_args(cutting_length, start_from_beginning)
+        self.cutting_length = cutting_length
+        self.start_from_beginning = start_from_beginning
+
+    def apply(self, text: Text, **params: Any) -> Text:
+        return F.cut_sentences(text, self.cutting_length, self.start_from_beginning)
+
+
+class CutText(CutTransform):
+    def __init__(
+        self,
+        cutting_length: int = 512,
+        start_from_beginning: bool = True,
+        ignore_first: bool = False,
+        always_apply: bool = False,
+        p: float = 1.0,
+    ) -> None:
+        super(CutText, self).__init__(ignore_first, always_apply, p)
+        self._validate_transform_init_args(cutting_length, start_from_beginning)
+        self.cutting_length = cutting_length
+        self.start_from_beginning = start_from_beginning
+
+    def apply(self, text: Text, **params: Any) -> Text:
+        return F.cut_text(text, self.cutting_length, self.start_from_beginning)
+
+
 class RandomDeletion(TextTransform):
     """Randomly deletes words in the input text.
 
@@ -345,64 +416,3 @@ class SynonymReplacement(TextTransform):
 
     def get_transform_init_args_names(self) -> Tuple[str]:
         return ("replacement_prob",)
-
-
-# TODO: cutter 클래스에 docstring 추가
-class WordCutter(TextTransform):
-    def __init__(
-        self,
-        cutting_length: int = 8,
-        start_from_beginning: bool = True,
-        ignore_first: bool = False,
-        always_apply: bool = False,
-        p: float = 1.0,
-    ) -> None:
-        super(WordCutter, self).__init__(ignore_first, always_apply, p)
-        self.cutting_length = cutting_length
-        self.start_from_beginning = start_from_beginning
-
-    def apply(self, text: Text, **params: Any) -> Text:
-        return F.cut_words(text, self.cutting_length, self.start_from_beginning)
-
-    def get_transform_init_args_names(self) -> Tuple[str, str]:
-        return ("cutting_length", "start_from_beginning")
-
-
-class SentenceCutter(TextTransform):
-    def __init__(
-        self,
-        cutting_length: int = 128,
-        start_from_beginning: bool = True,
-        ignore_first: bool = False,
-        always_apply: bool = False,
-        p: float = 1.0,
-    ) -> None:
-        super(SentenceCutter, self).__init__(ignore_first, always_apply, p)
-        self.cutting_length = cutting_length
-        self.start_from_beginning = start_from_beginning
-
-    def apply(self, text: Text, **params: Any) -> Text:
-        return F.cut_sentences(text, self.cutting_length, self.start_from_beginning)
-
-    def get_transform_init_args_names(self) -> Tuple[str, str]:
-        return ("cutting_length", "start_from_beginning")
-
-
-class TextCutter(TextTransform):
-    def __init__(
-        self,
-        cutting_length: int = 512,
-        start_from_beginning: bool = True,
-        ignore_first: bool = False,
-        always_apply: bool = False,
-        p: float = 1.0,
-    ) -> None:
-        super(TextCutter, self).__init__(ignore_first, always_apply, p)
-        self.cutting_length = cutting_length
-        self.start_from_beginning = start_from_beginning
-
-    def apply(self, text: Text, **params: Any) -> Text:
-        return F.cut_text(text, self.cutting_length, self.start_from_beginning)
-
-    def get_transform_init_args_names(self) -> Tuple[str, str]:
-        return ("cutting_length", "start_from_beginning")
