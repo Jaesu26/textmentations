@@ -75,7 +75,7 @@ def _cut_string_by_index(string: Corpus, start_index: Optional[int] = None, end_
 
 
 def cut_sentences(text: Text, cutting_length: int, start_from_beginning: bool) -> Text:
-    return _cut_sentences(text, start_index, end_index)
+    return _cut_sentences(text, cutting_length, start_from_beginning)
 
 
 @autopsy_text
