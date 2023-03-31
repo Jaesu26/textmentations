@@ -39,28 +39,38 @@ def back_translate(text: Text, from_lang: Language, to_lang: Language) -> Text:
         return text
 
 
+# TODO: crop 함수에 docstring 추가
+def crop_text(text: Text, start_index: int, end_index: int) -> Text:
+    return _crop_text(text, start_index, end_index)
+
+
+def _crop_text(text: Text, start_index: int, end_index: int) -> Text:
+    cropped_text = _cut_string_by_index(text, start_index, end_index)
+    return cropped_text
+
+
 # TODO: cut 함수에 docstring 추가
-def cut_words(text: Text, cutting_length: int, start_from_beginning: bool) -> Text:
-    return _cut_words(text, cutting_length, start_from_beginning)
+def cut_words(text: Text, length: int, begin: bool) -> Text:
+    return _cut_words(text, length, begin)
 
 
 @autopsy_text
-def _cut_words(sentences: List[Sentence], cutting_length: int, start_from_beginning: bool) -> List[Sentence]:
-    return [_cut_words_in_sentence(sentence, cutting_length, start_from_beginning) for sentence in sentences]
+def _cut_words(sentences: List[Sentence], length: int, begin: bool) -> List[Sentence]:
+    return [_cut_words_in_sentence(sentence, length, begin) for sentence in sentences]
 
 
 @autopsy_sentence
-def _cut_words_in_sentence(words: List[Word], cutting_length: int, start_from_beginning: bool) -> List[Word]:
-    return [_cut_string_by_length(word, cutting_length, start_from_beginning) for word in words]
+def _cut_words_in_sentence(words: List[Word], length: int, begin: bool) -> List[Word]:
+    return [_cut_string_by_length(word, length, begin) for word in words]
 
 
-def _cut_string_by_length(string: Corpus, cutting_length: int, start_from_beginning: bool) -> Corpus:
-    if len(string) <= cutting_length:
+def _cut_string_by_length(string: Corpus, length: int, begin: bool) -> Corpus:
+    if len(string) <= length:
         params = {}
-    elif start_from_beginning:
-        params = {"end_index": cutting_length}
+    elif begin:
+        params = {"end_index": length}
     else:
-        params = {"start_index": -cutting_length}
+        params = {"start_index": -length}
     return _cut_string_by_index(string, **params)
 
 
@@ -74,17 +84,30 @@ def _cut_string_by_index(string: Corpus, start_index: Optional[int] = None, end_
     return string
 
 
-def cut_sentences(text: Text, cutting_length: int, start_from_beginning: bool) -> Text:
-    return _cut_sentences(text, cutting_length, start_from_beginning)
+def cut_sentences(text: Text, length: int, begin: bool) -> Text:
+    return _cut_sentences(text, length, begin)
 
 
 @autopsy_text
-def _cut_sentences(sentences: List[Sentence], cutting_length: int, start_from_beginning: bool) -> List[Sentence]:
-    return [_cut_string_by_length(sentence, cutting_length, start_from_beginning) for sentence in sentences]
+def _cut_sentences(sentences: List[Sentence], length: int, begin: bool) -> List[Sentence]:
+    return [_cut_string_by_length(sentence, length, begin) for sentence in sentences]
 
 
-def cut_text(text: Text, cutting_length: int, start_from_beginning: bool) -> Text:
-    return _cut_string_by_length(text, cutting_length, start_from_beginning)
+def cut_text(text: Text, length: int, begin: bool) -> Text:
+    return _cut_text(text, length, begin)
+
+
+def _cut_text(text: Text, length: int, begin: bool) -> Text:
+    return _cut_string_by_length(text, length, begin)
+
+
+def copy_paste_sentence(text: Text, k: int) -> Text:
+    # sentences = split_text_into_sentences(text)
+    # copied_sentences = random.sample(sentences, k=k)
+    # index = random.randrange(len(sentences))
+    # augmented_sentences = sentences[:index] + copied_sentences + sentences[index:]
+    # return join_sentences_into_text(augmented_sentences)
+    ...
 
 
 def delete_words(text: Text, deletion_prob: float, min_words_each_sentence: Union[float, int]) -> Text:
