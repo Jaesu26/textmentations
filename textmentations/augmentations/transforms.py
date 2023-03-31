@@ -104,75 +104,103 @@ class BackTranslation(TextTransform):
         return ("from_lang", "to_lang")
 
 
-# TODO: cut 클래스에 docstring 추가
-class CutTransform(TextTransform):
+class _BaseCut(TextTransform):
+    """Base class for CutWord, CutSentence and CutText."""
+
+    def __init__(
+        self,
+        length: int,
+        begin: bool = True,
+        ignore_first: bool = False,
+        always_apply: bool = False,
+        p: float = 1.0,
+    ) -> None:
+        super(_BaseCut, self).__init__(ignore_first, always_apply, p)
+        self._validate_transform_init_args(length, begin)
+        self.length = length
+        self.begin = begin
+
     def apply(self, text: Text, **params: Any) -> Text:
         raise NotImplementedError
 
-    def _validate_transform_init_args(self, cutting_length: int, start_from_beginning: bool) -> None:
-        if not isinstance(cutting_length, int):
-            raise TypeError(f"cutting_length must be a positive integer. Got: {cutting_length}")
-        if cutting_length <= 0:
-            raise ValueError(f"cutting_length must be positive. Got: {cutting_length}")
-        if not isinstance(start_from_beginning, bool):
-            raise TypeError(f"start_from_beginning must be boolean. Got: {type(start_from_beginning)}")
+    def _validate_transform_init_args(self, length: int, begin: bool) -> None:
+        if not isinstance(length, int):
+            raise TypeError(f"length must be a positive integer. Got: {length}")
+        if length <= 0:
+            raise ValueError(f"length must be positive. Got: {length}")
+        if not isinstance(begin, bool):
+            raise TypeError(f"begin must be boolean. Got: {type(begin)}")
 
     def get_transform_init_args_names(self) -> Tuple[str, str]:
-        return ("cutting_length", "start_from_beginning")
+        return ("length", "begin")
 
 
-class CutWord(CutTransform):
+class CutWord(_BaseCut):
+    """Cuts a portion of each word in the input text.
+
+    Args:
+        length: The length to cut each word in the input text.
+        begin: Whether to cut each word at start or end.
+        p: The probability of applying this transform.
+    """
+
     def __init__(
         self,
-        cutting_length: int = 8,
-        start_from_beginning: bool = True,
+        length: int = 8,
+        begin: bool = True,
         ignore_first: bool = False,
         always_apply: bool = False,
         p: float = 1.0,
     ) -> None:
-        super(CutTransform, self).__init__(ignore_first, always_apply, p)
-        self._validate_transform_init_args(cutting_length, start_from_beginning)
-        self.cutting_length = cutting_length
-        self.start_from_beginning = start_from_beginning
+        super(CutWord, self).__init__(length, begin, ignore_first, always_apply, p)
 
     def apply(self, text: Text, **params: Any) -> Text:
-        return F.cut_words(text, self.cutting_length, self.start_from_beginning)
+        return F.cut_words(text, self.length, self.begin)
 
 
-class CutSentence(CutTransform):
+class CutSentence(_BaseCut):
+    """Cuts a portion of each sentence in the input text.
+
+    Args:
+        length: The length to cut each sentence in the input text.
+        begin: Whether to cut each sentence at start or end.
+        p: The probability of applying this transform.
+    """
+
     def __init__(
         self,
-        cutting_length: int = 128,
-        start_from_beginning: bool = True,
+        length: int = 128,
+        begin: bool = True,
         ignore_first: bool = False,
         always_apply: bool = False,
         p: float = 1.0,
     ) -> None:
-        super(CutSentence, self).__init__(ignore_first, always_apply, p)
-        self._validate_transform_init_args(cutting_length, start_from_beginning)
-        self.cutting_length = cutting_length
-        self.start_from_beginning = start_from_beginning
+        super(CutSentence, self).__init__(length, begin, ignore_first, always_apply, p)
 
     def apply(self, text: Text, **params: Any) -> Text:
-        return F.cut_sentences(text, self.cutting_length, self.start_from_beginning)
+        return F.cut_sentences(text, self.length, self.begin)
 
 
-class CutText(CutTransform):
+class CutText(_BaseCut):
+    """Cuts a portion of the input text.
+
+    Args:
+        length: The length to cut the input text.
+        begin: Whether to cut the input text at start or end.
+        p: The probability of applying this transform.
+    """
     def __init__(
         self,
-        cutting_length: int = 512,
-        start_from_beginning: bool = True,
+        length: int = 512,
+        begin: bool = True,
         ignore_first: bool = False,
         always_apply: bool = False,
         p: float = 1.0,
     ) -> None:
-        super(CutText, self).__init__(ignore_first, always_apply, p)
-        self._validate_transform_init_args(cutting_length, start_from_beginning)
-        self.cutting_length = cutting_length
-        self.start_from_beginning = start_from_beginning
+        super(CutText, self).__init__(length, begin, ignore_first, always_apply, p)
 
     def apply(self, text: Text, **params: Any) -> Text:
-        return F.cut_text(text, self.cutting_length, self.start_from_beginning)
+        return F.cut_text(text, self.length, self.begin)
 
 
 class RandomDeletion(TextTransform):

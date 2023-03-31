@@ -122,7 +122,7 @@ def join_words_into_sentence(words: List[Word]) -> Sentence:
 def join_sentences_into_text(sentences: List[Sentence]) -> Text:
     """Joins sentences into a text."""
     text = ". ".join(sentences)
-    text = ".".join([text, ""]) if text else text
+    text = text + "." if text else text
     return text
 
 

@@ -13,7 +13,7 @@ class TextTransform(BasicTransform):
         ignore_first: Whether to ignore the first sentence when applying this transform.
             If `ignore_first` is True, this transform will be applied to the text without the first sentence.
             It is useful when the main idea of the text is expressed in the first sentence.
-        always_apply: Whether this transform should be always applied.
+        always_apply: Whether to always apply this transform.
         p: The probability of applying this transform.
     """
 
