@@ -1,6 +1,7 @@
 from typing import Any, Callable, Dict
 
 from albumentations.core.transforms_interface import BasicTransform
+from typing_extensions import Literal
 
 from ..corpora.types import Text
 from .utils import extract_first_sentence_by_key, remove_first_sentence_by_key, wrap_text_with_first_sentence_by_key
@@ -67,3 +68,40 @@ class TextTransform(BasicTransform):
 
     def get_base_init_args(self) -> Dict[str, Any]:
         return {"ignore_first": self.ignore_first, "always_apply": self.always_apply, "p": self.p}
+
+
+# TODO: Docstring 추가
+class SingleCorpusTypeTransform(TextTransform):
+    ...
+
+
+# TODO: Docstring 추가
+class MultipleCorpusTypesTransform(TextTransform):
+    def __init__(
+        self,
+        unit: Literal["word", "sentence", "text"] = "word",
+        ignore_first: bool = False,
+        always_apply: bool = False,
+        p: float = 0.5
+    ) -> None:
+        super(TextTransform, self).__init__(ignore_first, always_apply, p)
+        self.unit = unit
+
+    def apply(self, text: Text, **params: Any) -> Text:
+        return self.units[self.unit](text, **params)
+
+    @property
+    def units(self):
+        return {"word": self.apply_to_words, "sentence": self.apply_to_sentences, "text": self.apply_to_text}
+
+    def apply_to_words(self, text: Text, **params: Any) -> Text:
+        raise NotImplementedError
+
+    def apply_to_sentences(self, text: Text, **params: Any) -> Text:
+        raise NotImplementedError
+
+    def apply_to_text(self, text: Text, **params: Any) -> Text:
+        raise NotImplementedError
+
+    def get_base_init_args(self) -> Dict[str, Any]:
+        return {"unit": self.unit, "ignore_first": self.ignore_first, "always_apply": self.always_apply, "p": self.p}
