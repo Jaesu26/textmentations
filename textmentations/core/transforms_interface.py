@@ -70,19 +70,28 @@ class TextTransform(BasicTransform):
         return {"ignore_first": self.ignore_first, "always_apply": self.always_apply, "p": self.p}
 
 
-# TODO: Docstring 추가
 class SingleCorpusTypeTransform(TextTransform):
-    ...
+    """Transform applied to single text component unit."""
 
 
-# TODO: Docstring 추가
 class MultipleCorpusTypesTransform(TextTransform):
+    """Transform applied to multiple text component units.
+
+    Args:
+        unit: Unit to which transform is to be applied.
+        ignore_first: Whether to ignore the first sentence when applying this transform.
+            If `ignore_first` is True, this transform will be applied to the text without the first sentence.
+            It is useful when the main idea of the text is expressed in the first sentence.
+        always_apply: Whether to always apply this transform.
+        p: The probability of applying this transform.
+    """
+
     def __init__(
         self,
         unit: Literal["word", "sentence", "text"] = "word",
         ignore_first: bool = False,
         always_apply: bool = False,
-        p: float = 0.5
+        p: float = 0.5,
     ) -> None:
         super(MultipleCorpusTypesTransform, self).__init__(ignore_first, always_apply, p)
         self.unit = unit

@@ -39,7 +39,7 @@ def back_translate(text: Text, from_lang: Language, to_lang: Language) -> Text:
         return text
 
 
-# TODO: crop 함수에 docstring 추가
+# TODO: crop 함수에 docstring 추가, Transform 구현
 def crop_text(text: Text, start_index: int, end_index: int) -> Text:
     return _crop_text(text, start_index, end_index)
 
@@ -101,13 +101,12 @@ def _cut_text(text: Text, length: int, begin: bool) -> Text:
     return _cut_string_by_length(text, length, begin)
 
 
-def copy_paste_sentence(text: Text, k: int) -> Text:
-    # sentences = split_text_into_sentences(text)
-    # copied_sentences = random.sample(sentences, k=k)
-    # index = random.randrange(len(sentences))
-    # augmented_sentences = sentences[:index] + copied_sentences + sentences[index:]
-    # return join_sentences_into_text(augmented_sentences)
-    ...
+# def copy_paste_sentence(text: Text, k: int) -> Text:
+#     sentences = split_text_into_sentences(text)
+#     copied_sentences = random.sample(sentences, k=k)
+#     index = random.randrange(len(sentences))
+#     augmented_sentences = sentences[:index] + copied_sentences + sentences[index:]
+#     return join_sentences_into_text(augmented_sentences)
 
 
 def delete_words(text: Text, deletion_prob: float, min_words_each_sentence: Union[float, int]) -> Text:

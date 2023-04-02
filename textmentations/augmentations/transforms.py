@@ -1,15 +1,17 @@
 import random
+import warnings
 from typing import Any, Dict, Tuple, Union
 
 from albumentations.core.transforms_interface import to_tuple
 from googletrans.constants import LANGUAGES
+from typing_extensions import Literal
 
-from ..core.transforms_interface import TextTransform
+from ..core.transforms_interface import MultipleCorpusTypesTransform, SingleCorpusTypeTransform, TextTransform
 from ..corpora.types import Language, Text
 from . import functional as F
 
 
-class AEDA(TextTransform):
+class AEDA(SingleCorpusTypeTransform):
     """Randomly inserts punctuations in the input text.
 
     Args:
@@ -69,7 +71,7 @@ class AEDA(TextTransform):
         return ("insertion_prob_limit", "punctuations")
 
 
-class BackTranslation(TextTransform):
+class BackTranslation(SingleCorpusTypeTransform):
     """Back-translates the input text by translating it to the target language and then back to the original.
 
     Args:
@@ -93,9 +95,9 @@ class BackTranslation(TextTransform):
 
     def _validate_transform_init_args(self, from_lang: Language, to_lang: Language) -> None:
         if from_lang not in LANGUAGES:
-            raise ValueError(f"from_lang must be one of ({list(LANGUAGES.keys())}). Got: {from_lang}")
+            raise ValueError(f"from_lang must be one of {list(LANGUAGES.keys())}. Got: {from_lang}")
         if to_lang not in LANGUAGES:
-            raise ValueError(f"to_lang must be one of ({list(LANGUAGES.keys())}). Got: {to_lang}")
+            raise ValueError(f"to_lang must be one of {list(LANGUAGES.keys())}. Got: {to_lang}")
 
     def apply(self, text: Text, **params: Any) -> Text:
         return F.back_translate(text, self.from_lang, self.to_lang)
@@ -104,24 +106,40 @@ class BackTranslation(TextTransform):
         return ("from_lang", "to_lang")
 
 
-class _BaseCut(TextTransform):
-    """Base class for CutWord, CutSentence and CutText."""
+class Cut(MultipleCorpusTypesTransform):
+    """Cuts a portion of each word or each sentence or the text from the input text.
+
+    Args:
+        length: The length to cut each element in the input text.
+        begin: Whether to cut each element at start or end.
+        unit: Unit to which transform is to be applied.
+        p: The probability of applying this transform.
+    """
 
     def __init__(
         self,
-        length: int,
+        length: int = 512,
         begin: bool = True,
+        unit: Literal["word", "sentence", "text"] = "text",
         ignore_first: bool = False,
         always_apply: bool = False,
         p: float = 1.0,
     ) -> None:
-        super(_BaseCut, self).__init__(ignore_first, always_apply, p)
+        super(Cut, self).__init__(unit, ignore_first, always_apply, p)
+        if unit not in ["word", "sentence", "text"]:
+            raise ValueError("unit must be one of ['word', 'sentence', 'text']")
         self._validate_transform_init_args(length, begin)
         self.length = length
         self.begin = begin
 
-    def apply(self, text: Text, **params: Any) -> Text:
-        raise NotImplementedError
+    def apply_to_words(self, text: Text, **params: Any) -> Text:
+        return F.cut_words(text, self.length, self.begin)
+
+    def apply_to_sentences(self, text: Text, **params: Any) -> Text:
+        return F.cut_sentences(text, self.length, self.begin)
+
+    def apply_to_text(self, text: Text, **params: Any) -> Text:
+        return F.cut_text(text, self.length, self.begin)
 
     def _validate_transform_init_args(self, length: int, begin: bool) -> None:
         if not isinstance(length, int):
@@ -135,82 +153,15 @@ class _BaseCut(TextTransform):
         return ("length", "begin")
 
 
-class CutWord(_BaseCut):
-    """Cuts a portion of each word in the input text.
+class RandomDeletion(MultipleCorpusTypesTransform):
+    """Randomly deletes words or sentences in the input text.
 
     Args:
-        length: The length to cut each word in the input text.
-        begin: Whether to cut each word at start or end.
-        p: The probability of applying this transform.
-    """
-
-    def __init__(
-        self,
-        length: int = 8,
-        begin: bool = True,
-        ignore_first: bool = False,
-        always_apply: bool = False,
-        p: float = 1.0,
-    ) -> None:
-        super(CutWord, self).__init__(length, begin, ignore_first, always_apply, p)
-
-    def apply(self, text: Text, **params: Any) -> Text:
-        return F.cut_words(text, self.length, self.begin)
-
-
-class CutSentence(_BaseCut):
-    """Cuts a portion of each sentence in the input text.
-
-    Args:
-        length: The length to cut each sentence in the input text.
-        begin: Whether to cut each sentence at start or end.
-        p: The probability of applying this transform.
-    """
-
-    def __init__(
-        self,
-        length: int = 128,
-        begin: bool = True,
-        ignore_first: bool = False,
-        always_apply: bool = False,
-        p: float = 1.0,
-    ) -> None:
-        super(CutSentence, self).__init__(length, begin, ignore_first, always_apply, p)
-
-    def apply(self, text: Text, **params: Any) -> Text:
-        return F.cut_sentences(text, self.length, self.begin)
-
-
-class CutText(_BaseCut):
-    """Cuts a portion of the input text.
-
-    Args:
-        length: The length to cut the input text.
-        begin: Whether to cut the input text at start or end.
-        p: The probability of applying this transform.
-    """
-    def __init__(
-        self,
-        length: int = 512,
-        begin: bool = True,
-        ignore_first: bool = False,
-        always_apply: bool = False,
-        p: float = 1.0,
-    ) -> None:
-        super(CutText, self).__init__(length, begin, ignore_first, always_apply, p)
-
-    def apply(self, text: Text, **params: Any) -> Text:
-        return F.cut_text(text, self.length, self.begin)
-
-
-class RandomDeletion(TextTransform):
-    """Randomly deletes words in the input text.
-
-    Args:
-        deletion_prob: The probability of deleting a word.
-        min_words_each_sentence:
-            If a `float`, it is the minimum proportion of words to retain in each sentence.
-            If an `int`, it is the minimum number of words in each sentence.
+        deletion_prob: The probability of deleting an element.
+        min_elements:
+            If a `float`, it is the minimum proportion of elements to retain in the text.
+            If an `int`, it is the minimum number of elements in the text.
+        unit: Unit to which transform is to be applied.
         p: The probability of applying this transform.
 
     References:
@@ -220,41 +171,41 @@ class RandomDeletion(TextTransform):
     def __init__(
         self,
         deletion_prob: float = 0.1,
-        min_words_each_sentence: Union[float, int] = 0.8,
+        min_elements: Union[float, int] = 0.8,
+        unit: Literal["word", "sentence"] = "word",
         ignore_first: bool = False,
         always_apply: bool = False,
         p: float = 0.5,
     ) -> None:
-        super(RandomDeletion, self).__init__(ignore_first, always_apply, p)
-        self._validate_transform_init_args(deletion_prob, min_words_each_sentence)
+        super(RandomDeletion, self).__init__(unit, ignore_first, always_apply, p)
+        if unit not in ["word", "sentence"]:
+            raise ValueError("unit must be one of ['word', 'sentence']")
+        self._validate_transform_init_args(deletion_prob, min_elements)
         self.deletion_prob = deletion_prob
-        self.min_words_each_sentence = min_words_each_sentence
+        self.min_elements = min_elements
 
-    def _validate_transform_init_args(self, deletion_prob: float, min_words_each_sentence: Union[float, int]) -> None:
+    def _validate_transform_init_args(self, deletion_prob: float, min_elements: Union[float, int]) -> None:
         if not isinstance(deletion_prob, (float, int)):
             raise TypeError(f"deletion_prob must be a real number between 0 and 1. Got: {type(deletion_prob)}")
         if not (0.0 <= deletion_prob <= 1.0):
             raise ValueError(f"deletion_prob must be between 0 and 1. Got: {deletion_prob}")
-        if not isinstance(min_words_each_sentence, (float, int)):
-            raise TypeError(
-                f"min_words_each_sentence must be either an int or a float. Got: {type(min_words_each_sentence)}"
-            )
-        if isinstance(min_words_each_sentence, float):
-            if not (0.0 <= min_words_each_sentence <= 1.0):
-                raise ValueError(
-                    f"If min_words_each_sentence is a float, it must be between 0 and 1. Got: {min_words_each_sentence}"
-                )
-        elif isinstance(min_words_each_sentence, int):
-            if min_words_each_sentence < 0:
-                raise ValueError(
-                    f"If min_words_each_sentence is an int, it must be non negative. Got: {min_words_each_sentence}"
-                )
+        if not isinstance(min_elements, (float, int)):
+            raise TypeError(f"min_elements must be either an int or a float. Got: {type(min_elements)}")
+        if isinstance(min_elements, float):
+            if not (0.0 <= min_elements <= 1.0):
+                raise ValueError(f"If min_elements is a float, it must be between 0 and 1. Got: {min_elements}")
+        elif isinstance(min_elements, int):
+            if min_elements < 0:
+                raise ValueError(f"If min_elements is an int, it must be non negative. Got: {min_elements}")
 
-    def apply(self, text: Text, **params: Any) -> Text:
-        return F.delete_words(text, self.deletion_prob, self.min_words_each_sentence)
+    def apply_to_words(self, text: Text, **params: Any) -> Text:
+        return F.delete_words(text, self.deletion_prob, self.min_elements)
+
+    def apply_to_sentences(self, text: Text, **params: Any) -> Text:
+        return F.delete_sentences(text, self.deletion_prob, self.min_elements)
 
     def get_transform_init_args_names(self) -> Tuple[str, str]:
-        return ("deletion_prob", "min_words_each_sentence")
+        return ("deletion_prob", "min_elements")
 
 
 class RandomDeletionSentence(TextTransform):
@@ -280,6 +231,9 @@ class RandomDeletionSentence(TextTransform):
         self._validate_transform_init_args(deletion_prob, min_sentences)
         self.deletion_prob = deletion_prob
         self.min_sentences = min_sentences
+        warnings.warn(
+            "This class has been deprecated. Please use RandomDeletion with unit='sentence'", DeprecationWarning
+        )
 
     def _validate_transform_init_args(self, deletion_prob: float, min_sentences: Union[float, int]) -> None:
         if not isinstance(deletion_prob, (float, int)):
@@ -302,8 +256,8 @@ class RandomDeletionSentence(TextTransform):
         return ("deletion_prob", "min_sentences")
 
 
-class RandomInsertion(TextTransform):
-    """Repeats n times the task of randomly inserting synonyms in the input text.
+class RandomInsertion(SingleCorpusTypeTransform):
+    """Randomly inserts synonyms in the input text n times.
 
     Args:
         insertion_prob: The probability of inserting a synonym.
@@ -344,11 +298,12 @@ class RandomInsertion(TextTransform):
         return ("insertion_prob", "n_times")
 
 
-class RandomSwap(TextTransform):
-    """Repeats n times the task of randomly swapping two words in a randomly selected sentence from the input text.
+class RandomSwap(MultipleCorpusTypesTransform):
+    """Randomly swaps two words or two sentences in the input text n times.
 
     Args:
         n_times: The number of times to repeat the process.
+        unit: Unit to which transform is to be applied.
         p: The probability of applying this transform.
 
     References:
@@ -358,11 +313,14 @@ class RandomSwap(TextTransform):
     def __init__(
         self,
         n_times: int = 1,
+        unit: Literal["word", "sentence"] = "word",
         ignore_first: bool = False,
         always_apply: bool = False,
         p: float = 0.5,
     ) -> None:
-        super(RandomSwap, self).__init__(ignore_first, always_apply, p)
+        super(RandomSwap, self).__init__(unit, ignore_first, always_apply, p)
+        if unit not in ["word", "sentence"]:
+            raise ValueError("unit must be one of ['word', 'sentence']")
         self._validate_transform_init_args(n_times)
         self.n_times = n_times
 
@@ -372,15 +330,18 @@ class RandomSwap(TextTransform):
         if n_times <= 0:
             raise ValueError(f"n_times must be positive. Got: {n_times}")
 
-    def apply(self, text: Text, **params: Any) -> Text:
+    def apply_to_words(self, text: Text, **params: Any) -> Text:
         return F.swap_words(text, self.n_times)
+
+    def apply_to_sentences(self, text: Text, **params: Any) -> Text:
+        return F.swap_sentences(text, self.n_times)
 
     def get_transform_init_args_names(self) -> Tuple[str]:
         return ("n_times",)
 
 
 class RandomSwapSentence(TextTransform):
-    """Repeats n times the task of randomly swapping two sentences in the input text.
+    """Randomly swaps two sentences in the input text n times.
 
     Args:
         n_times: The number of times to repeat the process.
@@ -397,6 +358,7 @@ class RandomSwapSentence(TextTransform):
         super(RandomSwapSentence, self).__init__(ignore_first, always_apply, p)
         self._validate_transform_init_args(n_times)
         self.n_times = n_times
+        warnings.warn("This class has been deprecated. Please use RandomSwap with unit='sentence'", DeprecationWarning)
 
     def _validate_transform_init_args(self, n_times: int) -> None:
         if not isinstance(n_times, int):
@@ -411,7 +373,7 @@ class RandomSwapSentence(TextTransform):
         return ("n_times",)
 
 
-class SynonymReplacement(TextTransform):
+class SynonymReplacement(SingleCorpusTypeTransform):
     """Randomly replaces words in the input text with synonyms.
 
     Args:
