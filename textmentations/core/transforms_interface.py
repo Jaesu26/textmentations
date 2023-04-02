@@ -84,7 +84,7 @@ class MultipleCorpusTypesTransform(TextTransform):
         always_apply: bool = False,
         p: float = 0.5
     ) -> None:
-        super(TextTransform, self).__init__(ignore_first, always_apply, p)
+        super(MultipleCorpusTypesTransform, self).__init__(ignore_first, always_apply, p)
         self.unit = unit
 
     def apply(self, text: Text, **params: Any) -> Text:
