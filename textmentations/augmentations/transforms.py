@@ -228,12 +228,12 @@ class RandomDeletionSentence(TextTransform):
         p: float = 0.5,
     ) -> None:
         super(RandomDeletionSentence, self).__init__(ignore_first, always_apply, p)
-        self._validate_transform_init_args(deletion_prob, min_sentences)
-        self.deletion_prob = deletion_prob
-        self.min_sentences = min_sentences
         warnings.warn(
             "This class has been deprecated. Please use RandomDeletion with unit='sentence'", DeprecationWarning
         )
+        self._validate_transform_init_args(deletion_prob, min_sentences)
+        self.deletion_prob = deletion_prob
+        self.min_sentences = min_sentences
 
     def _validate_transform_init_args(self, deletion_prob: float, min_sentences: Union[float, int]) -> None:
         if not isinstance(deletion_prob, (float, int)):
@@ -356,9 +356,9 @@ class RandomSwapSentence(TextTransform):
         p: float = 0.5,
     ) -> None:
         super(RandomSwapSentence, self).__init__(ignore_first, always_apply, p)
+        warnings.warn("This class has been deprecated. Please use RandomSwap with unit='sentence'", DeprecationWarning)
         self._validate_transform_init_args(n_times)
         self.n_times = n_times
-        warnings.warn("This class has been deprecated. Please use RandomSwap with unit='sentence'", DeprecationWarning)
 
     def _validate_transform_init_args(self, n_times: int) -> None:
         if not isinstance(n_times, int):

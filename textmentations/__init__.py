@@ -16,6 +16,7 @@ __version__ = "1.1.0"
 __all__ = [
     "AEDA",
     "BackTranslation",
+    "Cut",
     "RandomDeletion",
     "RandomDeletionSentence",
     "RandomInsertion",

@@ -97,10 +97,10 @@ class MultipleCorpusTypesTransform(TextTransform):
         self.unit = unit
 
     def apply(self, text: Text, **params: Any) -> Text:
-        return self.units[self.unit](text, **params)
+        return self.units.get(self.unit, lambda x, **p: x)(text, **params)
 
     @property
-    def units(self):
+    def units(self) -> Dict[str, Callable[..., Text]]:
         return {"word": self.apply_to_words, "sentence": self.apply_to_sentences, "text": self.apply_to_text}
 
     def apply_to_words(self, text: Text, **params: Any) -> Text:
