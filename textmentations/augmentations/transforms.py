@@ -107,7 +107,7 @@ class BackTranslation(SingleCorpusTypeTransform):
 
 
 class Cut(MultipleCorpusTypesTransform):
-    """Cuts a portion of each word or each sentence or the text from the input text.
+    """Cuts a portion of each element from the input text.
 
     Args:
         length: The length to cut each element in the input text.
@@ -154,7 +154,7 @@ class Cut(MultipleCorpusTypesTransform):
 
 
 class RandomDeletion(MultipleCorpusTypesTransform):
-    """Randomly deletes words or sentences in the input text.
+    """Randomly deletes elements in the input text.
 
     Args:
         deletion_prob: The probability of deleting an element.
@@ -299,7 +299,7 @@ class RandomInsertion(SingleCorpusTypeTransform):
 
 
 class RandomSwap(MultipleCorpusTypesTransform):
-    """Randomly swaps two words or two sentences in the input text n times.
+    """Randomly swaps two elements in the input text n times.
 
     Args:
         n_times: The number of times to repeat the process.
