@@ -14,7 +14,7 @@ _P = ParamSpec("_P")
 def autopsy_sentence(
     func: Callable[Concatenate[List[Word], _P], List[Word]]
 ) -> Callable[Concatenate[Sentence, _P], Sentence]:
-    """The decorator follows these steps:
+    """A decorator follows these steps:
         1. Splits the input sentence into words.
         2. Applies the `func` to the words.
         3. Joins the words returned by `func` into a sentence.
@@ -52,7 +52,7 @@ def autopsy_sentence(
 def autopsy_text(
     func: Callable[Concatenate[List[Sentence], _P], List[Sentence]]
 ) -> Callable[Concatenate[Text, _P], Text]:
-    """The decorator follows these steps:
+    """A decorator follows these steps:
         1. Splits the input text into sentences.
         2. Applies the `func` to the sentences.
         3. Joins the sentences returned by `func` into a text.

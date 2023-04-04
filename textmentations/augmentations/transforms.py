@@ -12,7 +12,7 @@ from . import functional as F
 
 
 class AEDA(SingleCorpusTypeTransform):
-    """Randomly inserts punctuations in the input text.
+    """Randomly inserts punctuations into the input text.
 
     Args:
         insertion_prob_limit: The probability of inserting a punctuation.
@@ -257,7 +257,7 @@ class RandomDeletionSentence(TextTransform):
 
 
 class RandomInsertion(SingleCorpusTypeTransform):
-    """Randomly inserts synonyms in the input text n times.
+    """Randomly inserts synonyms into the input text n times.
 
     Args:
         insertion_prob: The probability of inserting a synonym.
