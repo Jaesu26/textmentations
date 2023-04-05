@@ -1,7 +1,6 @@
 from typing import Any, Callable, Dict
 
 from albumentations.core.transforms_interface import BasicTransform
-from typing_extensions import Literal
 
 from ..corpora.types import Text
 from .utils import extract_first_sentence_by_key, remove_first_sentence_by_key, wrap_text_with_first_sentence_by_key
@@ -104,7 +103,7 @@ class MultipleCorpusTypesTransform(TextTransform):
 
     def __init__(
         self,
-        unit: Literal["word", "sentence", "text"] = "word",
+        unit: str,
         ignore_first: bool = False,
         always_apply: bool = False,
         p: float = 0.5,
@@ -134,11 +133,8 @@ class WordUnitTransformMixin:
     _units: Dict[str, Callable[..., Text]]
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
-        self.add_word_unit()
+        self._units["word"] = self.apply_to_words
         super().__init__(*args, **kwargs)
-
-    def add_word_unit(self) -> None:
-        self._units.update({"word": self.apply_to_words})
 
     def apply_to_words(self, text: Text, **params: Any) -> Text:
         raise NotImplementedError
@@ -148,11 +144,8 @@ class SentenceUnitTransformMixin:
     _units: Dict[str, Callable[..., Text]]
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
-        self.add_sentence_unit()
+        self._units["sentence"] = self.apply_to_sentences
         super().__init__(*args, **kwargs)
-
-    def add_sentence_unit(self) -> None:
-        self._units.update({"sentence": self.apply_to_sentences})
 
     def apply_to_sentences(self, text: Text, **params: Any) -> Text:
         raise NotImplementedError
@@ -162,11 +155,8 @@ class TextUnitTransformMixin:
     _units: Dict[str, Callable[..., Text]]
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
-        self.add_text_unit()
+        self._units["text"] = self.apply_to_text
         super().__init__(*args, **kwargs)
-
-    def add_text_unit(self) -> None:
-        self._units.update({"text": self.apply_to_text})
 
     def apply_to_text(self, text: Text, **params: Any) -> Text:
         raise NotImplementedError
