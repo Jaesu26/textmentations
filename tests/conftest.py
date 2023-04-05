@@ -8,23 +8,33 @@ AUGMENTATIONS = [
     T.BackTranslation,
     T.Cut,
     T.RandomDeletion,
-    T.RandomDeletionSentence,
     T.RandomInsertion,
     T.RandomSwap,
-    T.RandomSwapSentence,
+    T.SynonymReplacement,
+]
+
+AUGMENTATIONS_MULTIPLE = [
+    T.Cut,
+    T.RandomDeletion,
+    T.RandomSwap,
+]
+
+AUGMENTATIONS_SINGLE = [
+    T.AEDA,
+    T.BackTranslation,
+    T.RandomDeletionSentence,
+    T.RandomInsertion,
     T.SynonymReplacement,
 ]
 
 AUGMENTATIONS_WITH_N_TIMES = [
     T.RandomInsertion,
     T.RandomSwap,
-    T.RandomSwapSentence,
 ]
 
 AUGMENTATIONS_WITH_PROBABILITY = [
     T.AEDA,
     T.RandomDeletion,
-    T.RandomDeletionSentence,
     T.RandomInsertion,
     T.SynonymReplacement,
 ]
@@ -32,6 +42,16 @@ AUGMENTATIONS_WITH_PROBABILITY = [
 
 @pytest.fixture(params=AUGMENTATIONS)
 def augmentation(request):
+    return request.param
+
+
+@pytest.fixture(params=AUGMENTATIONS_MULTIPLE)
+def augmentation_multiple(request):
+    return request.param
+
+
+@pytest.fixture(params=AUGMENTATIONS_SINGLE)
+def augmentation_single(request):
     return request.param
 
 

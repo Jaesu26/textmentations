@@ -32,7 +32,7 @@ class AEDA(SingleCorpusTypeTransform):
         always_apply: bool = False,
         p: float = 0.5,
     ) -> None:
-        super(AEDA, self).__init__(ignore_first, always_apply, p)
+        super().__init__(ignore_first, always_apply, p)
         self._validate_transform_init_args(insertion_prob_limit, punctuations)
         self.insertion_prob_limit = to_tuple(insertion_prob_limit, low=0.0)
         self.punctuations = punctuations
@@ -88,7 +88,7 @@ class BackTranslation(SingleCorpusTypeTransform):
         always_apply: bool = False,
         p: float = 0.5,
     ) -> None:
-        super(BackTranslation, self).__init__(ignore_first, always_apply, p)
+        super().__init__(ignore_first, always_apply, p)
         self._validate_transform_init_args(from_lang, to_lang)
         self.from_lang = from_lang
         self.to_lang = to_lang
@@ -125,12 +125,18 @@ class Cut(MultipleCorpusTypesTransform):
         always_apply: bool = False,
         p: float = 1.0,
     ) -> None:
-        super(Cut, self).__init__(unit, ignore_first, always_apply, p)
-        if unit not in ["word", "sentence", "text"]:
-            raise ValueError("unit must be one of ['word', 'sentence', 'text']")
+        super().__init__(unit, ignore_first, always_apply, p)
         self._validate_transform_init_args(length, begin)
         self.length = length
         self.begin = begin
+
+    def _validate_transform_init_args(self, length: int, begin: bool) -> None:
+        if not isinstance(length, int):
+            raise TypeError(f"length must be a positive integer. Got: {length}")
+        if length <= 0:
+            raise ValueError(f"length must be positive. Got: {length}")
+        if not isinstance(begin, bool):
+            raise TypeError(f"begin must be boolean. Got: {type(begin)}")
 
     def apply_to_words(self, text: Text, **params: Any) -> Text:
         return F.cut_words(text, self.length, self.begin)
@@ -141,13 +147,8 @@ class Cut(MultipleCorpusTypesTransform):
     def apply_to_text(self, text: Text, **params: Any) -> Text:
         return F.cut_text(text, self.length, self.begin)
 
-    def _validate_transform_init_args(self, length: int, begin: bool) -> None:
-        if not isinstance(length, int):
-            raise TypeError(f"length must be a positive integer. Got: {length}")
-        if length <= 0:
-            raise ValueError(f"length must be positive. Got: {length}")
-        if not isinstance(begin, bool):
-            raise TypeError(f"begin must be boolean. Got: {type(begin)}")
+    def get_possible_units_names(self) -> Tuple[str, str, str]:
+        return ("word", "sentence", "text")
 
     def get_transform_init_args_names(self) -> Tuple[str, str]:
         return ("length", "begin")
@@ -177,7 +178,7 @@ class RandomDeletion(MultipleCorpusTypesTransform):
         always_apply: bool = False,
         p: float = 0.5,
     ) -> None:
-        super(RandomDeletion, self).__init__(unit, ignore_first, always_apply, p)
+        super().__init__(unit, ignore_first, always_apply, p)
         if unit not in ["word", "sentence"]:
             raise ValueError("unit must be one of ['word', 'sentence']")
         self._validate_transform_init_args(deletion_prob, min_elements)
@@ -227,7 +228,7 @@ class RandomDeletionSentence(TextTransform):
         always_apply: bool = False,
         p: float = 0.5,
     ) -> None:
-        super(RandomDeletionSentence, self).__init__(ignore_first, always_apply, p)
+        super().__init__(ignore_first, always_apply, p)
         warnings.warn(
             "This class has been deprecated. Please use RandomDeletion with unit='sentence'", DeprecationWarning
         )
@@ -276,7 +277,7 @@ class RandomInsertion(SingleCorpusTypeTransform):
         always_apply: bool = False,
         p: float = 0.5,
     ) -> None:
-        super(RandomInsertion, self).__init__(ignore_first, always_apply, p)
+        super().__init__(ignore_first, always_apply, p)
         self._validate_transform_init_args(insertion_prob, n_times)
         self.insertion_prob = insertion_prob
         self.n_times = n_times
@@ -318,9 +319,7 @@ class RandomSwap(MultipleCorpusTypesTransform):
         always_apply: bool = False,
         p: float = 0.5,
     ) -> None:
-        super(RandomSwap, self).__init__(unit, ignore_first, always_apply, p)
-        if unit not in ["word", "sentence"]:
-            raise ValueError("unit must be one of ['word', 'sentence']")
+        super().__init__(unit, ignore_first, always_apply, p)
         self._validate_transform_init_args(n_times)
         self.n_times = n_times
 
@@ -355,7 +354,7 @@ class RandomSwapSentence(TextTransform):
         always_apply: bool = False,
         p: float = 0.5,
     ) -> None:
-        super(RandomSwapSentence, self).__init__(ignore_first, always_apply, p)
+        super().__init__(ignore_first, always_apply, p)
         warnings.warn("This class has been deprecated. Please use RandomSwap with unit='sentence'", DeprecationWarning)
         self._validate_transform_init_args(n_times)
         self.n_times = n_times
@@ -391,7 +390,7 @@ class SynonymReplacement(SingleCorpusTypeTransform):
         always_apply: bool = False,
         p: float = 0.5,
     ) -> None:
-        super(SynonymReplacement, self).__init__(ignore_first, always_apply, p)
+        super().__init__(ignore_first, always_apply, p)
         self._validate_transform_init_args(replacement_prob)
         self.replacement_prob = replacement_prob
 

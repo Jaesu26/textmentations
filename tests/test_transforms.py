@@ -3,6 +3,7 @@ import pytest
 from textmentations.augmentations.utils import extract_first_sentence
 
 
+# TODO: SingleCorupsTypeTransform과 MultipleCorpusTypesTransform으로 나누어 test하기
 @pytest.mark.parametrize("ignore_first", [False, True])
 def test_empty_input_text(augmentation, ignore_first):
     text = ""
@@ -15,6 +16,16 @@ def test_ignore_first(text, augmentation):
     augment = augmentation(ignore_first=True, p=1.0)
     data = augment(text=text)
     assert extract_first_sentence(data["text"]) == extract_first_sentence(text)
+
+
+@pytest.mark.parametrize("incorrect_unit", [0, "token"])
+def test_incorrect_unit_value(augmentation_multiple, incorrect_unit):
+    augmentation = augmentation_multiple
+    params_names = augmentation.__init__.__code__.co_varnames
+    probability_params = {param: incorrect_unit for param in params_names if param == "unit"}
+    with pytest.raises(ValueError) as error_info:
+        augmentation(**probability_params)
+    assert "unit must be one of" in str(error_info.value)
 
 
 @pytest.mark.parametrize("incorrect_n_times", [2j, 1.5, "0.0", None])
