@@ -6,7 +6,14 @@ from albumentations.core.transforms_interface import to_tuple
 from googletrans.constants import LANGUAGES
 from typing_extensions import Literal
 
-from ..core.transforms_interface import MultipleCorpusTypesTransform, SingleCorpusTypeTransform, TextTransform
+from ..core.transforms_interface import (
+    MultipleCorpusTypesTransform,
+    SentenceUnitTransformMixin,
+    SingleCorpusTypeTransform,
+    TextTransform,
+    TextUnitTransformMixin,
+    WordUnitTransformMixin,
+)
 from ..corpora.types import Language, Text
 from . import functional as F
 
@@ -108,8 +115,8 @@ class BackTranslation(SingleCorpusTypeTransform):
         return ("from_lang", "to_lang")
 
 
-class Cut(MultipleCorpusTypesTransform):
-    """Cuts a portion of each element from the input text.
+class Cut(WordUnitTransformMixin, SentenceUnitTransformMixin, TextUnitTransformMixin, MultipleCorpusTypesTransform):
+    """Cuts a portion of each unit level element from the input text.
 
     Args:
         length: The length to cut each element in the input text.
@@ -151,15 +158,12 @@ class Cut(MultipleCorpusTypesTransform):
     def apply_to_text(self, text: Text, **params: Any) -> Text:
         return F.cut_text(text, self.length, self.begin)
 
-    def get_possible_units_names(self) -> Tuple[str, str, str]:
-        return ("word", "sentence", "text")
-
     def get_transform_init_args_names(self) -> Tuple[str, str]:
         return ("length", "begin")
 
 
-class RandomDeletion(MultipleCorpusTypesTransform):
-    """Randomly deletes elements in the input text.
+class RandomDeletion(WordUnitTransformMixin, SentenceUnitTransformMixin, MultipleCorpusTypesTransform):
+    """Randomly deletes unit level elements in the input text.
 
     Args:
         deletion_prob: The probability of deleting an element.
@@ -208,9 +212,6 @@ class RandomDeletion(MultipleCorpusTypesTransform):
 
     def apply_to_sentences(self, text: Text, **params: Any) -> Text:
         return F.delete_sentences(text, self.deletion_prob, self.min_elements)
-
-    def get_possible_units_names(self) -> Tuple[str, str]:
-        return ("word", "sentence")
 
     def get_transform_init_args_names(self) -> Tuple[str, str]:
         return ("deletion_prob", "min_elements")
@@ -310,8 +311,8 @@ class RandomInsertion(SingleCorpusTypeTransform):
         return ("insertion_prob", "n_times")
 
 
-class RandomSwap(MultipleCorpusTypesTransform):
-    """Randomly swaps two elements in the input text n times.
+class RandomSwap(WordUnitTransformMixin, SentenceUnitTransformMixin, MultipleCorpusTypesTransform):
+    """Randomly swaps two unit level elements in the input text n times.
 
     Args:
         n_times: The number of times to repeat the process.
@@ -346,9 +347,6 @@ class RandomSwap(MultipleCorpusTypesTransform):
 
     def apply_to_sentences(self, text: Text, **params: Any) -> Text:
         return F.swap_sentences(text, self.n_times)
-
-    def get_possible_units_names(self) -> Tuple[str, str]:
-        return ("word", "sentence")
 
     def get_transform_init_args_names(self) -> Tuple[str]:
         return ("n_times",)

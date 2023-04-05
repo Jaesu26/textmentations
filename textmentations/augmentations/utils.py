@@ -158,25 +158,6 @@ def remove_nth_sentence(text: Text, n: int) -> Text:
         return text
 
 
-def pass_empty_text(func: Callable[Concatenate[Text, _P], Text]) -> Callable[Concatenate[Text, _P], Text]:
-    """Returns the text directly if it is empty, otherwise calls the decorated function.
-
-    Args:
-        func: The function to be decorated.
-
-    Returns:
-        A wrapper function.
-    """
-
-    @wraps(func)
-    def wrapped(text: Text, *args: _P.args, **kwargs: _P.kwargs) -> Text:
-        if not text:
-            return text
-        return func(text, *args, **kwargs)
-
-    return wrapped
-
-
 def wrap_text_with_sentences(
     text: Text, *, prefix_sentences: Optional[List[Sentence]] = None, suffix_sentences: Optional[List[Sentence]] = None
 ) -> Text:
@@ -194,6 +175,25 @@ def wrap_text_with_sentences(
     suffix_text = join_sentences(suffix_sentences) if suffix_sentences else ""
     wrapped_text = " ".join([prefix_text, text, suffix_text]).strip()
     return wrapped_text
+
+
+def pass_empty_text(func: Callable[Concatenate[Text, _P], Text]) -> Callable[Concatenate[Text, _P], Text]:
+    """Returns the text directly if it is empty, otherwise calls the decorated function.
+
+    Args:
+        func: The function to be decorated.
+
+    Returns:
+        A wrapper function.
+    """
+
+    @wraps(func)
+    def wrapped(text: Text, *args: _P.args, **kwargs: _P.kwargs) -> Text:
+        if not text:
+            return text
+        return func(text, *args, **kwargs)
+
+    return wrapped
 
 
 def get_translator() -> Translator:

@@ -1,4 +1,4 @@
-from typing import Any, Callable, Dict, Tuple
+from typing import Any, Callable, Dict
 
 from albumentations.core.transforms_interface import BasicTransform
 from typing_extensions import Literal
@@ -88,10 +88,6 @@ class SingleCorpusTypeTransform(TextTransform):
         self._validate_base_init_args(ignore_first=ignore_first, always_apply=always_apply, p=p)
 
 
-# TODO: MultipleCorpusTypesTransform을 상속받는 경우
-#  WordBaseTransform, SentenceBaseTransform, TextBaseTransform 중에서 알맞은 클래스를 상속받도록 하자
-#  또는 SingleCorpusTypeTrnaform에 _unit 클래스 변수를 추가해도 된다
-#  이렇게 할 경우 WordBaseTransform, SentenceBaseTransform, TextBaseTransform만 사용하고 TextTransform을 리팩토링 하면 됨
 class MultipleCorpusTypesTransform(TextTransform):
     """Transform applied to multiple text component units.
 
@@ -103,6 +99,8 @@ class MultipleCorpusTypesTransform(TextTransform):
         always_apply: Whether to always apply this transform.
         p: The probability of applying this transform.
     """
+
+    _units: Dict[str, Callable[..., Text]] = {}
 
     def __init__(
         self,
@@ -117,9 +115,8 @@ class MultipleCorpusTypesTransform(TextTransform):
 
     def _validate_base_init_args(self, **params: Any) -> None:
         unit = params["unit"]
-        possible_units = self.get_possible_units_names()
-        if unit not in possible_units:
-            raise ValueError(f"unit must be one of {possible_units}.")
+        if unit not in self.units:
+            raise ValueError(f"unit must be one of {list(self.units.keys())}.")
         super()._validate_base_init_args(**params)
 
     def apply(self, text: Text, **params: Any) -> Text:
@@ -127,19 +124,49 @@ class MultipleCorpusTypesTransform(TextTransform):
 
     @property
     def units(self) -> Dict[str, Callable[..., Text]]:
-        return {"word": self.apply_to_words, "sentence": self.apply_to_sentences, "text": self.apply_to_text}
+        return self._units
+
+    def get_base_init_args(self) -> Dict[str, Any]:
+        return {"unit": self.unit, "ignore_first": self.ignore_first, "always_apply": self.always_apply, "p": self.p}
+
+
+class WordUnitTransformMixin:
+    _units: Dict[str, Callable[..., Text]]
+
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        self.add_word_unit()
+        super().__init__(*args, **kwargs)
+
+    def add_word_unit(self) -> None:
+        self._units.update({"word": self.apply_to_words})
 
     def apply_to_words(self, text: Text, **params: Any) -> Text:
         raise NotImplementedError
 
+
+class SentenceUnitTransformMixin:
+    _units: Dict[str, Callable[..., Text]]
+
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        self.add_sentence_unit()
+        super().__init__(*args, **kwargs)
+
+    def add_sentence_unit(self) -> None:
+        self._units.update({"sentence": self.apply_to_sentences})
+
     def apply_to_sentences(self, text: Text, **params: Any) -> Text:
         raise NotImplementedError
 
+
+class TextUnitTransformMixin:
+    _units: Dict[str, Callable[..., Text]]
+
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        self.add_text_unit()
+        super().__init__(*args, **kwargs)
+
+    def add_text_unit(self) -> None:
+        self._units.update({"text": self.apply_to_text})
+
     def apply_to_text(self, text: Text, **params: Any) -> Text:
         raise NotImplementedError
-
-    def get_possible_units_names(self) -> Tuple[str, ...]:
-        raise NotImplementedError
-
-    def get_base_init_args(self) -> Dict[str, Any]:
-        return {"unit": self.unit, "ignore_first": self.ignore_first, "always_apply": self.always_apply, "p": self.p}
