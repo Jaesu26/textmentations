@@ -120,7 +120,7 @@ class MultipleCorpusTypesTransform(TextTransform):
         super()._validate_base_init_args(**params)
 
     def apply(self, text: Text, **params: Any) -> Text:
-        return self.units.get(self.unit, lambda x, **p: x)(text, **params)
+        return self.units[self.unit](text, **params)
 
     @property
     def units(self) -> Dict[str, Callable[..., Text]]:
