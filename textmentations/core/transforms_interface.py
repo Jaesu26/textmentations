@@ -23,9 +23,9 @@ class TextTransform(BasicTransform):
         self.ignore_first = ignore_first
 
     def _validate_base_init_args(self, **params: Any) -> None:
-        ignore_first = params.pop("ignore_first")
-        always_apply = params.pop("always_apply")
-        p = params.pop("p")
+        ignore_first = params["ignore_first"]
+        always_apply = params["always_apply"]
+        p = params["p"]
         if not isinstance(ignore_first, bool):
             raise TypeError(f"ignore_first must be boolean. Got: {type(ignore_first)}")
         if not isinstance(always_apply, bool):
@@ -35,7 +35,7 @@ class TextTransform(BasicTransform):
         if not (0.0 <= p <= 1.0):
             raise ValueError(f"p must be between 0 and 1. Got: {p}")
 
-    def _validate_transform_init_args(self, *args: Any, **params: Any) -> None:
+    def _validate_transform_init_args(self, **params: Any) -> None:
         raise NotImplementedError
 
     def __call__(self, *args: Any, force_apply: bool = False, **kwargs: Text) -> Dict[str, Text]:
@@ -116,7 +116,7 @@ class MultipleCorpusTypesTransform(TextTransform):
         self.unit = unit
 
     def _validate_base_init_args(self, **params: Any) -> None:
-        unit = params.pop("unit")
+        unit = params["unit"]
         possible_units = self.get_possible_units_names()
         if unit not in possible_units:
             raise ValueError(f"unit must be one of {possible_units}.")

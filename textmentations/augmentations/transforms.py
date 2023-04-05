@@ -33,13 +33,13 @@ class AEDA(SingleCorpusTypeTransform):
         p: float = 0.5,
     ) -> None:
         super().__init__(ignore_first, always_apply, p)
-        self._validate_transform_init_args(insertion_prob_limit, punctuations)
+        self._validate_transform_init_args(insertion_prob_limit=insertion_prob_limit, punctuations=punctuations)
         self.insertion_prob_limit = to_tuple(insertion_prob_limit, low=0.0)
         self.punctuations = punctuations
 
-    def _validate_transform_init_args(
-        self, insertion_prob_limit: Union[float, Tuple[float, float]], punctuations: Tuple[str, ...]
-    ) -> None:
+    def _validate_transform_init_args(self, **params: Any) -> None:
+        insertion_prob_limit = params["insertion_prob_limit"]
+        punctuations = params["punctuations"]
         if not isinstance(insertion_prob_limit, (float, int, tuple)):
             raise TypeError(
                 "insertion_prob_limit must be a real number between 0 and 1 or a tuple with length 2. "
@@ -89,11 +89,13 @@ class BackTranslation(SingleCorpusTypeTransform):
         p: float = 0.5,
     ) -> None:
         super().__init__(ignore_first, always_apply, p)
-        self._validate_transform_init_args(from_lang, to_lang)
+        self._validate_transform_init_args(from_lang=from_lang, to_lang=to_lang)
         self.from_lang = from_lang
         self.to_lang = to_lang
 
-    def _validate_transform_init_args(self, from_lang: Language, to_lang: Language) -> None:
+    def _validate_transform_init_args(self, **params: Any) -> None:
+        from_lang = params["from_lang"]
+        to_lang = params["to_lang"]
         if from_lang not in LANGUAGES:
             raise ValueError(f"from_lang must be one of {list(LANGUAGES.keys())}. Got: {from_lang}")
         if to_lang not in LANGUAGES:
@@ -126,11 +128,13 @@ class Cut(MultipleCorpusTypesTransform):
         p: float = 1.0,
     ) -> None:
         super().__init__(unit, ignore_first, always_apply, p)
-        self._validate_transform_init_args(length, begin)
+        self._validate_transform_init_args(length=length, begin=begin)
         self.length = length
         self.begin = begin
 
-    def _validate_transform_init_args(self, length: int, begin: bool) -> None:
+    def _validate_transform_init_args(self, **params: Any) -> None:
+        length = params["length"]
+        begin = params["begin"]
         if not isinstance(length, int):
             raise TypeError(f"length must be a positive integer. Got: {length}")
         if length <= 0:
@@ -179,13 +183,13 @@ class RandomDeletion(MultipleCorpusTypesTransform):
         p: float = 0.5,
     ) -> None:
         super().__init__(unit, ignore_first, always_apply, p)
-        if unit not in ["word", "sentence"]:
-            raise ValueError("unit must be one of ['word', 'sentence']")
-        self._validate_transform_init_args(deletion_prob, min_elements)
+        self._validate_transform_init_args(deletion_prob=deletion_prob, min_elements=min_elements)
         self.deletion_prob = deletion_prob
         self.min_elements = min_elements
 
-    def _validate_transform_init_args(self, deletion_prob: float, min_elements: Union[float, int]) -> None:
+    def _validate_transform_init_args(self, **params: Any) -> None:
+        deletion_prob = params["deletion_prob"]
+        min_elements = params["min_elements"]
         if not isinstance(deletion_prob, (float, int)):
             raise TypeError(f"deletion_prob must be a real number between 0 and 1. Got: {type(deletion_prob)}")
         if not (0.0 <= deletion_prob <= 1.0):
@@ -204,6 +208,9 @@ class RandomDeletion(MultipleCorpusTypesTransform):
 
     def apply_to_sentences(self, text: Text, **params: Any) -> Text:
         return F.delete_sentences(text, self.deletion_prob, self.min_elements)
+
+    def get_possible_units_names(self) -> Tuple[str, str]:
+        return ("word", "sentence")
 
     def get_transform_init_args_names(self) -> Tuple[str, str]:
         return ("deletion_prob", "min_elements")
@@ -232,11 +239,13 @@ class RandomDeletionSentence(TextTransform):
         warnings.warn(
             "This class has been deprecated. Please use RandomDeletion with unit='sentence'", DeprecationWarning
         )
-        self._validate_transform_init_args(deletion_prob, min_sentences)
+        self._validate_transform_init_args(deletion_prob=deletion_prob, min_sentences=min_sentences)
         self.deletion_prob = deletion_prob
         self.min_sentences = min_sentences
 
-    def _validate_transform_init_args(self, deletion_prob: float, min_sentences: Union[float, int]) -> None:
+    def _validate_transform_init_args(self, **params: Any) -> None:
+        deletion_prob = params["deletion_prob"]
+        min_sentences = params["min_sentences"]
         if not isinstance(deletion_prob, (float, int)):
             raise TypeError(f"deletion_prob must be a real number between 0 and 1. Got: {type(deletion_prob)}")
         if not (0.0 <= deletion_prob <= 1.0):
@@ -278,11 +287,13 @@ class RandomInsertion(SingleCorpusTypeTransform):
         p: float = 0.5,
     ) -> None:
         super().__init__(ignore_first, always_apply, p)
-        self._validate_transform_init_args(insertion_prob, n_times)
+        self._validate_transform_init_args(insertion_prob=insertion_prob, n_times=n_times)
         self.insertion_prob = insertion_prob
         self.n_times = n_times
 
-    def _validate_transform_init_args(self, insertion_prob: float, n_times: int) -> None:
+    def _validate_transform_init_args(self, **params: Any) -> None:
+        insertion_prob = params["insertion_prob"]
+        n_times = params["n_times"]
         if not isinstance(insertion_prob, (float, int)):
             raise TypeError(f"insertion_prob must be a real number between 0 and 1. Got: {type(insertion_prob)}")
         if not (0.0 <= insertion_prob <= 1.0):
@@ -320,10 +331,11 @@ class RandomSwap(MultipleCorpusTypesTransform):
         p: float = 0.5,
     ) -> None:
         super().__init__(unit, ignore_first, always_apply, p)
-        self._validate_transform_init_args(n_times)
+        self._validate_transform_init_args(n_times=n_times)
         self.n_times = n_times
 
-    def _validate_transform_init_args(self, n_times: int) -> None:
+    def _validate_transform_init_args(self, **params: Any) -> None:
+        n_times = params["n_times"]
         if not isinstance(n_times, int):
             raise TypeError(f"n_times must be a positive integer. Got: {type(n_times)}")
         if n_times <= 0:
@@ -334,6 +346,9 @@ class RandomSwap(MultipleCorpusTypesTransform):
 
     def apply_to_sentences(self, text: Text, **params: Any) -> Text:
         return F.swap_sentences(text, self.n_times)
+
+    def get_possible_units_names(self) -> Tuple[str, str]:
+        return ("word", "sentence")
 
     def get_transform_init_args_names(self) -> Tuple[str]:
         return ("n_times",)
@@ -356,10 +371,11 @@ class RandomSwapSentence(TextTransform):
     ) -> None:
         super().__init__(ignore_first, always_apply, p)
         warnings.warn("This class has been deprecated. Please use RandomSwap with unit='sentence'", DeprecationWarning)
-        self._validate_transform_init_args(n_times)
+        self._validate_transform_init_args(n_times=n_times)
         self.n_times = n_times
 
-    def _validate_transform_init_args(self, n_times: int) -> None:
+    def _validate_transform_init_args(self, **params: Any) -> None:
+        n_times = params["n_times"]
         if not isinstance(n_times, int):
             raise TypeError(f"n_times must be a positive integer. Got: {type(n_times)}")
         if n_times <= 0:
@@ -391,10 +407,11 @@ class SynonymReplacement(SingleCorpusTypeTransform):
         p: float = 0.5,
     ) -> None:
         super().__init__(ignore_first, always_apply, p)
-        self._validate_transform_init_args(replacement_prob)
+        self._validate_transform_init_args(replacement_prob=replacement_prob)
         self.replacement_prob = replacement_prob
 
-    def _validate_transform_init_args(self, replacement_prob: float) -> None:
+    def _validate_transform_init_args(self, **params: Any) -> None:
+        replacement_prob = params["replacement_prob"]
         if not isinstance(replacement_prob, (float, int)):
             raise TypeError(f"replacement_prob must be a real number between 0 and 1. Got: {type(replacement_prob)}")
         if not (0.0 <= replacement_prob <= 1.0):
