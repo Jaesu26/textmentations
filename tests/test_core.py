@@ -31,6 +31,15 @@ def test_incorrect_p_value(text, incorrect_p):
     assert str(error_info.value) == f"p must be between 0 and 1. Got: {incorrect_p}"
 
 
+@pytest.mark.parametrize("incorrect_unit", [123, "text"])
+def test_incorrect_unit_value(text, incorrect_unit):
+    augmentation_cls = T.RandomDeletion
+    with pytest.raises(ValueError) as error_info:
+        augmentation_cls(unit=incorrect_unit)
+    augment = augmentation_cls()
+    assert str(error_info.value) == f"unit must be one of {list(augment.units.keys())}. Got: {incorrect_unit}"
+
+
 def test_named_args():
     text = "짜장면을 맛있게 먹었다."
     augment = T.RandomSwap(p=1.0)

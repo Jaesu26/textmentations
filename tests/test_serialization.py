@@ -8,7 +8,7 @@ from .utils import set_seed
 @pytest.mark.parametrize("ignore_first", [False, True])
 @pytest.mark.parametrize("always_apply", [False, True])
 @pytest.mark.parametrize("p", [0.5, 1.0])
-def test_augmentations_serialization(
+def test_augmentation_serialization(
     long_text,
     augmentation,
     seed,

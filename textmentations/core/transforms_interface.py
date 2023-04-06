@@ -115,7 +115,7 @@ class MultipleCorpusTypesTransform(TextTransform):
     def _validate_base_init_args(self, **params: Any) -> None:
         unit = params["unit"]
         if unit not in self.units:
-            raise ValueError(f"unit must be one of {list(self.units.keys())}.")
+            raise ValueError(f"unit must be one of {list(self.units.keys())}. Got: {unit}")
         super()._validate_base_init_args(**params)
 
     def apply(self, text: Text, **params: Any) -> Text:

@@ -22,7 +22,6 @@ AUGMENTATIONS_MULTIPLE = [
 AUGMENTATIONS_SINGLE = [
     T.AEDA,
     T.BackTranslation,
-    T.RandomDeletionSentence,
     T.RandomInsertion,
     T.SynonymReplacement,
 ]
