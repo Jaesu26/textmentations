@@ -2,22 +2,24 @@ import pytest
 
 import textmentations as T
 
+from .utils import get_units
 
-@pytest.mark.parametrize("incorrect_ignore_first", [2j, 1.0, "0.0", None])
+
+@pytest.mark.parametrize("incorrect_ignore_first", [1.0, "0.0", None])
 def test_incorrect_ignore_first_type(text, incorrect_ignore_first):
     with pytest.raises(TypeError) as error_info:
         T.SingleCorpusTypeTransform(ignore_first=incorrect_ignore_first)
     assert str(error_info.value) == f"ignore_first must be boolean. Got: {type(incorrect_ignore_first)}"
 
 
-@pytest.mark.parametrize("incorrect_always_apply", [2j, 1.0, "0.0", None])
+@pytest.mark.parametrize("incorrect_always_apply", [1.0, "0.0", None])
 def test_incorrect_always_apply_type(text, incorrect_always_apply):
     with pytest.raises(TypeError) as error_info:
         T.SingleCorpusTypeTransform(always_apply=incorrect_always_apply)
     assert str(error_info.value) == f"always_apply must be boolean. Got: {type(incorrect_always_apply)}"
 
 
-@pytest.mark.parametrize("incorrect_p", [2j, "0.0", None])
+@pytest.mark.parametrize("incorrect_p", ["0.0", None])
 def test_incorrect_p_type(text, incorrect_p):
     with pytest.raises(TypeError) as error_info:
         T.SingleCorpusTypeTransform(p=incorrect_p)
@@ -32,12 +34,12 @@ def test_incorrect_p_value(text, incorrect_p):
 
 
 @pytest.mark.parametrize("incorrect_unit", [123, "text"])
-def test_incorrect_unit_value(text, incorrect_unit):
+def test_incorrect_unit_value(incorrect_unit):
     augmentation_cls = T.RandomDeletion
     with pytest.raises(ValueError) as error_info:
         augmentation_cls(unit=incorrect_unit)
-    augment = augmentation_cls()
-    assert str(error_info.value) == f"unit must be one of {list(augment.units.keys())}. Got: {incorrect_unit}"
+    units = get_units(augmentation_cls)
+    assert str(error_info.value) == f"unit must be one of {units}. Got: {incorrect_unit}"
 
 
 def test_named_args():

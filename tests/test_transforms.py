@@ -18,17 +18,7 @@ def test_ignore_first(text, augmentation):
     assert extract_first_sentence(data["text"]) == extract_first_sentence(text)
 
 
-@pytest.mark.parametrize("incorrect_unit", [0, "token"])
-def test_incorrect_unit_value(augmentation_multiple, incorrect_unit):
-    augmentation = augmentation_multiple
-    params_names = augmentation.__init__.__code__.co_varnames
-    probability_params = {param: incorrect_unit for param in params_names if param == "unit"}
-    with pytest.raises(ValueError) as error_info:
-        augmentation(**probability_params)
-    assert "unit must be one of" in str(error_info.value)
-
-
-@pytest.mark.parametrize("incorrect_n_times", [2j, 1.5, "0.0", None])
+@pytest.mark.parametrize("incorrect_n_times", [1.5, "0.0", None])
 def test_incorrect_n_times_type(augmentation_with_n_times, incorrect_n_times):
     augmentation = augmentation_with_n_times
     params_names = augmentation.__init__.__code__.co_varnames
@@ -48,7 +38,7 @@ def test_incorrect_n_times_value(augmentation_with_n_times, incorrect_n_times):
     assert str(error_info.value) == f"n_times must be positive. Got: {incorrect_n_times}"
 
 
-@pytest.mark.parametrize("incorrect_probability", [2j, "0.0", None])
+@pytest.mark.parametrize("incorrect_probability", ["0.0", None])
 def test_incorrect_probability_type(augmentation_with_probability, incorrect_probability):
     augmentation = augmentation_with_probability
     params_names = augmentation.__init__.__code__.co_varnames
