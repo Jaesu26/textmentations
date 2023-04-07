@@ -50,24 +50,24 @@ def _crop_text(text: Text, start_index: int, end_index: int) -> Text:
 
 
 def cut_words(text: Text, length: int, begin: bool) -> Text:
-    """Cuts a portion of each word in the text."""
+    """Cuts a port of each word in the text from the beginning or end."""
     return _cut_words(text, length, begin)
 
 
 @autopsy_text
 def _cut_words(sentences: List[Sentence], length: int, begin: bool) -> List[Sentence]:
-    """Cuts a portion of each word in the list of sentences."""
+    """Cuts a port of each word in the list of sentences from the beginning or end."""
     return [_cut_words_in_sentence(sentence, length, begin) for sentence in sentences]
 
 
 @autopsy_sentence
 def _cut_words_in_sentence(words: List[Word], length: int, begin: bool) -> List[Word]:
-    """Cuts a portion of each word in the list of words."""
+    """Cuts a port of each word in the list of words from the beginning or end."""
     return [_cut_string_by_length(word, length, begin) for word in words]
 
 
 def _cut_string_by_length(string: Corpus, length: int, begin: bool) -> Corpus:
-    """Cuts a portion of the string by the length."""
+    """Cuts a port of the string by the length from the beginning or end."""
     if len(string) <= length:
         params = {}
     elif begin:
@@ -89,23 +89,23 @@ def _cut_string_by_index(string: Corpus, start_index: Optional[int] = None, end_
 
 
 def cut_sentences(text: Text, length: int, begin: bool) -> Text:
-    """Cuts a portion of each sentence in the text."""
+    """Cuts a port of each sentence in the text from the beginning or end."""
     return _cut_sentences(text, length, begin)
 
 
 @autopsy_text
 def _cut_sentences(sentences: List[Sentence], length: int, begin: bool) -> List[Sentence]:
-    """Cuts a portion of each sentence in the list of sentences."""
+    """Cuts a port of each sentence in the list of sentences from the beginning or end."""
     return [_cut_string_by_length(sentence, length, begin) for sentence in sentences]
 
 
 def cut_text(text: Text, length: int, begin: bool) -> Text:
-    """Cuts a portion of the text."""
+    """Cuts a port of the text from the beginning or end."""
     return _cut_text(text, length, begin)
 
 
 def _cut_text(text: Text, length: int, begin: bool) -> Text:
-    """Cuts a portion of the text."""
+    """Cuts a port of the text from the beginning or end."""
     return _cut_string_by_length(text, length, begin)
 
 
