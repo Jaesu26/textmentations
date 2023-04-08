@@ -2,18 +2,40 @@ import pytest
 
 from textmentations.augmentations.utils import extract_first_sentence
 
+from .utils import get_units
 
-# TODO: SingleCorupsTypeTransform과 MultipleCorpusTypesTransform으로 나누어 test하기
+
+# Refactoring 필요
 @pytest.mark.parametrize("ignore_first", [False, True])
 def test_empty_input_text(augmentation, ignore_first):
     text = ""
-    augment = augmentation(ignore_first=ignore_first, p=1.0)
+    if hasattr(augmentation, "_unit"):
+        units = get_units(augmentation)
+        for unit in units:
+            augment = augmentation(unit=unit, ignore_first=ignore_first, p=1.0)
+            _test_empty_input_text(text, augment)
+    else:
+        augment = augmentation(ignore_first=ignore_first, p=1.0)
+        _test_empty_input_text(text, augment)
+
+
+def _test_empty_input_text(text, augment):
     data = augment(text=text)
     assert data["text"] == ""
 
 
 def test_ignore_first(text, augmentation):
-    augment = augmentation(ignore_first=True, p=1.0)
+    if hasattr(augmentation, "_unit"):
+        units = get_units(augmentation)
+        for unit in units:
+            augment = augmentation(unit=unit, ignore_first=True, p=1.0)
+            _test_ignore_first(text, augment)
+    else:
+        augment = augmentation(ignore_first=True, p=1.0)
+        _test_ignore_first(text, augment)
+
+
+def _test_ignore_first(text, augment):
     data = augment(text=text)
     assert extract_first_sentence(data["text"]) == extract_first_sentence(text)
 
