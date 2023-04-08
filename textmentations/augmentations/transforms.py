@@ -85,6 +85,9 @@ class BackTranslation(SingleCorpusTypeTransform):
         from_lang: The language of the input text.
         to_lang: The language to which the input text will be translated.
         p: The probability of applying this transform.
+
+    References:
+        https://arxiv.org/pdf/1511.06709.pdf
     """
 
     def __init__(
@@ -123,6 +126,9 @@ class Cut(WordUnitTransformMixin, SentenceUnitTransformMixin, TextUnitTransformM
         begin: Whether to cut each element at start or end.
         unit: Unit to which transform is to be applied.
         p: The probability of applying this transform.
+
+    Units:
+        word, sentence, text
     """
 
     def __init__(
@@ -172,6 +178,9 @@ class RandomDeletion(WordUnitTransformMixin, SentenceUnitTransformMixin, Multipl
             If an `int`, it is the minimum number of elements in the text.
         unit: Unit to which transform is to be applied.
         p: The probability of applying this transform.
+
+    Units:
+        word, sentence
 
     References:
         https://arxiv.org/pdf/1901.11196.pdf
@@ -318,6 +327,9 @@ class RandomSwap(WordUnitTransformMixin, SentenceUnitTransformMixin, MultipleCor
         n_times: The number of times to repeat the process.
         unit: Unit to which transform is to be applied.
         p: The probability of applying this transform.
+
+    Units:
+        word, sentence
 
     References:
         https://arxiv.org/pdf/1901.11196.pdf

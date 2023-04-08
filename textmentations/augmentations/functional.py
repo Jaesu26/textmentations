@@ -39,14 +39,15 @@ def back_translate(text: Text, from_lang: Language, to_lang: Language) -> Text:
         return text
 
 
-# TODO: crop 함수에 docstring 추가, Transform 구현
+# TODO: Crop Transform 구현
 def crop_text(text: Text, start_index: int, end_index: int) -> Text:
+    """Cuts the text from the start index to the end index."""
     return _crop_text(text, start_index, end_index)
 
 
 def _crop_text(text: Text, start_index: int, end_index: int) -> Text:
-    cropped_text = _cut_string_by_index(text, start_index, end_index)
-    return cropped_text
+    """Cuts the text from the start index to the end index."""
+    return _cut_string_by_index(text, start_index, end_index)
 
 
 def cut_words(text: Text, length: int, begin: bool) -> Text:
