@@ -118,6 +118,30 @@ class BackTranslation(SingleCorpusTypeTransform):
         return ("from_lang", "to_lang")
 
 
+class Crop(SingleCorpusTypeTransform):
+    def __init__(
+        self,
+        start_point: Union[float, Tuple[float, float]] = (0.0, 0.1),
+        end_point: Union[float, Tuple[float, float]] = (0.9, 1.0),
+        ignore_first: bool = False,
+        always_apply: bool = False,
+        p: float = 1.0,
+    ) -> None:
+        super().__init__(ignore_first, always_apply, p)
+        self._validate_transform_init_args(start_point=start_point, end_point=end_point)
+        self.start_point = to_tuple(start_point)
+        self.end_point = to_tuple(end_point)
+
+    def _validate_transform_init_args(self, **params: Any) -> None:
+        ...
+
+    def apply(self, text: Text, **params: Any) -> Text:
+        return text
+
+    def get_transform_init_args_names(self) -> Tuple[str, str]:
+        return ("start_point", "end_point")
+
+
 class Cut(WordUnitTransformMixin, SentenceUnitTransformMixin, TextUnitTransformMixin, MultipleCorpusTypesTransform):
     """Cuts a portion of each unit level element from the input text.
 
