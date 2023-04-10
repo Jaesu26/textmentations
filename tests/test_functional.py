@@ -11,6 +11,20 @@ def test_back_translate():
 
 
 @pytest.mark.parametrize(
+    ["length", "begin", "expected_text"],
+    [
+        (50, True, "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."),
+        (50, False, "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."),
+        (5, True, "짜장면을 "),
+        (5, False, " 싶었다."),
+    ],
+)
+def test_cut_text(text_without_synonyms, length, begin, expected_text):
+    augmented_text = F.cut_text(text_without_synonyms, length, begin)
+    assert augmented_text == expected_text
+
+
+@pytest.mark.parametrize(
     ["deletion_prob", "min_words_each_sentence", "expected_text"],
     [
         (0.0, 0.5, "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."),
