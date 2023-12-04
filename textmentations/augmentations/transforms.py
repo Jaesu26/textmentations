@@ -11,7 +11,7 @@ from .utils import split_text_into_sentences
 
 
 class AEDA(TextTransform):
-    """Randomly inserts punctuations in the input text.
+    """Randomly inserts punctuations into the input text.
 
     Args:
         insertion_prob_limit: The probability of inserting a punctuation.
@@ -237,7 +237,7 @@ class RandomInsertion(TextTransform):
 
     Args:
         insertion_prob: The probability of inserting a synonym.
-        n_times: The number of times to repeat the operation.
+        n_times: The number of times to repeat the process.
         p: The probability of applying this transform.
 
     References:
@@ -278,7 +278,7 @@ class RandomSwap(TextTransform):
     """Repeats n times the task of randomly swapping two words in a randomly selected sentence from the input text.
 
     Args:
-        n_times: The number of times to repeat the operation.
+        n_times: The number of times to repeat the process.
         p: The probability of applying this transform.
 
     References:
@@ -313,7 +313,7 @@ class RandomSwapSentence(TextTransform):
     """Repeats n times the task of randomly swapping two sentences in the input text.
 
     Args:
-        n_times: The number of times to repeat the operation.
+        n_times: The number of times to repeat the process.
         p: The probability of applying this transform.
     """
 
