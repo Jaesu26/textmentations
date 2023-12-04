@@ -233,7 +233,7 @@ class RandomDeletionSentence(TextTransform):
 
 
 class RandomInsertion(TextTransform):
-    """Repeats n times the task of randomly inserting synonyms in the input text.
+    """Repeats n times the task of randomly inserting synonyms into the input text.
 
     Args:
         insertion_prob: The probability of inserting a synonym.
