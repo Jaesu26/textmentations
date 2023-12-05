@@ -14,7 +14,7 @@ _P = ParamSpec("_P")
 def autopsy_sentence(
     func: Callable[Concatenate[List[Word], _P], List[Word]]
 ) -> Callable[Concatenate[Sentence, _P], Sentence]:
-    """The decorator follows these steps:
+    """A decorator follows these steps:
         1. Splits the input sentence into words.
         2. Applies the `func` to the words.
         3. Joins the words returned by `func` into a sentence.
@@ -52,7 +52,7 @@ def autopsy_sentence(
 def autopsy_text(
     func: Callable[Concatenate[List[Sentence], _P], List[Sentence]]
 ) -> Callable[Concatenate[Text, _P], Text]:
-    """The decorator follows these steps:
+    """A decorator follows these steps:
         1. Splits the input text into sentences.
         2. Applies the `func` to the sentences.
         3. Joins the sentences returned by `func` into a text.
@@ -103,6 +103,7 @@ def split_text_into_sentences(text: Text) -> List[Sentence]:
     return sentences
 
 
+# TOOD: := 연산자를 사용하여 strip과 remove_empty_strings 함수를 strip_v2 함수로 대체 (Python >= 3.8)
 def strip(strings: List[Corpus]) -> List[Corpus]:
     """Removes leading and trailing whitespaces from each string in the list."""
     return [s.strip() for s in strings]
@@ -122,7 +123,7 @@ def join_words_into_sentence(words: List[Word]) -> Sentence:
 def join_sentences_into_text(sentences: List[Sentence]) -> Text:
     """Joins sentences into a text."""
     text = ". ".join(sentences)
-    text = ".".join([text, ""]) if text else text
+    text = text + "." if text else text
     return text
 
 
@@ -157,25 +158,6 @@ def remove_nth_sentence(text: Text, n: int) -> Text:
         return text
 
 
-def pass_empty_text(func: Callable[Concatenate[Text, _P], Text]) -> Callable[Concatenate[Text, _P], Text]:
-    """Returns the text directly if it is empty, otherwise calls the decorated function.
-
-    Args:
-        func: The function to be decorated.
-
-    Returns:
-        A wrapper function.
-    """
-
-    @wraps(func)
-    def wrapped(text: Text, *args: _P.args, **kwargs: _P.kwargs) -> Text:
-        if not text:
-            return text
-        return func(text, *args, **kwargs)
-
-    return wrapped
-
-
 def wrap_text_with_sentences(
     text: Text, *, prefix_sentences: Optional[List[Sentence]] = None, suffix_sentences: Optional[List[Sentence]] = None
 ) -> Text:
@@ -193,6 +175,25 @@ def wrap_text_with_sentences(
     suffix_text = join_sentences_into_text(suffix_sentences) if suffix_sentences else ""
     wrapped_text = " ".join([prefix_text, text, suffix_text]).strip()
     return wrapped_text
+
+
+def pass_empty_text(func: Callable[Concatenate[Text, _P], Text]) -> Callable[Concatenate[Text, _P], Text]:
+    """Returns the text directly if it is empty, otherwise calls the decorated function.
+
+    Args:
+        func: The function to be decorated.
+
+    Returns:
+        A wrapper function.
+    """
+
+    @wraps(func)
+    def wrapped(text: Text, *args: _P.args, **kwargs: _P.kwargs) -> Text:
+        if not text:
+            return text
+        return func(text, *args, **kwargs)
+
+    return wrapped
 
 
 def get_translator() -> Translator:
