@@ -17,7 +17,7 @@ class TextTransform(BasicTransform):
     """
 
     def __init__(self, ignore_first: bool = False, always_apply: bool = False, p: float = 0.5) -> None:
-        super(TextTransform, self).__init__(always_apply, p)
+        super().__init__(always_apply, p)
         self._validate_base_init_args(ignore_first, always_apply, p)
         self.ignore_first = ignore_first
 
@@ -37,13 +37,13 @@ class TextTransform(BasicTransform):
         if not all(isinstance(text, str) for _, text in kwargs.items()):
             raise TypeError("You have to pass string data to augmentations.")
         if not self.ignore_first:
-            return super(TextTransform, self).__call__(force_apply=force_apply, **kwargs)
+            return super().__call__(force_apply=force_apply, **kwargs)
         return self.apply_without_first(force_apply=force_apply, **kwargs)
 
     def apply_without_first(self, force_apply: bool = False, **kwargs: Text) -> Dict[str, Text]:
         key2first_sentence = extract_first_sentence_by_key(kwargs)
         key2text_without_first_sentence = remove_first_sentence_by_key(kwargs)
-        key2augmented_text_without_first_sentence = super(TextTransform, self).__call__(
+        key2augmented_text_without_first_sentence = super().__call__(
             force_apply=force_apply, **key2text_without_first_sentence
         )
         key2augmented_text = wrap_text_with_first_sentence_by_key(

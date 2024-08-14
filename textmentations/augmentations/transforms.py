@@ -31,7 +31,7 @@ class AEDA(TextTransform):
         always_apply: bool = False,
         p: float = 0.5,
     ) -> None:
-        super(AEDA, self).__init__(ignore_first, always_apply, p)
+        super().__init__(ignore_first, always_apply, p)
         self._validate_transform_init_args(insertion_prob_limit, punctuations)
         self.insertion_prob_limit = to_tuple(insertion_prob_limit, low=0.0)
         self.punctuations = punctuations
@@ -87,7 +87,7 @@ class BackTranslation(TextTransform):
         always_apply: bool = False,
         p: float = 0.5,
     ) -> None:
-        super(BackTranslation, self).__init__(ignore_first, always_apply, p)
+        super().__init__(ignore_first, always_apply, p)
         self._validate_transform_init_args(from_lang, to_lang)
         self.from_lang = from_lang
         self.to_lang = to_lang
@@ -127,7 +127,7 @@ class RandomDeletion(TextTransform):
         always_apply: bool = False,
         p: float = 0.5,
     ) -> None:
-        super(RandomDeletion, self).__init__(ignore_first, always_apply, p)
+        super().__init__(ignore_first, always_apply, p)
         self._validate_transform_init_args(deletion_prob, min_words_each_sentence)
         self.deletion_prob = deletion_prob
         self.min_words_each_sentence = min_words_each_sentence
@@ -178,7 +178,7 @@ class RandomDeletionSentence(TextTransform):
         always_apply: bool = False,
         p: float = 0.5,
     ) -> None:
-        super(RandomDeletionSentence, self).__init__(ignore_first, always_apply, p)
+        super().__init__(ignore_first, always_apply, p)
         self._validate_transform_init_args(deletion_prob, min_sentences)
         self.deletion_prob = deletion_prob
         self.min_sentences = min_sentences
@@ -252,7 +252,7 @@ class RandomInsertion(TextTransform):
         always_apply: bool = False,
         p: float = 0.5,
     ) -> None:
-        super(RandomInsertion, self).__init__(ignore_first, always_apply, p)
+        super().__init__(ignore_first, always_apply, p)
         self._validate_transform_init_args(insertion_prob, n_times)
         self.insertion_prob = insertion_prob
         self.n_times = n_times
@@ -292,7 +292,7 @@ class RandomSwap(TextTransform):
         always_apply: bool = False,
         p: float = 0.5,
     ) -> None:
-        super(RandomSwap, self).__init__(ignore_first, always_apply, p)
+        super().__init__(ignore_first, always_apply, p)
         self._validate_transform_init_args(n_times)
         self.n_times = n_times
 
@@ -324,7 +324,7 @@ class RandomSwapSentence(TextTransform):
         always_apply: bool = False,
         p: float = 0.5,
     ) -> None:
-        super(RandomSwapSentence, self).__init__(ignore_first, always_apply, p)
+        super().__init__(ignore_first, always_apply, p)
         self._validate_transform_init_args(n_times)
         self.n_times = n_times
 
@@ -359,7 +359,7 @@ class SynonymReplacement(TextTransform):
         always_apply: bool = False,
         p: float = 0.5,
     ) -> None:
-        super(SynonymReplacement, self).__init__(ignore_first, always_apply, p)
+        super().__init__(ignore_first, always_apply, p)
         self._validate_transform_init_args(replacement_prob)
         self.replacement_prob = replacement_prob
 
