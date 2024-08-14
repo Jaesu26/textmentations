@@ -65,4 +65,4 @@ class TextTransform(BasicTransform):
         return {}
 
     def get_base_init_args(self) -> Dict[str, Any]:
-        return {"ignore_first": self.ignore_first, "always_apply": self.always_apply, "p": self.p}
+        return {"ignore_first": self.ignore_first, **super().get_base_init_args()}
