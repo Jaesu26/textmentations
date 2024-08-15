@@ -44,7 +44,7 @@ def augmentation_with_probability(request):
     return request.param
 
 
-@pytest.fixture()
+@pytest.fixture
 def long_text():
     return (
         "동해물과 백두산이 마르고 닳도록. 하느님이 보우하사 우리나라 만세. "
@@ -63,7 +63,7 @@ def text(request):
     return request.getfixturevalue(request.param)
 
 
-@pytest.fixture()
+@pytest.fixture
 def text_with_synonyms():
     return "어제 식당에 갔다. 목이 너무 말랐다. 먼저 물 한잔을 마셨다. 그리고 탕수육을 맛있게 먹었다."
 

@@ -27,12 +27,13 @@ def autopsy_sentence(
 
     Examples:
         >>> @autopsy_sentence
-        ... def remove_second_word(words):
+        ... def remove_second_word(words: List[Word]) -> Word:
         ...    try:
         ...        del words[1]
         ...        return words
         ...    except IndexError:
         ...        return words
+        ...
         ...
         >>> sentence = "짜장면을 맛있게 먹었다"
         >>> remove_second_word(sentence)
@@ -65,12 +66,13 @@ def autopsy_text(
 
     Examples:
         >>> @autopsy_text
-        ... def remove_second_sentence(sentences):
+        ... def remove_second_sentence(sentences: List[Sentence]) -> Sentence:
         ...    try:
         ...        del sentences[1]
         ...        return sentences
         ...    except IndexError:
         ...        return sentences
+        ...
         ...
         >>> text = "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다."
         >>> remove_second_sentence(text)
@@ -103,7 +105,7 @@ def split_text_into_sentences(text: Text) -> List[Sentence]:
     return sentences
 
 
-# TOOD: := 연산자를 사용하여 strip과 remove_empty_strings 함수를 strip_v2 함수로 대체 (Python >= 3.8)
+# TODO: := 연산자를 사용하여 strip과 remove_empty_strings 함수를 strip_v2 함수로 대체 (Python >= 3.8)
 def strip(strings: List[Corpus]) -> List[Corpus]:
     """Removes leading and trailing whitespaces from each string in the list."""
     return [s.strip() for s in strings]
