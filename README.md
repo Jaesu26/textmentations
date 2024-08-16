@@ -1,7 +1,7 @@
 # Textmentations
 
-Textmentations is a Python library for augmenting Korean text. 
-Inspired by [albumentations](https://github.com/albumentations-team/albumentations). 
+Textmentations is a Python library for augmenting Korean text.
+Inspired by [albumentations](https://github.com/albumentations-team/albumentations).
 Textmentations uses the albumentations as a dependency.
 
 ## Installation
@@ -12,8 +12,8 @@ pip install textmentations
 
 ## A simple example
 
-Textmentations provides text augmentation techniques implemented using the [TextTransform](https://github.com/Jaesu26/textmentations/blob/v1.1.1/textmentations/core/transforms_interface.py#L9), 
-which inherits from the albumentations [BasicTransform](https://github.com/albumentations-team/albumentations/blob/1.2.1/albumentations/core/transforms_interface.py#L54). 
+Textmentations provides text augmentation techniques implemented using the [TextTransform](https://github.com/Jaesu26/textmentations/blob/v1.1.1/textmentations/core/transforms_interface.py#L9),
+which inherits from the albumentations [BasicTransform](https://github.com/albumentations-team/albumentations/blob/1.2.1/albumentations/core/transforms_interface.py#L54).
 
 This allows textmentations to reuse the existing functionalities of albumentations.
 
