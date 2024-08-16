@@ -12,6 +12,7 @@ ignore_errors = true
 [tool.isort]
 line_length = 120
 profile = "black"
+py_version = 38
 
 [tool.mypy]
 files = ["textmentations"]
