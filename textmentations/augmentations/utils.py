@@ -43,9 +43,9 @@ def autopsy_sentence(
     @wraps(func)
     def wrapped(sentence: Sentence, *args: _P.args, **kwargs: _P.kwargs) -> Sentence:
         words = split_sentence_into_words(sentence)
-        processed_words = func(words, *args, **kwargs)
-        processed_sentence = join_words_into_sentence(processed_words)
-        return processed_sentence
+        augmented_words = func(words, *args, **kwargs)
+        augmented_sentence = join_words_into_sentence(augmented_words)
+        return augmented_sentence
 
     return wrapped
 
@@ -82,9 +82,9 @@ def autopsy_text(
     @wraps(func)
     def wrapped(text: Text, *args: _P.args, **kwargs: _P.kwargs) -> Text:
         sentences = split_text_into_sentences(text)
-        processed_sentences = func(sentences, *args, **kwargs)
-        processed_text = join_sentences_into_text(processed_sentences)
-        return processed_text
+        augmented_sentences = func(sentences, *args, **kwargs)
+        augmented_text = join_sentences_into_text(augmented_sentences)
+        return augmented_text
 
     return wrapped
 
@@ -92,20 +92,22 @@ def autopsy_text(
 def split_sentence_into_words(sentence: Sentence) -> List[Word]:
     """Splits the sentence into words."""
     words = sentence.split()
-    words = strip(words)
-    words = remove_empty_strings(words)
+    words = strip_v2(words)
     return words
 
 
 def split_text_into_sentences(text: Text) -> List[Sentence]:
     """Splits the text into sentences."""
     sentences = re.split(r"[.]", text)
-    sentences = strip(sentences)
-    sentences = remove_empty_strings(sentences)
+    sentences = strip_v2(sentences)
     return sentences
 
 
-# TODO: := 연산자를 사용하여 strip과 remove_empty_strings 함수를 strip_v2 함수로 대체 (Python >= 3.8)
+def strip_v2(strings: List[Corpus]) -> List[Corpus]:
+    """Removes leading and trailing whitespace from each string and filters out any strings that are empty."""
+    return [stripped for s in strings if (stripped := s.strip())]
+
+
 def strip(strings: List[Corpus]) -> List[Corpus]:
     """Removes leading and trailing whitespaces from each string in the list."""
     return [s.strip() for s in strings]

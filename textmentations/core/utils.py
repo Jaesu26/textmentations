@@ -29,7 +29,6 @@ def remove_first_sentence_by_key(key2text: Dict[str, Text]) -> Dict[str, Text]:
     return {key: remove_first_sentence(text) for key, text in key2text.items()}
 
 
-# TODO: wrap_text_with_first_sentence_by_key 함수의 일반화 버전 구현
 def wrap_text_with_first_sentence_by_key(
     key2text_without_first_sentence: Dict[str, Text], key2first_sentence: Dict[str, Sentence]
 ) -> Dict[str, Text]:

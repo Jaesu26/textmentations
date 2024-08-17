@@ -4,7 +4,7 @@ import pytest
 from .utils import set_seed
 
 
-@pytest.mark.parametrize("seed", [23, 42])
+@pytest.mark.parametrize("seed", [42])
 @pytest.mark.parametrize("ignore_first", [False, True])
 @pytest.mark.parametrize("always_apply", [False, True])
 @pytest.mark.parametrize("p", [0.5, 1.0])

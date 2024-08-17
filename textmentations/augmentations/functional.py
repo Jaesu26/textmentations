@@ -39,6 +39,7 @@ def back_translate(text: Text, from_lang: Language, to_lang: Language) -> Text:
         return text
 
 
+@pass_empty_text
 def delete_words(text: Text, deletion_prob: float, min_words_each_sentence: Union[float, int]) -> Text:
     """Randomly deletes words in the text.
 
@@ -62,7 +63,6 @@ def delete_words(text: Text, deletion_prob: float, min_words_each_sentence: Unio
     return _delete_words(text, deletion_prob, min_words_each_sentence)
 
 
-# TODO: `:=`를 이용한 list comprehension 사용 (Python version 3.8 이상일 때)
 @autopsy_text
 def _delete_words(
     sentences: List[Sentence],
@@ -70,13 +70,11 @@ def _delete_words(
     min_words_each_sentence: Union[float, int],
 ) -> List[Sentence]:
     """Randomly deletes words in each sentence."""
-    augmented_sentences = []
-    for sentence in sentences:
-        augmented_sentence = _delete_words_in_sentence(sentence, deletion_prob, min_words_each_sentence)
-        if not augmented_sentence:
-            continue
-        augmented_sentences.append(augmented_sentence)
-    return augmented_sentences
+    return [
+        augmented_sentence
+        for sentence in sentences
+        if (augmented_sentence := _delete_words_in_sentence(sentence, deletion_prob, min_words_each_sentence))
+    ]
 
 
 @autopsy_sentence
@@ -88,20 +86,20 @@ def _delete_words_in_sentence(words: List[Word], deletion_prob: float, min_words
 def _delete_strings(strings: List[Corpus], deletion_prob: float, min_strings: Union[float, int]) -> List[Corpus]:
     """Randomly deletes strings in the list of strings."""
     num_strings = len(strings)
-    min_strings = math.ceil(len(strings) * min_strings) if isinstance(min_strings, float) else min_strings
+    min_strings = math.ceil(num_strings * min_strings) if isinstance(min_strings, float) else min_strings
     if num_strings <= min_strings:
         return strings
     augmented_strings = []
-    max_deletion_counts = num_strings - min_strings
-    deleted_counts = 0
+    num_possible_deletions = num_strings - min_strings
     for string in strings:
-        if random.random() < deletion_prob and deleted_counts < max_deletion_counts:
-            deleted_counts += 1
+        if random.random() < deletion_prob and num_possible_deletions > 0:
+            num_possible_deletions -= 1
             continue
         augmented_strings.append(string)
     return augmented_strings
 
 
+@pass_empty_text
 def delete_sentences(text: Text, deletion_prob: float, min_sentences: Union[float, int]) -> Text:
     """Randomly deletes sentences in the text.
 
@@ -135,6 +133,7 @@ def _delete_sentences(
     return _delete_strings(sentences, deletion_prob, min_sentences)
 
 
+@pass_empty_text
 def insert_synonyms(text: Text, insertion_prob: float, n_times: int) -> Text:
     """Repeats n times the task of randomly inserting synonyms of words that are not stopwords in the text.
 
@@ -250,6 +249,7 @@ def _insert_punctuation_into_word(word: Word, insertion_prob: float, punctuation
     return word
 
 
+@pass_empty_text
 def replace_synonyms(text: Text, replacement_prob: float) -> Text:
     """Randomly replaces words that are not stopwords in the text with synonyms.
 
@@ -335,6 +335,7 @@ def _swap_two_strings(strings: List[Corpus]) -> List[Corpus]:
     return strings
 
 
+@pass_empty_text
 def swap_sentences(text: Text, n_times: int) -> Text:
     """Repeats n times the task of randomly swapping two sentences in the text.
 
