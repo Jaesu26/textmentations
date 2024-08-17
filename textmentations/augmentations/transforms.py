@@ -60,7 +60,7 @@ class AEDA(TextTransform):
         if not (isinstance(punctuations, tuple) and all(isinstance(punc, str) for punc in punctuations)):
             raise TypeError(f"punctuations must be a tuple and all elements must be strings. Got: {punctuations}")
 
-    def apply(self, text: Text, insertion_prob: float = 0.3, **params: Any) -> Text:
+    def apply(self, text: Text, insertion_prob: float, **params: Any) -> Text:
         return F.insert_punctuations(text, insertion_prob, self.punctuations)
 
     def get_params(self) -> Dict[str, float]:
@@ -197,7 +197,7 @@ class RandomDeletionSentence(TextTransform):
             if min_sentences < 0:
                 raise ValueError(f"If min_sentences is an int, it must be non-negative. Got: {min_sentences}")
 
-    def apply(self, text: Text, min_sentences: Union[float, int] = 0.8, **params: Any) -> Text:
+    def apply(self, text: Text, min_sentences: Union[float, int], **params: Any) -> Text:
         return F.delete_sentences(text, self.deletion_prob, min_sentences)
 
     @property

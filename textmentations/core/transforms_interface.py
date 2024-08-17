@@ -51,7 +51,7 @@ class TextTransform(BasicTransform):
         )
         return key2augmented_text
 
-    def apply(self, text: Text, **params: Any) -> Text:
+    def apply(self, text: Text, *args: Any, **params: Any) -> Text:
         raise NotImplementedError
 
     @property
