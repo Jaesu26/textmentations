@@ -8,6 +8,7 @@ from .augmentations.transforms import (
     RandomSwapSentence,
     SynonymReplacement,
 )
+from .core.composition import BaseCompose, Compose, OneOf, OneOrOther, ReplayCompose, Sequential, SomeOf
 from .core.transforms_interface import TextTransform
 
 __version__ = "1.1.1"
@@ -21,5 +22,12 @@ __all__ = [
     "RandomSwap",
     "RandomSwapSentence",
     "SynonymReplacement",
+    "BaseCompose",
+    "Compose",
+    "OneOf",
+    "OneOrOther",
+    "ReplayCompose",
+    "Sequential",
+    "SomeOf",
     "TextTransform",
 ]

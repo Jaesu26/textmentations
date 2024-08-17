@@ -19,14 +19,13 @@ This allows textmentations to reuse the existing functionalities of albumentatio
 
 ```python
 import textmentations as T
-from albumentations import Compose
 
 text = "어제 식당에 갔다. 목이 너무 말랐다. 먼저 물 한잔을 마셨다. 그리고 탕수육을 맛있게 먹었다."
 rd = T.RandomDeletion(deletion_prob=0.3, min_words_each_sentence=1)
 ri = T.RandomInsertion(insertion_prob=0.3, n_times=1)
 rs = T.RandomSwap(n_times=3)
 sr = T.SynonymReplacement(replacement_prob=0.3)
-eda = Compose([rd, ri, rs, sr])
+eda = T.Compose([rd, ri, rs, sr])
 
 print(rd(text=text)["text"])
 # 식당에 갔다. 목이 너무 말랐다. 먼저 물. 그리고 탕수육을 맛있게.
