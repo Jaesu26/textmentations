@@ -1,5 +1,6 @@
 import pytest
 
+from textmentations import AEDA
 from textmentations.augmentations.utils import extract_first_sentence
 
 
@@ -55,3 +56,9 @@ def test_incorrect_probability_value(augmentation_with_probability, incorrect_pr
     with pytest.raises(ValueError) as error_info:
         augmentation(**probability_params)
     assert "must be between 0 and 1" in str(error_info.value)
+
+
+@pytest.mark.parametrize("incorrect_punctuation", [0, ",", ["."], (), (",", ":", None)])
+def test_incorrect_punctuation_type(incorrect_punctuation):
+    with pytest.raises(TypeError):
+        AEDA(punctuations=incorrect_punctuation)

@@ -57,8 +57,10 @@ class AEDA(TextTransform):
                 )
             if not (0.0 <= insertion_prob_limit[0] <= insertion_prob_limit[1] <= 1.0):
                 raise ValueError(f"insertion_prob_limit values must be between 0 and 1. Got: {insertion_prob_limit}")
-        if not (isinstance(punctuations, tuple) and all(isinstance(punc, str) for punc in punctuations)):
-            raise TypeError(f"punctuations must be a tuple and all elements must be strings. Got: {punctuations}")
+        if not isinstance(punctuations, tuple):
+            raise TypeError(f"punctuations must be a tuple and all elements must be strings. Got: {type(punctuations)}")
+        if not (punctuations and all(isinstance(punc, str) for punc in punctuations)):
+            raise TypeError(f"all elements of punctuations must be strings. Got: {punctuations}")
 
     def apply(self, text: Text, insertion_prob: float, **params: Any) -> Text:
         return F.insert_punctuations(text, insertion_prob, self.punctuations)
