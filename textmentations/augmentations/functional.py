@@ -244,7 +244,7 @@ def _insert_punctuation_into_word(word: Word, insertion_prob: float, punctuation
     """Randomly inserts punctuation at the beginning of the word."""
     if random.random() < insertion_prob:
         punctuation = random.choice(punctuations)
-        word_with_punctuation = "".join([punctuation, " ", word])
+        word_with_punctuation = " ".join([punctuation, word])
         return word_with_punctuation
     return word
 
