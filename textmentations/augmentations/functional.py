@@ -313,11 +313,10 @@ def swap_words(text: Text, n_times: int) -> Text:
 def _swap_words(sentences: List[Sentence], n_times: int) -> List[Sentence]:
     """Repeats n times the task of randomly swapping two words in a randomly selected sentence."""
     num_sentences = len(sentences)
-    augmented_sentences = sentences
     for _ in range(n_times):
         index = random.randrange(num_sentences)
-        augmented_sentences[index] = _swap_two_words_in_sentence(augmented_sentences[index])
-    return augmented_sentences
+        sentences[index] = _swap_two_words_in_sentence(sentences[index])
+    return sentences
 
 
 @autopsy_sentence
@@ -358,7 +357,6 @@ def swap_sentences(text: Text, n_times: int) -> Text:
 @autopsy_text
 def _swap_sentences(sentences: List[Sentence], n_times: int) -> List[Sentence]:
     """Repeats n times the task of randomly swapping two sentences in the list of sentences."""
-    augmented_sentences = sentences
     for _ in range(n_times):
-        augmented_sentences = _swap_two_strings(augmented_sentences)
-    return augmented_sentences
+        sentences = _swap_two_strings(sentences)
+    return sentences
