@@ -1,5 +1,6 @@
 import random
 from typing import Any, Dict, List, Tuple, Union
+from warnings import warn
 
 from albumentations.core.transforms_interface import to_tuple
 from googletrans.constants import LANGUAGES
@@ -11,12 +12,12 @@ from .utils import split_text_into_sentences
 
 
 class AEDA(TextTransform):
-    """Randomly inserts punctuations into the input text.
+    """Randomly inserts punctuation into the input text.
 
     Args:
-        insertion_prob_limit: The probability of inserting a punctuation.
+        insertion_prob_limit: The probability of inserting a punctuation mark.
             If insertion_prob_limit is a float, the range will be (0.0, insertion_prob_limit).
-        punctuations: Punctuations to be inserted at random.
+        punctuation: Punctuation to be inserted at random.
         p: The probability of applying this transform.
 
     References:
@@ -26,18 +27,26 @@ class AEDA(TextTransform):
     def __init__(
         self,
         insertion_prob_limit: Union[float, Tuple[float, float]] = (0.0, 0.3),
-        punctuations: Tuple[str, ...] = (".", ";", "?", ":", "!", ","),
+        punctuation: Tuple[str, ...] = (".", ";", "?", ":", "!", ","),
         ignore_first: bool = False,
         always_apply: bool = False,
         p: float = 0.5,
+        **kwargs: Any,
     ) -> None:
         super().__init__(ignore_first, always_apply, p)
-        self._validate_transform_init_args(insertion_prob_limit, punctuations)
+        self._validate_transform_init_args(insertion_prob_limit, punctuation)
         self.insertion_prob_limit = to_tuple(insertion_prob_limit, low=0.0)
-        self.punctuations = punctuations
+        self.punctuation = punctuation
+        if "punctuations" in kwargs:
+            warn(
+                "punctuations is deprecated. Use `punctuation` instead. self.punctuation will be set to punctuations",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            self.punctuation = kwargs["punctuations"]
 
     def _validate_transform_init_args(
-        self, insertion_prob_limit: Union[float, Tuple[float, float]], punctuations: Tuple[str, ...]
+        self, insertion_prob_limit: Union[float, Tuple[float, float]], punctuation: Tuple[str, ...]
     ) -> None:
         if not isinstance(insertion_prob_limit, (float, int, tuple)):
             raise TypeError(
@@ -57,19 +66,19 @@ class AEDA(TextTransform):
                 )
             if not (0.0 <= insertion_prob_limit[0] <= insertion_prob_limit[1] <= 1.0):
                 raise ValueError(f"insertion_prob_limit values must be between 0 and 1. Got: {insertion_prob_limit}")
-        if not isinstance(punctuations, tuple):
-            raise TypeError(f"punctuations must be a tuple and all elements must be strings. Got: {type(punctuations)}")
-        if not (punctuations and all(isinstance(punc, str) for punc in punctuations)):
-            raise TypeError(f"all elements of punctuations must be strings. Got: {punctuations}")
+        if not isinstance(punctuation, tuple):
+            raise TypeError(f"punctuation must be a tuple and all elements must be strings. Got: {type(punctuation)}")
+        if not (punctuation and all(isinstance(punc, str) for punc in punctuation)):
+            raise TypeError(f"All punctuation elements must be strings. Got: {punctuation}")
 
     def apply(self, text: Text, insertion_prob: float, **params: Any) -> Text:
-        return F.insert_punctuations(text, insertion_prob, self.punctuations)
+        return F.insert_punctuation(text, insertion_prob, self.punctuation)
 
     def get_params(self) -> Dict[str, float]:
         return {"insertion_prob": random.uniform(self.insertion_prob_limit[0], self.insertion_prob_limit[1])}
 
     def get_transform_init_args_names(self) -> Tuple[str, str]:
-        return ("insertion_prob_limit", "punctuations")
+        return ("insertion_prob_limit", "punctuation")
 
 
 class BackTranslation(TextTransform):

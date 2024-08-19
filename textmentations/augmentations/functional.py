@@ -199,53 +199,53 @@ def _insert_synonyms_into_target(
 
 
 @pass_empty_text
-def insert_punctuations(text: Text, insertion_prob: float, punctuations: Tuple[str, ...]) -> Text:
-    """Randomly inserts punctuations in the text.
+def insert_punctuation(text: Text, insertion_prob: float, punctuation: Tuple[str, ...]) -> Text:
+    """Randomly inserts punctuation in the text.
 
     Args:
         text: The input text.
-        insertion_prob: The probability of inserting a punctuation.
-        punctuations: Punctuations to be inserted at random.
+        insertion_prob: The probability of inserting a punctuation mark.
+        punctuation: Punctuation to be inserted at random.
 
     Returns:
-        A text with randomly inserted synonyms.
+        A text with randomly inserted punctuation.
 
     Examples:
         >>> text = "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."
         >>> insertion_prob = 0.5
-        >>> punctuations = (".", ";", "?", ":", "!", ",")
-        >>> insert_punctuations(text, insertion_prob, punctuations)
+        >>> punctuation = (".", ";", "?", ":", "!", ",")
+        >>> insert_punctuation(text, insertion_prob, punctuation)
         "짜장면을 , 맛있게 먹었다. ; 짬뽕도 ? 맛있게 먹었다. ! 짬짜면도 먹고 , 싶었다."
     """
-    return _insert_punctuations(text, insertion_prob, punctuations)
+    return _insert_punctuation(text, insertion_prob, punctuation)
 
 
 @autopsy_text
-def _insert_punctuations(
+def _insert_punctuation(
     sentences: List[Sentence],
     insertion_prob: float,
-    punctuations: Tuple[str, ...],
+    punctuation: Tuple[str, ...],
 ) -> List[Sentence]:
-    """Randomly inserts punctuations in each sentence."""
-    return [_insert_punctuations_in_sentence(sentence, insertion_prob, punctuations) for sentence in sentences]
+    """Randomly inserts punctuation in each sentence."""
+    return [_insert_punctuation_in_sentence(sentence, insertion_prob, punctuation) for sentence in sentences]
 
 
 @autopsy_sentence
-def _insert_punctuations_in_sentence(
+def _insert_punctuation_in_sentence(
     words: List[Word],
     insertion_prob: float,
-    punctuations: Tuple[str, ...],
+    punctuation: Tuple[str, ...],
 ) -> List[Word]:
-    """Randomly inserts punctuations in the list of word."""
-    return [_insert_punctuation_into_word(word, insertion_prob, punctuations) for word in words]
+    """Randomly inserts punctuation in the list of word."""
+    return [_insert_punctuation_mark_into_word(word, insertion_prob, punctuation) for word in words]
 
 
-def _insert_punctuation_into_word(word: Word, insertion_prob: float, punctuations: Tuple[str, ...]) -> Word:
-    """Randomly inserts punctuation at the beginning of the word."""
+def _insert_punctuation_mark_into_word(word: Word, insertion_prob: float, punctuation: Tuple[str, ...]) -> Word:
+    """Randomly inserts punctuation mark at the beginning of the word."""
     if random.random() < insertion_prob:
-        punctuation = random.choice(punctuations)
-        word_with_punctuation = " ".join([punctuation, word])
-        return word_with_punctuation
+        punctuation_mark = random.choice(punctuation)
+        word_with_punctuation_mark = " ".join([punctuation_mark, word])
+        return word_with_punctuation_mark
     return word
 
 

@@ -61,4 +61,7 @@ def test_incorrect_probability_value(augmentation_with_probability, incorrect_pr
 @pytest.mark.parametrize("incorrect_punctuation", [0, ",", ["."], (), (",", ":", None)])
 def test_incorrect_punctuation_type(incorrect_punctuation):
     with pytest.raises(TypeError):
-        AEDA(punctuations=incorrect_punctuation)
+        AEDA(punctuation=incorrect_punctuation)
+
+
+# TODO: AEDA의 인자로 punctuations를 사용했을 때 warning 발생하는지 검증하기
