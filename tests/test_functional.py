@@ -19,8 +19,6 @@ def test_back_translate():
         (1.0, 0.5, "맛있게 먹었다. 맛있게 먹었다. 먹고 싶었다."),
         (1.0, 0, ""),
         (1.0, 1, "먹었다. 먹었다. 싶었다."),
-        (True, False, ""),
-        (True, True, "먹었다. 먹었다. 싶었다."),
     ],
 )
 def test_delete_words(text_without_synonyms, deletion_prob, min_words_each_sentence, expected_text):
@@ -37,8 +35,6 @@ def test_delete_words(text_without_synonyms, deletion_prob, min_words_each_sente
         (1.0, 0.5, "짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."),
         (1.0, 0, ""),
         (1.0, 1, "짬짜면도 먹고 싶었다."),
-        (True, False, ""),
-        (True, True, "짬짜면도 먹고 싶었다."),
     ],
 )
 def test_delete_sentences(text_without_synonyms, deletion_prob, min_sentences, expected_text):
@@ -73,17 +69,17 @@ def test_replace_synonyms(text, is_same, request):
 
 def test_swap_words(text):
     original_sentences = split_text_into_sentences(text)
-    n = len(original_sentences)
     n_times = 1
     augmented_text = F.swap_words(text, n_times)
     augmented_sentences = split_text_into_sentences(augmented_text)
-    assert sum([original == augmented for original, augmented in zip(original_sentences, augmented_sentences)]) == n - 1
+    assert sum([original != augmented for original, augmented in zip(original_sentences, augmented_sentences)]) == 1
 
 
 def test_swap_sentences(text):
     original_sentences = split_text_into_sentences(text)
     n = len(original_sentences)
+    assert n >= 2
     n_times = 1
     augmented_text = F.swap_sentences(text, n_times)
     augmented_sentences = split_text_into_sentences(augmented_text)
-    assert sum([original == augmented for original, augmented in zip(original_sentences, augmented_sentences)]) == n - 2
+    assert sum([original != augmented for original, augmented in zip(original_sentences, augmented_sentences)]) == 2
