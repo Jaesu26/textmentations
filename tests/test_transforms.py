@@ -20,42 +20,38 @@ def test_ignore_first(text, augmentation):
 
 @pytest.mark.parametrize("incorrect_n_times", [2j, 1.5, "0.0", None])
 def test_incorrect_n_times_type(augmentation_with_n_times, incorrect_n_times):
-    augmentation = augmentation_with_n_times
-    params_names = augmentation.__init__.__code__.co_varnames
+    params_names = augmentation_with_n_times.__init__.__code__.co_varnames
     n_times_params = {param: incorrect_n_times for param in params_names if param == "n_times"}
-    with pytest.raises(TypeError) as error_info:
-        augmentation(**n_times_params)
-    assert str(error_info.value) == f"n_times must be a positive integer. Got: {type(incorrect_n_times)}"
+    expected_message = f"n_times must be a positive integer. Got: {type(incorrect_n_times)}"
+    with pytest.raises(TypeError, match=expected_message):
+        augmentation_with_n_times(**n_times_params)
 
 
 @pytest.mark.parametrize("incorrect_n_times", [-1, 0])
 def test_incorrect_n_times_value(augmentation_with_n_times, incorrect_n_times):
-    augmentation = augmentation_with_n_times
-    params_names = augmentation.__init__.__code__.co_varnames
+    params_names = augmentation_with_n_times.__init__.__code__.co_varnames
     n_times_params = {param: incorrect_n_times for param in params_names if param == "n_times"}
-    with pytest.raises(ValueError) as error_info:
-        augmentation(**n_times_params)
-    assert str(error_info.value) == f"n_times must be positive. Got: {incorrect_n_times}"
+    expected_message = f"n_times must be positive. Got: {incorrect_n_times}"
+    with pytest.raises(ValueError, match=expected_message):
+        augmentation_with_n_times(**n_times_params)
 
 
 @pytest.mark.parametrize("incorrect_probability", [2j, "0.0", None])
 def test_incorrect_probability_type(augmentation_with_probability, incorrect_probability):
-    augmentation = augmentation_with_probability
-    params_names = augmentation.__init__.__code__.co_varnames
+    params_names = augmentation_with_probability.__init__.__code__.co_varnames
     probability_params = {param: incorrect_probability for param in params_names if "prob" in param}
-    with pytest.raises(TypeError) as error_info:
-        augmentation(**probability_params)
-    assert "must be a real number between 0 and 1" in str(error_info.value)
+    expected_message = "must be a real number between 0 and 1."
+    with pytest.raises(TypeError, match=expected_message):
+        augmentation_with_probability(**probability_params)
 
 
 @pytest.mark.parametrize("incorrect_probability", [-1.0, 2])
 def test_incorrect_probability_value(augmentation_with_probability, incorrect_probability):
-    augmentation = augmentation_with_probability
-    params_names = augmentation.__init__.__code__.co_varnames
+    params_names = augmentation_with_probability.__init__.__code__.co_varnames
     probability_params = {param: incorrect_probability for param in params_names if "prob" in param}
-    with pytest.raises(ValueError) as error_info:
-        augmentation(**probability_params)
-    assert "must be between 0 and 1" in str(error_info.value)
+    expected_message = "must be between 0 and 1."
+    with pytest.raises(ValueError, match=expected_message):
+        augmentation_with_probability(**probability_params)
 
 
 @pytest.mark.parametrize("incorrect_punctuation", [0, ",", ["."], (), (",", ":", None)])
@@ -64,4 +60,10 @@ def test_incorrect_punctuation_type(incorrect_punctuation):
         AEDA(punctuation=incorrect_punctuation)
 
 
-# TODO: AEDA의 인자로 punctuations를 사용했을 때 warning 발생하는지 검증하기
+def test_aeda_deprecation_warning():
+    expected_message = (
+        "punctuations is deprecated. Use `punctuation` instead. self.punctuation will be set to punctuations."
+    )
+    with pytest.warns(DeprecationWarning, match=expected_message):
+        punctuation = (".", ",")
+        AEDA(punctuations=punctuation)

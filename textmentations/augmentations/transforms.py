@@ -1,5 +1,5 @@
 import random
-from typing import Any, Dict, List, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 from warnings import warn
 
 from albumentations.core.transforms_interface import to_tuple
@@ -31,19 +31,20 @@ class AEDA(TextTransform):
         ignore_first: bool = False,
         always_apply: bool = False,
         p: float = 0.5,
-        **kwargs: Any,
+        *,
+        punctuations: Optional[Tuple[str, ...]] = None,
     ) -> None:
         super().__init__(ignore_first, always_apply, p)
-        self._validate_transform_init_args(insertion_prob_limit, punctuation)
-        self.insertion_prob_limit = to_tuple(insertion_prob_limit, low=0.0)
-        self.punctuation = punctuation
-        if "punctuations" in kwargs:
+        if punctuations is not None:
             warn(
-                "punctuations is deprecated. Use `punctuation` instead. self.punctuation will be set to punctuations",
+                "punctuations is deprecated. Use `punctuation` instead. self.punctuation will be set to punctuations.",
                 DeprecationWarning,
                 stacklevel=2,
             )
-            self.punctuation = kwargs["punctuations"]
+            punctuation = punctuations
+        self._validate_transform_init_args(insertion_prob_limit, punctuation)
+        self.insertion_prob_limit = to_tuple(insertion_prob_limit, low=0.0)
+        self.punctuation = punctuation
 
     def _validate_transform_init_args(
         self, insertion_prob_limit: Union[float, Tuple[float, float]], punctuation: Tuple[str, ...]

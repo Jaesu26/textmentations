@@ -236,12 +236,12 @@ def _insert_punctuation_in_sentence(
     insertion_prob: float,
     punctuation: Tuple[str, ...],
 ) -> List[Word]:
-    """Randomly inserts punctuation in the list of word."""
+    """Randomly inserts punctuation in the list of words."""
     return [_insert_punctuation_mark_into_word(word, insertion_prob, punctuation) for word in words]
 
 
 def _insert_punctuation_mark_into_word(word: Word, insertion_prob: float, punctuation: Tuple[str, ...]) -> Word:
-    """Randomly inserts punctuation mark at the beginning of the word."""
+    """Randomly inserts a punctuation mark at the beginning of a word."""
     if random.random() < insertion_prob:
         punctuation_mark = random.choice(punctuation)
         word_with_punctuation_mark = " ".join([punctuation_mark, word])
@@ -278,10 +278,10 @@ def _replace_synonyms(sentences: List[Sentence], replacement_prob: float) -> Lis
 @autopsy_sentence
 def _replace_synonyms_in_sentence(words: List[Word], replacement_prob: float) -> List[Word]:
     """Randomly replaces words that are not stopwords in the list of words with synonyms."""
-    return [_replace_word_into_synonym(word, replacement_prob) for word in words]
+    return [_replace_word_with_synonym(word, replacement_prob) for word in words]
 
 
-def _replace_word_into_synonym(word: Word, replacement_prob: float) -> Word:
+def _replace_word_with_synonym(word: Word, replacement_prob: float) -> Word:
     """Randomly replaces word that is not stopword with synonym."""
     if not is_stopword(word) and random.random() < replacement_prob:
         synonym = get_random_synonym(word)
