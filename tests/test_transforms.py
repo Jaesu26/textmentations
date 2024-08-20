@@ -61,9 +61,10 @@ def test_incorrect_punctuation_type(incorrect_punctuation):
 
 
 def test_aeda_deprecation_warning():
+    punctuation = (".", ",", "123")
     expected_message = (
         "punctuations is deprecated. Use `punctuation` instead. self.punctuation will be set to punctuations."
     )
     with pytest.warns(DeprecationWarning, match=expected_message):
-        punctuation = (".", ",")
-        AEDA(punctuations=punctuation)
+        aeda = AEDA(punctuations=punctuation)
+    assert aeda.punctuation == punctuation
