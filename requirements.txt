@@ -1,3 +1,4 @@
 albumentations>=1.2.1,<=1.4.3
 googletrans==4.0.0-rc1
 typing-extensions>=4.5.0
+numpy>=1.24.4

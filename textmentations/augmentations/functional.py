@@ -1,7 +1,10 @@
+import itertools
 import math
 import random
 from typing import List, Tuple, Union
 from urllib.error import HTTPError
+
+import numpy as np
 
 from ..corpora.types import Corpus, Language, Sentence, Text, Word
 from ..corpora.utils import get_random_synonym, is_stopword
@@ -89,13 +92,15 @@ def _delete_strings(strings: List[Corpus], deletion_prob: float, min_strings: Un
     min_strings = math.ceil(num_strings * min_strings) if isinstance(min_strings, float) else min_strings
     if num_strings <= min_strings:
         return strings
-    augmented_strings = []
+    retained_indices = set()
     num_possible_deletions = num_strings - min_strings
-    for string in strings:
+    shuffled_indices = np.random.permutation(num_strings).tolist()
+    for index in shuffled_indices:
         if random.random() < deletion_prob and num_possible_deletions > 0:
             num_possible_deletions -= 1
             continue
-        augmented_strings.append(string)
+        retained_indices.add(index)
+    augmented_strings = [string for index, string in enumerate(strings) if index in retained_indices]
     return augmented_strings
 
 
@@ -164,38 +169,28 @@ def _insert_synonyms(sentences: List[Sentence], insertion_prob: float, n_times: 
 @autopsy_sentence
 def _insert_synonyms_in_sentence(words: List[Word], insertion_prob: float, n_times: int) -> List[Word]:
     """Repeats n times the task of randomly inserting synonyms of words that are not stopwords in the list of words."""
-    augmented_words = words[:]
     for _ in range(n_times):
-        augmented_words = _insert_synonyms_into_target(words, augmented_words, insertion_prob)
-    return augmented_words
+        words = _insert_synonyms_in_words(words, insertion_prob)
+    return words
 
 
-def _insert_synonyms_into_target(
-    source_words: List[Word],
-    target_words: List[Word],
+def _insert_synonyms_in_words(
+    words: List[Word],
     insertion_prob: float,
 ) -> List[Word]:
-    """Randomly inserts synonyms of `source_words` that are not stopwords into `target_words` at a random position.
-
-    Args:
-        source_words: A list of words to be replaced by synonyms and inserted into `target_words`.
-        target_words: A list of words into which synonyms of `source_words` will be inserted at a random position.
-        insertion_prob: The probability of inserting a synonym for each word in `source_word`.
-
-    Returns:
-        A list of words with synonyms of `source_words` randomly inserted into `target_words`.
-    """
-    current_num_words = len(target_words)
-    for source_word in source_words:
-        if is_stopword(source_word) or random.random() >= insertion_prob:
+    """Randomly inserts synonyms of words that are not stopwords in the list of words."""
+    augmented_words = [[word] for word in words]
+    num_words = len(words)
+    for word in words:
+        if is_stopword(word) or random.random() >= insertion_prob:
             continue
-        synonym = get_random_synonym(source_word)
-        if synonym == source_word:
+        synonym = get_random_synonym(word)
+        if synonym == word:
             continue
-        synonym_index = random.randint(0, current_num_words)
-        target_words.insert(synonym_index, synonym)
-        current_num_words += 1
-    return target_words
+        insertion_index = random.randint(0, num_words - 1)
+        augmented_words[insertion_index].append(synonym)
+    # flatten the list of lists
+    return [*itertools.chain(*augmented_words)]  # type: ignore
 
 
 @pass_empty_text
