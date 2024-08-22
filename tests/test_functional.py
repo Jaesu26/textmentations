@@ -11,7 +11,7 @@ def test_back_translate():
 
 
 @pytest.mark.parametrize(
-    ["deletion_prob", "min_words_each_sentence", "expected_text"],
+    ["deletion_prob", "min_words_per_sentence", "expected_text"],
     [
         (0.0, 0.5, "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."),
         (0.0, 1, "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."),
@@ -21,8 +21,8 @@ def test_back_translate():
         (1.0, 3, "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."),
     ],
 )
-def test_delete_words(text_without_synonyms, deletion_prob, min_words_each_sentence, expected_text):
-    augmented_text = F.delete_words(text_without_synonyms, deletion_prob, min_words_each_sentence)
+def test_delete_words(text_without_synonyms, deletion_prob, min_words_per_sentence, expected_text):
+    augmented_text = F.delete_words(text_without_synonyms, deletion_prob, min_words_per_sentence)
     assert augmented_text == expected_text
 
 

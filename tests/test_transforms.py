@@ -1,6 +1,8 @@
+import re
+
 import pytest
 
-from textmentations import AEDA
+from textmentations import AEDA, RandomDeletion
 from textmentations.augmentations.utils import extract_first_sentence
 
 
@@ -36,6 +38,7 @@ def test_incorrect_n_times_value(augmentation_with_n_times, incorrect_n_times):
         augmentation_with_n_times(**n_times_params)
 
 
+# TODO: * 이전의 prob parameter만 가져오기 (AEDA)
 @pytest.mark.parametrize("incorrect_probability", [2j, "0.0", None])
 def test_incorrect_probability_type(augmentation_with_probability, incorrect_probability):
     params_names = augmentation_with_probability.__init__.__code__.co_varnames
@@ -45,6 +48,7 @@ def test_incorrect_probability_type(augmentation_with_probability, incorrect_pro
         augmentation_with_probability(**probability_params)
 
 
+# TODO: * 이전의 prob parameter만 가져오기 (AEDA)
 @pytest.mark.parametrize("incorrect_probability", [-1.0, 2])
 def test_incorrect_probability_value(augmentation_with_probability, incorrect_probability):
     params_names = augmentation_with_probability.__init__.__code__.co_varnames
@@ -60,7 +64,18 @@ def test_incorrect_punctuation_type(incorrect_punctuation):
         AEDA(punctuation=incorrect_punctuation)
 
 
-def test_aeda_deprecation_warning():
+def test_random_deletion_deprecation_warning():
+    min_words_per_sentence = 0.2
+    expected_message = (
+        "min_words_each_sentence is deprecated. Use `min_words_per_sentence` instead."
+        " self.min_words_per_sentence will be set to min_words_each_sentence."
+    )
+    with pytest.warns(DeprecationWarning, match=expected_message):
+        rd = RandomDeletion(min_words_each_sentence=min_words_per_sentence)
+    assert rd.min_words_per_sentence == min_words_per_sentence
+
+
+def test_aeda_punctuations_deprecation_warning():
     punctuation = (".", ",", "123")
     expected_message = (
         "punctuations is deprecated. Use `punctuation` instead. self.punctuation will be set to punctuations."
@@ -68,3 +83,33 @@ def test_aeda_deprecation_warning():
     with pytest.warns(DeprecationWarning, match=expected_message):
         aeda = AEDA(punctuations=punctuation)
     assert aeda.punctuation == punctuation
+
+
+def test_aeda_insertion_prob_limit_deprecation_warning():
+    insertion_prob_range = (0.0, 0.3)
+    expected_message = (
+        "insertion_prob_limit is deprecated."
+        " Use `insertion_prob_range` as tuple (lower limit, insertion_prob_limit) instead."
+        " self.insertion_prob_range will be set to insertion_prob_limit."
+    )
+    with pytest.warns(DeprecationWarning, match=re.escape(expected_message)):
+        aeda = AEDA(insertion_prob_limit=insertion_prob_range)
+    assert aeda.insertion_prob_range == insertion_prob_range
+
+
+def test_aeda_insertion_prob_limit_non_tuple_deprecation_warning():
+    insertion_prob_range = 0.3
+    with pytest.warns(DeprecationWarning) as record:
+        AEDA(insertion_prob_limit=insertion_prob_range)
+    assert len(record) == 2
+
+
+def test_aeda_insertion_prob_range_non_tuple_deprecation_warning():
+    insertion_prob_range = 0.3
+    expected_message = (
+        "insertion_prob_range is should be a tuple with length 2."
+        " The provided value will be automatically converted to a tuple."
+    )
+    with pytest.warns(DeprecationWarning, match=expected_message):
+        aeda = AEDA(insertion_prob_range=insertion_prob_range)
+    assert aeda.insertion_prob_range == (0.0, insertion_prob_range)

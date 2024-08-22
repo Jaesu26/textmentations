@@ -43,13 +43,13 @@ def back_translate(text: Text, from_lang: Language, to_lang: Language) -> Text:
 
 
 @pass_empty_text
-def delete_words(text: Text, deletion_prob: float, min_words_each_sentence: Union[float, int]) -> Text:
+def delete_words(text: Text, deletion_prob: float, min_words_per_sentence: Union[float, int]) -> Text:
     """Randomly deletes words in the text.
 
     Args:
         text: The input text.
         deletion_prob: The probability of deleting a word.
-        min_words_each_sentence:
+        min_words_per_sentence:
             If a `float`, it is the minimum proportion of words to retain in each sentence.
             If an `int`, it is the minimum number of words in each sentence.
 
@@ -59,24 +59,24 @@ def delete_words(text: Text, deletion_prob: float, min_words_each_sentence: Unio
     Examples:
         >>> text = "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."
         >>> deletion_prob = 0.7
-        >>> min_words_each_sentence = 1
-        >>> delete_words(text, deletion_prob, min_words_each_sentence)
+        >>> min_words_per_sentence = 1
+        >>> delete_words(text, deletion_prob, min_words_per_sentence)
         "짜장면을. 짬뽕도. 먹고 싶었다."
     """
-    return _delete_words(text, deletion_prob, min_words_each_sentence)
+    return _delete_words(text, deletion_prob, min_words_per_sentence)
 
 
 @autopsy_text
 def _delete_words(
     sentences: List[Sentence],
     deletion_prob: float,
-    min_words_each_sentence: Union[float, int],
+    min_words_per_sentence: Union[float, int],
 ) -> List[Sentence]:
     """Randomly deletes words in each sentence."""
     return [
         augmented_sentence
         for sentence in sentences
-        if (augmented_sentence := _delete_words_in_sentence(sentence, deletion_prob, min_words_each_sentence))
+        if (augmented_sentence := _delete_words_in_sentence(sentence, deletion_prob, min_words_per_sentence))
     ]
 
 
