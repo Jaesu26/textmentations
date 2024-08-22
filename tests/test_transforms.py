@@ -22,7 +22,8 @@ def test_ignore_first(text, augmentation):
 
 @pytest.mark.parametrize("incorrect_n_times", [2j, 1.5, "0.0", None])
 def test_incorrect_n_times_type(augmentation_with_n_times, incorrect_n_times):
-    params_names = augmentation_with_n_times.__init__.__code__.co_varnames
+    code_object = augmentation_with_n_times.__init__.__code__
+    params_names = code_object.co_varnames[: code_object.co_argcount]
     n_times_params = {param: incorrect_n_times for param in params_names if param == "n_times"}
     expected_message = f"n_times must be a positive integer. Got: {type(incorrect_n_times)}"
     with pytest.raises(TypeError, match=expected_message):
@@ -31,27 +32,28 @@ def test_incorrect_n_times_type(augmentation_with_n_times, incorrect_n_times):
 
 @pytest.mark.parametrize("incorrect_n_times", [-1, 0])
 def test_incorrect_n_times_value(augmentation_with_n_times, incorrect_n_times):
-    params_names = augmentation_with_n_times.__init__.__code__.co_varnames
+    code_object = augmentation_with_n_times.__init__.__code__
+    params_names = code_object.co_varnames[: code_object.co_argcount]
     n_times_params = {param: incorrect_n_times for param in params_names if param == "n_times"}
     expected_message = f"n_times must be positive. Got: {incorrect_n_times}"
     with pytest.raises(ValueError, match=expected_message):
         augmentation_with_n_times(**n_times_params)
 
 
-# TODO: * 이전의 prob parameter만 가져오기 (AEDA)
 @pytest.mark.parametrize("incorrect_probability", [2j, "0.0", None])
 def test_incorrect_probability_type(augmentation_with_probability, incorrect_probability):
-    params_names = augmentation_with_probability.__init__.__code__.co_varnames
+    code_object = augmentation_with_probability.__init__.__code__
+    params_names = code_object.co_varnames[: code_object.co_argcount]
     probability_params = {param: incorrect_probability for param in params_names if "prob" in param}
     expected_message = "must be a real number between 0 and 1."
     with pytest.raises(TypeError, match=expected_message):
         augmentation_with_probability(**probability_params)
 
 
-# TODO: * 이전의 prob parameter만 가져오기 (AEDA)
 @pytest.mark.parametrize("incorrect_probability", [-1.0, 2])
 def test_incorrect_probability_value(augmentation_with_probability, incorrect_probability):
-    params_names = augmentation_with_probability.__init__.__code__.co_varnames
+    code_object = augmentation_with_probability.__init__.__code__
+    params_names = code_object.co_varnames[: code_object.co_argcount]
     probability_params = {param: incorrect_probability for param in params_names if "prob" in param}
     expected_message = "must be between 0 and 1."
     with pytest.raises(ValueError, match=expected_message):
