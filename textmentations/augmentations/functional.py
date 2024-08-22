@@ -151,11 +151,11 @@ def insert_synonyms(text: Text, insertion_prob: float, n_times: int) -> Text:
         A text with randomly inserted synonyms.
 
     Examples:
-        >>> text = "물 한잔만 주세요."
+        >>> text = "물 한 잔만 주세요."
         >>> insertion_prob = 0.7
         >>> n_times = 2
         >>> insert_synonyms(text, insertion_prob, n_times)
-        "음료 물 한잔만 상수도 주세요."
+        "음료 물 한 잔만 상수도 주세요."
     """
     return _insert_synonyms(text, insertion_prob, n_times)
 
@@ -257,10 +257,10 @@ def replace_synonyms(text: Text, replacement_prob: float) -> Text:
         A text with random words replaced by synonyms.
 
     Examples:
-        >>> text = "물 한잔만 주세요."
+        >>> text = "물 한 잔만 주세요."
         >>> replacement_prob = 0.5
         >>> replace_synonyms(text, replacement_prob)
-        "음료 한잔만 주세요."
+        "음료 한 잔만 주세요."
     """
     return _replace_synonyms(text, replacement_prob)
 

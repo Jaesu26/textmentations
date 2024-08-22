@@ -35,13 +35,6 @@ class AEDA(TextTransform):
         punctuations: Optional[Tuple[str, ...]] = None,
     ) -> None:
         super().__init__(ignore_first=ignore_first, always_apply=always_apply, p=p)
-        if punctuations is not None:
-            warn(
-                "punctuations is deprecated. Use `punctuation` instead. self.punctuation will be set to punctuations.",
-                DeprecationWarning,
-                stacklevel=2,
-            )
-            punctuation = punctuations
         if insertion_prob_limit is not None:
             warn(
                 "insertion_prob_limit is deprecated."
@@ -51,16 +44,22 @@ class AEDA(TextTransform):
                 stacklevel=2,
             )
             insertion_prob_range = insertion_prob_limit  # type: ignore
-        self._validate_transform_init_args(insertion_prob_range=insertion_prob_range, punctuation=punctuation)
         if not isinstance(insertion_prob_range, tuple):
             warn(
                 "insertion_prob_range is should be a tuple with length 2."
-                " The provided value will be automatically converted to a tuple.",
+                " The provided value will be automatically converted to a tuple (0, insertion_prob_range).",
                 DeprecationWarning,
                 stacklevel=2,
             )
-            insertion_prob_range = to_tuple(insertion_prob_range, low=0.0)
-        self.insertion_prob_range = insertion_prob_range
+        if punctuations is not None:
+            warn(
+                "punctuations is deprecated. Use `punctuation` instead. self.punctuation will be set to punctuations.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            punctuation = punctuations
+        self._validate_transform_init_args(insertion_prob_range=insertion_prob_range, punctuation=punctuation)
+        self.insertion_prob_range = to_tuple(insertion_prob_range, low=0.0)
         self.punctuation = punctuation
 
     def _validate_transform_init_args(
@@ -117,11 +116,11 @@ class BackTranslation(TextTransform):
         p: float = 0.5,
     ) -> None:
         super().__init__(ignore_first=ignore_first, always_apply=always_apply, p=p)
-        self._validate_transform_init_args(from_lang, to_lang)
+        self._validate_transform_init_args(from_lang=from_lang, to_lang=to_lang)
         self.from_lang = from_lang
         self.to_lang = to_lang
 
-    def _validate_transform_init_args(self, from_lang: Language, to_lang: Language) -> None:
+    def _validate_transform_init_args(self, *, from_lang: Language, to_lang: Language) -> None:
         if from_lang not in LANGUAGES:
             raise ValueError(f"from_lang must be one of ({list(LANGUAGES.keys())}). Got: {from_lang}")
         if to_lang not in LANGUAGES:

@@ -108,8 +108,8 @@ def test_aeda_insertion_prob_range_non_tuple_deprecation_warning():
     insertion_prob_range = 0.3
     expected_message = (
         "insertion_prob_range is should be a tuple with length 2."
-        " The provided value will be automatically converted to a tuple."
+        " The provided value will be automatically converted to a tuple (0, insertion_prob_range)."
     )
-    with pytest.warns(DeprecationWarning, match=expected_message):
+    with pytest.warns(DeprecationWarning, match=re.escape(expected_message)):
         aeda = AEDA(insertion_prob_range=insertion_prob_range)
     assert aeda.insertion_prob_range == (0.0, insertion_prob_range)
