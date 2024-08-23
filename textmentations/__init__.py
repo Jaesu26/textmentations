@@ -11,7 +11,7 @@ from .augmentations.transforms import (
 from .core.composition import BaseCompose, Compose, OneOf, OneOrOther, ReplayCompose, Sequential, SomeOf
 from .core.transforms_interface import TextTransform
 
-__version__ = "1.1.1"
+__version__ = "1.2.0"
 
 __all__ = [
     "AEDA",
