@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Any, Dict, Type
 
 from ..augmentations.utils import extract_first_sentence, remove_first_sentence, wrap_text_with_sentences
 from ..corpora.types import Sentence, Text
@@ -48,3 +48,20 @@ def wrap_text_with_first_sentence_by_key(
         key: wrap_text_with_sentences(text_without_first_sentence, prefix_sentences=[key2first_sentence[key]])
         for key, text_without_first_sentence in key2text_without_first_sentence.items()
     }
+
+
+def get_shortest_class_fullname(cls: Type[Any]) -> str:
+    """Returns the shortened full name of the given class."""
+    class_fullname = f"{cls.__module__}.{cls.__name__}"
+    return shorten_class_name(class_fullname)
+
+
+def shorten_class_name(class_fullname: str) -> str:
+    """Shorten the given class full name."""
+    split = class_fullname.split(".")
+    if len(split) == 1:
+        return class_fullname
+    top_module, *_, class_name = split
+    if top_module == "textmentations":
+        return class_name
+    return class_fullname

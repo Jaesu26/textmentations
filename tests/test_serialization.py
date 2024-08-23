@@ -24,3 +24,15 @@ def test_augmentations_serialization(
     set_seed(seed)
     deserialized_augmented_data = deserialized_augment(text=long_text)
     assert augmented_data["text"] == deserialized_augmented_data["text"]
+
+
+def test_class_fullname(augmentation):
+    augment = augmentation()
+    class_fullname = augment.get_class_fullname()
+    assert class_fullname == augmentation.__name__
+
+
+def test_to_dict(augmentation):
+    augment = augmentation()
+    serialized_dict = augment.to_dict()
+    assert serialized_dict["__version__"] == "1.2.0"
