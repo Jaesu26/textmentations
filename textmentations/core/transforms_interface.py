@@ -3,7 +3,12 @@ from typing import Any, Callable, Dict, NoReturn
 from albumentations.core.transforms_interface import BasicTransform
 
 from ..corpora.types import Text
-from .utils import extract_first_sentence_by_key, remove_first_sentence_by_key, wrap_text_with_first_sentence_by_key
+from .utils import (
+    extract_first_sentence_by_key,
+    get_shortest_class_fullname,
+    remove_first_sentence_by_key,
+    wrap_text_with_first_sentence_by_key,
+)
 
 
 class TextTransform(BasicTransform):
@@ -67,5 +72,16 @@ class TextTransform(BasicTransform):
     def get_params_dependent_on_targets(self, params: Dict[str, Any]) -> Dict[str, Any]:
         return {}
 
+    @classmethod
+    def get_class_fullname(cls) -> str:
+        return get_shortest_class_fullname(cls)
+
     def get_base_init_args(self) -> Dict[str, Any]:
         return {"ignore_first": self.ignore_first, **super().get_base_init_args()}
+
+    def to_dict(self, on_not_implemented_error: str = "raise") -> Dict[str, Any]:
+        from textmentations import __version__
+
+        serialized_dict = super().to_dict(on_not_implemented_error)
+        serialized_dict["__version__"] = __version__
+        return serialized_dict
