@@ -1,4 +1,4 @@
-from typing import Any, Callable, Dict
+from typing import Any, Callable, Dict, NoReturn
 
 from albumentations.core.transforms_interface import BasicTransform
 
@@ -60,6 +60,9 @@ class TextTransform(BasicTransform):
 
     def update_params(self, params: Dict[str, Any], **kwargs: Any) -> Dict[str, Any]:
         return params
+
+    def add_targets(self, additional_targets: Dict[str, str]) -> NoReturn:
+        raise AttributeError("add_targets method is not available in TextTransform as it is not applicable to text.")
 
     def get_params_dependent_on_targets(self, params: Dict[str, Any]) -> Dict[str, Any]:
         return {}
