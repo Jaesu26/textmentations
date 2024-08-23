@@ -181,8 +181,9 @@ def _insert_synonyms_in_words(
     """Randomly inserts synonyms of words that are not stopwords in the list of words."""
     num_words = len(words)
     augmented_words = [[word] for word in words]
-    shuffled_words = np.random.permutation(words).tolist()
-    for word in shuffled_words:
+    shuffled_indices = np.random.permutation(num_words).tolist()
+    for index in shuffled_indices:
+        word = words[index]
         if is_stopword(word) or random.random() >= insertion_prob:
             continue
         synonym = get_random_synonym(word)
