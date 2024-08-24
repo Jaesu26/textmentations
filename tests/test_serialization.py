@@ -17,8 +17,8 @@ def test_augmentations_serialization(
     p,
 ):
     augment = augmentation(ignore_first=ignore_first, always_apply=always_apply, p=p)
-    serialized_augment = A.to_dict(augment)
-    deserialized_augment = A.from_dict(serialized_augment)
+    serialized_dict = A.to_dict(augment)
+    deserialized_augment = A.from_dict(serialized_dict)
     set_seed(seed)
     augmented_data = augment(text=long_text)
     set_seed(seed)
