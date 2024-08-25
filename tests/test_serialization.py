@@ -9,8 +9,7 @@ from .utils import set_seed
 
 
 def test_class_fullname(augmentation):
-    augment = augmentation()
-    class_fullname = augment.get_class_fullname()
+    class_fullname = augmentation.get_class_fullname()
     assert class_fullname == augmentation.__name__
 
 
