@@ -2,6 +2,8 @@ from typing import Any, Callable, Dict, NoReturn
 
 from albumentations.core.transforms_interface import BasicTransform
 
+from textmentations import __version__
+
 from ..corpora.types import Text
 from .utils import (
     extract_first_sentence_by_key,
@@ -80,8 +82,6 @@ class TextTransform(BasicTransform):
         return {"ignore_first": self.ignore_first, **super().get_base_init_args()}
 
     def to_dict(self, on_not_implemented_error: str = "raise") -> Dict[str, Any]:
-        from textmentations import __version__
-
         serialized_dict = super().to_dict(on_not_implemented_error)
         serialized_dict["__version__"] = __version__
         return serialized_dict
