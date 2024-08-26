@@ -64,9 +64,9 @@ def test_incorrect_probability_value(augmentation_with_probability, incorrect_pr
 def test_incorrect_prob_range_value(augmentation_with_prob_range, incorrect_prob_range):
     code_object = augmentation_with_prob_range.__init__.__code__
     params_names = code_object.co_varnames[: code_object.co_argcount]
-    probability_params = {param: incorrect_prob_range for param in params_names if param.endswith("prob_range")}
+    prob_range_params = {param: incorrect_prob_range for param in params_names if param.endswith("prob_range")}
     with pytest.raises(ValueError):
-        augmentation_with_prob_range(**probability_params)
+        augmentation_with_prob_range(**prob_range_params)
 
 
 @pytest.mark.parametrize("incorrect_punctuation", [0, ",", ["."], (), (",", ":", None)])
