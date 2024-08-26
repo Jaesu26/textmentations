@@ -2,7 +2,6 @@ import pytest
 
 import textmentations as T
 
-# TODO: TextTransform의 subclass로 대체
 AUGMENTATIONS = [
     T.AEDA,
     T.BackTranslation,
@@ -13,18 +12,19 @@ AUGMENTATIONS = [
     T.RandomSwapSentence,
     T.SynonymReplacement,
 ]
-
 AUGMENTATIONS_WITH_N_TIMES = [
     T.RandomInsertion,
     T.RandomSwap,
     T.RandomSwapSentence,
 ]
-
 AUGMENTATIONS_WITH_PROBABILITY = [
     T.RandomDeletion,
     T.RandomDeletionSentence,
     T.RandomInsertion,
     T.SynonymReplacement,
+]
+AUGMENTATIONS_WITH_PROB_RANGE = [
+    T.AEDA,
 ]
 
 
@@ -40,6 +40,11 @@ def augmentation_with_n_times(request):
 
 @pytest.fixture(params=AUGMENTATIONS_WITH_PROBABILITY)
 def augmentation_with_probability(request):
+    return request.param
+
+
+@pytest.fixture(params=AUGMENTATIONS_WITH_PROB_RANGE)
+def augmentation_with_prob_range(request):
     return request.param
 
 

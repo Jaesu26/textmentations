@@ -44,7 +44,7 @@ def test_incorrect_n_times_value(augmentation_with_n_times, incorrect_n_times):
 def test_incorrect_probability_type(augmentation_with_probability, incorrect_probability):
     code_object = augmentation_with_probability.__init__.__code__
     params_names = code_object.co_varnames[: code_object.co_argcount]
-    probability_params = {param: incorrect_probability for param in params_names if "prob" in param}
+    probability_params = {param: incorrect_probability for param in params_names if param.endswith("prob")}
     expected_message = "must be a real number between 0 and 1."
     with pytest.raises(TypeError, match=expected_message):
         augmentation_with_probability(**probability_params)
@@ -54,10 +54,19 @@ def test_incorrect_probability_type(augmentation_with_probability, incorrect_pro
 def test_incorrect_probability_value(augmentation_with_probability, incorrect_probability):
     code_object = augmentation_with_probability.__init__.__code__
     params_names = code_object.co_varnames[: code_object.co_argcount]
-    probability_params = {param: incorrect_probability for param in params_names if "prob" in param}
+    probability_params = {param: incorrect_probability for param in params_names if param.endswith("prob")}
     expected_message = "must be between 0 and 1."
     with pytest.raises(ValueError, match=expected_message):
         augmentation_with_probability(**probability_params)
+
+
+@pytest.mark.parametrize("incorrect_prob_range", [(0, 0.5, 1), (0.3, 0.1), (-1, 0.5), (0.2, 1.5), (-1, 1.5)])
+def test_incorrect_prob_range_value(augmentation_with_prob_range, incorrect_prob_range):
+    code_object = augmentation_with_prob_range.__init__.__code__
+    params_names = code_object.co_varnames[: code_object.co_argcount]
+    probability_params = {param: incorrect_prob_range for param in params_names if param.endswith("prob_range")}
+    with pytest.raises(ValueError):
+        augmentation_with_prob_range(**probability_params)
 
 
 @pytest.mark.parametrize("incorrect_punctuation", [0, ",", ["."], (), (",", ":", None)])
