@@ -2,7 +2,6 @@ import random
 from typing import Any, Dict, List, Optional, Tuple, Union
 from warnings import warn
 
-from albumentations.core.transforms_interface import to_tuple
 from googletrans.constants import LANGUAGES
 
 from ..core.transforms_interface import TextTransform
@@ -51,6 +50,7 @@ class AEDA(TextTransform):
                 DeprecationWarning,
                 stacklevel=2,
             )
+            insertion_prob_range = (0.0, insertion_prob_range)
         if punctuations is not None:
             warn(
                 "punctuations is deprecated. Use `punctuation` instead. self.punctuation will be set to punctuations.",
@@ -59,7 +59,7 @@ class AEDA(TextTransform):
             )
             punctuation = punctuations
         self._validate_transform_init_args(insertion_prob_range=insertion_prob_range, punctuation=punctuation)
-        self.insertion_prob_range = to_tuple(insertion_prob_range, low=0.0)
+        self.insertion_prob_range = insertion_prob_range
         self.punctuation = punctuation
 
     def _validate_transform_init_args(

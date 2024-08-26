@@ -21,7 +21,6 @@ AUGMENTATIONS_WITH_N_TIMES = [
 ]
 
 AUGMENTATIONS_WITH_PROBABILITY = [
-    T.AEDA,
     T.RandomDeletion,
     T.RandomDeletionSentence,
     T.RandomInsertion,
