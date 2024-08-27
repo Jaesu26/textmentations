@@ -24,9 +24,9 @@ class TextTransform(BasicTransform):
     """
 
     def __init__(self, ignore_first: bool = False, always_apply: bool = False, p: float = 0.5) -> None:
-        super().__init__(always_apply=always_apply, p=p)
         self._validate_base_init_args(ignore_first=ignore_first, always_apply=always_apply, p=p)
         self.ignore_first = ignore_first
+        super().__init__(always_apply=always_apply, p=p)
 
     def _validate_base_init_args(self, *, ignore_first: bool, always_apply: bool, p: float) -> None:
         if not isinstance(ignore_first, bool):
