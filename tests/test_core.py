@@ -36,7 +36,7 @@ def test_incorrect_p_value(text, incorrect_p):
 
 def test_named_args():
     text = "짜장면을 맛있게 먹었다."
-    augment = T.RandomSwap(p=1.0)
+    augment = T.RandomSwap()
     expected_message = "You have to pass data to augmentations as named arguments, for example: augment(text=text)"
     with pytest.raises(KeyError, match=re.escape(expected_message)):
         augment(text)
@@ -44,7 +44,7 @@ def test_named_args():
 
 def test_incorrect_target_type():
     incorrect_text = 123456789
-    augment = T.RandomSwap(p=1.0)
+    augment = T.RandomSwap()
     expected_message = "You have to pass string data to augmentations."
     with pytest.raises(TypeError, match=expected_message):
         augment(text=incorrect_text)
