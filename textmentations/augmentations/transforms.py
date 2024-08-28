@@ -27,7 +27,7 @@ class AEDA(TextTransform):
         insertion_prob_range: Tuple[float, float] = (0.0, 0.3),
         punctuation: Tuple[str, ...] = (".", ";", "?", ":", "!", ","),
         ignore_first: bool = False,
-        always_apply: bool = False,
+        always_apply: Optional[bool] = None,
         p: float = 0.5,
         *,
         insertion_prob_limit: Optional[Union[float, Tuple[float, float]]] = None,
@@ -112,7 +112,7 @@ class BackTranslation(TextTransform):
         from_lang: Language = "ko",
         to_lang: Language = "en",
         ignore_first: bool = False,
-        always_apply: bool = False,
+        always_apply: Optional[bool] = None,
         p: float = 0.5,
     ) -> None:
         super().__init__(ignore_first=ignore_first, always_apply=always_apply, p=p)
@@ -152,7 +152,7 @@ class RandomDeletion(TextTransform):
         deletion_prob: float = 0.1,
         min_words_per_sentence: Union[float, int] = 0.8,
         ignore_first: bool = False,
-        always_apply: bool = False,
+        always_apply: Optional[bool] = None,
         p: float = 0.5,
         *,
         min_words_each_sentence: Optional[Union[float, int]] = None,
@@ -213,7 +213,7 @@ class RandomDeletionSentence(TextTransform):
         deletion_prob: float = 0.1,
         min_sentences: Union[float, int] = 0.8,
         ignore_first: bool = False,
-        always_apply: bool = False,
+        always_apply: Optional[bool] = None,
         p: float = 0.5,
     ) -> None:
         super().__init__(ignore_first=ignore_first, always_apply=always_apply, p=p)
@@ -287,7 +287,7 @@ class RandomInsertion(TextTransform):
         insertion_prob: float = 0.2,
         n_times: int = 1,
         ignore_first: bool = False,
-        always_apply: bool = False,
+        always_apply: Optional[bool] = None,
         p: float = 0.5,
     ) -> None:
         super().__init__(ignore_first=ignore_first, always_apply=always_apply, p=p)
@@ -327,7 +327,7 @@ class RandomSwap(TextTransform):
         self,
         n_times: int = 1,
         ignore_first: bool = False,
-        always_apply: bool = False,
+        always_apply: Optional[bool] = None,
         p: float = 0.5,
     ) -> None:
         super().__init__(ignore_first=ignore_first, always_apply=always_apply, p=p)
@@ -359,7 +359,7 @@ class RandomSwapSentence(TextTransform):
         self,
         n_times: int = 1,
         ignore_first: bool = False,
-        always_apply: bool = False,
+        always_apply: Optional[bool] = None,
         p: float = 0.5,
     ) -> None:
         super().__init__(ignore_first=ignore_first, always_apply=always_apply, p=p)
@@ -394,7 +394,7 @@ class SynonymReplacement(TextTransform):
         self,
         replacement_prob: float = 0.2,
         ignore_first: bool = False,
-        always_apply: bool = False,
+        always_apply: Optional[bool] = None,
         p: float = 0.5,
     ) -> None:
         super().__init__(ignore_first=ignore_first, always_apply=always_apply, p=p)

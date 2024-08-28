@@ -1,4 +1,5 @@
-from typing import Any, Callable, Dict, NoReturn
+from typing import Any, Callable, Dict, NoReturn, Optional
+from warnings import warn
 
 from albumentations.core.transforms_interface import BasicTransform
 
@@ -23,16 +24,27 @@ class TextTransform(BasicTransform):
         p: The probability of applying this transform.
     """
 
-    def __init__(self, ignore_first: bool = False, always_apply: bool = False, p: float = 0.5) -> None:
-        self._validate_base_init_args(ignore_first=ignore_first, always_apply=always_apply, p=p)
+    def __init__(self, ignore_first: bool = False, always_apply: Optional[bool] = None, p: float = 0.5) -> None:
+        if always_apply is not None:
+            if not isinstance(always_apply, bool):
+                raise TypeError(f"always_apply must be boolean. Got: {type(always_apply)}")
+            if always_apply:
+                warn(
+                    "always_apply is deprecated. Use `p=1` if you want to always apply the transform."
+                    " self.p will be set to 1.",
+                    DeprecationWarning,
+                    stacklevel=2,
+                )
+                p = 1.0
+            else:
+                warn("always_apply is deprecated.", DeprecationWarning, stacklevel=2)
+        self._validate_base_init_args(ignore_first=ignore_first, p=p)
         self.ignore_first = ignore_first
-        super().__init__(always_apply=always_apply, p=p)
+        super().__init__(p=p)
 
-    def _validate_base_init_args(self, *, ignore_first: bool, always_apply: bool, p: float) -> None:
+    def _validate_base_init_args(self, *, ignore_first: bool, p: float) -> None:
         if not isinstance(ignore_first, bool):
             raise TypeError(f"ignore_first must be boolean. Got: {type(ignore_first)}")
-        if not isinstance(always_apply, bool):
-            raise TypeError(f"always_apply must be boolean. Got: {type(always_apply)}")
         if not isinstance(p, (float, int)):
             raise TypeError(f"p must be a real number between 0 and 1. Got: {type(p)}")
         if not (0.0 <= p <= 1.0):

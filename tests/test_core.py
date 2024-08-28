@@ -13,7 +13,7 @@ def test_incorrect_ignore_first_type(text, incorrect_ignore_first):
         TextTransform(ignore_first=incorrect_ignore_first)
 
 
-@pytest.mark.parametrize("incorrect_always_apply", [2j, 1.0, "0.0", None])
+@pytest.mark.parametrize("incorrect_always_apply", [2j, 1.0, "0.0"])
 def test_incorrect_always_apply_type(text, incorrect_always_apply):
     expected_message = f"always_apply must be boolean. Got: {type(incorrect_always_apply)}"
     with pytest.raises(TypeError, match=expected_message):

@@ -26,17 +26,15 @@ def test_serializable_registry(augmentation):
 
 @pytest.mark.parametrize("seed", [42])
 @pytest.mark.parametrize("ignore_first", [False, True])
-@pytest.mark.parametrize("always_apply", [False, True])
 @pytest.mark.parametrize("p", [0.5, 1.0])
 def test_augmentations_serialization(
     long_text,
     augmentation,
     seed,
     ignore_first,
-    always_apply,
     p,
 ):
-    augment = augmentation(ignore_first=ignore_first, always_apply=always_apply, p=p)
+    augment = augmentation(ignore_first=ignore_first, p=p)
     serialized_dict = A.to_dict(augment)
     deserialized_augment = A.from_dict(serialized_dict)
     set_seed(seed)
@@ -48,16 +46,14 @@ def test_augmentations_serialization(
 
 @pytest.mark.parametrize("seed", [42])
 @pytest.mark.parametrize("ignore_first", [False, True])
-@pytest.mark.parametrize("always_apply", [False, True])
 @pytest.mark.parametrize("p", [0.5, 1.0])
 def test_compose_serialization(
     long_text,
     seed,
     ignore_first,
-    always_apply,
     p,
 ):
-    augment = Compose([aug(ignore_first=ignore_first, always_apply=always_apply, p=p) for aug in AUGMENTATIONS])
+    augment = Compose([aug(ignore_first=ignore_first, p=p) for aug in AUGMENTATIONS])
     serialized_dict = A.to_dict(augment)
     deserialized_augment = A.from_dict(serialized_dict)
     set_seed(seed)
