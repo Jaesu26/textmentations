@@ -16,7 +16,7 @@ def test_class_fullname(augmentation):
 def test_to_dict(augmentation):
     augment = augmentation()
     serialized_dict = augment.to_dict()
-    assert serialized_dict["__version__"] == "1.2.1"
+    assert serialized_dict["__version__"] == "1.2.2"
 
 
 def test_serializable_registry(augmentation):
