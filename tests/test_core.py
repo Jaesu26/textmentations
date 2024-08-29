@@ -6,6 +6,12 @@ import textmentations as T
 from textmentations.core.transforms_interface import TextTransform
 
 
+@pytest.mark.parametrize("always_apply", [True, False])
+def test_always_apply_deprecation_warning(always_apply):
+    with pytest.warns(DeprecationWarning):
+        TextTransform(always_apply=always_apply)
+
+
 @pytest.mark.parametrize("incorrect_ignore_first", [2j, 1.0, "0.0", None])
 def test_incorrect_ignore_first_type(text, incorrect_ignore_first):
     expected_message = f"ignore_first must be boolean. Got: {type(incorrect_ignore_first)}"
