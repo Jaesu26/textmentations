@@ -2,7 +2,7 @@ import re
 
 import pytest
 
-from textmentations import AEDA, RandomDeletion
+from textmentations import AEDA, RandomDeletion, RandomDeletionSentence
 from textmentations.augmentations.utils import extract_first_sentence
 
 
@@ -18,6 +18,34 @@ def test_ignore_first(text, augmentation):
     augment = augmentation(ignore_first=True, p=1.0)
     data = augment(text=text)
     assert extract_first_sentence(data["text"]) == extract_first_sentence(text)
+
+
+@pytest.mark.parametrize(
+    ["cls", "incorrect_minimum"],
+    [
+        (RandomDeletion, {"min_words_per_sentence": True}),
+        (RandomDeletion, {"min_words_per_sentence": "1"}),
+        (RandomDeletionSentence, {"min_sentences": False}),
+        (RandomDeletionSentence, {"min_sentences": "0.5"}),
+    ],
+)
+def test_incorrect_minimum_type(cls, incorrect_minimum):
+    with pytest.raises(TypeError):
+        cls(**incorrect_minimum)
+
+
+@pytest.mark.parametrize(
+    ["cls", "incorrect_minimum"],
+    [
+        (RandomDeletion, {"min_words_per_sentence": 1.5}),
+        (RandomDeletion, {"min_words_per_sentence": -2}),
+        (RandomDeletionSentence, {"min_sentences": -0.8}),
+        (RandomDeletionSentence, {"min_sentences": -1}),
+    ],
+)
+def test_incorrect_minimum_value(cls, incorrect_minimum):
+    with pytest.raises(ValueError):
+        cls(**incorrect_minimum)
 
 
 @pytest.mark.parametrize("incorrect_n_times", [2j, 1.5, "0.0", None])
@@ -60,7 +88,19 @@ def test_incorrect_probability_value(augmentation_with_probability, incorrect_pr
         augmentation_with_probability(**probability_params)
 
 
-@pytest.mark.parametrize("incorrect_prob_range", [(0, 0.5, 1), (0.3, 0.1), (-1, 0.5), (0.2, 1.5), (-1, 1.5)])
+@pytest.mark.parametrize("incorrect_prob_range", [("0.0", "0.5"), None])
+def test_incorrect_prob_range_type(augmentation_with_prob_range, incorrect_prob_range):
+    code_object = augmentation_with_prob_range.__init__.__code__
+    params_names = code_object.co_varnames[: code_object.co_argcount]
+    prob_range_params = {param: incorrect_prob_range for param in params_names if param.endswith("prob_range")}
+    with pytest.raises(TypeError):
+        augmentation_with_prob_range(**prob_range_params)
+
+
+@pytest.mark.parametrize(
+    "incorrect_prob_range",
+    [(0, 0.5, 1), (True, False), (0.3, 0.1), (-1, 0.5), (0.2, 1.5), (-1, 1.5)],
+)
 def test_incorrect_prob_range_value(augmentation_with_prob_range, incorrect_prob_range):
     code_object = augmentation_with_prob_range.__init__.__code__
     params_names = code_object.co_varnames[: code_object.co_argcount]

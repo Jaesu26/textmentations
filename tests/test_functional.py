@@ -14,11 +14,11 @@ def test_back_translate():
     ["deletion_prob", "min_words_per_sentence", "expected_text"],
     [
         (0.0, 0.5, "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."),
-        (0.0, 1, "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."),
+        (False, 1, "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."),
         (1.0, 0.0, ""),
         (1.0, 1.0, "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."),
         (1.0, 0, ""),
-        (1.0, 3, "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."),
+        (True, 3, "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."),
     ],
 )
 def test_delete_words(text_without_synonyms, deletion_prob, min_words_per_sentence, expected_text):
@@ -30,11 +30,11 @@ def test_delete_words(text_without_synonyms, deletion_prob, min_words_per_senten
     ["deletion_prob", "min_sentences", "expected_text"],
     [
         (0.0, 0.5, "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."),
-        (0.0, 1, "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."),
+        (False, 1, "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."),
         (1.0, 0.0, ""),
         (1.0, 1.0, "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."),
         (1.0, 0, ""),
-        (1.0, 3, "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."),
+        (True, 3, "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."),
     ],
 )
 def test_delete_sentences(text_without_synonyms, deletion_prob, min_sentences, expected_text):

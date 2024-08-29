@@ -65,24 +65,17 @@ class AEDA(TextTransform):
     def _validate_transform_init_args(
         self, *, insertion_prob_range: Union[float, Tuple[float, float]], punctuation: Tuple[str, ...]
     ) -> None:
-        if not isinstance(insertion_prob_range, (float, int, tuple)):
+        if not isinstance(insertion_prob_range, tuple):
+            raise TypeError("insertion_prob_range must be a tuple with length 2. " f"Got: {type(insertion_prob_range)}")
+        if len(insertion_prob_range) != 2:
+            raise ValueError(f"insertion_prob_range's length must be 2. Got: {insertion_prob_range}")
+        if not all(isinstance(prob, (float, int)) for prob in insertion_prob_range):
             raise TypeError(
-                "insertion_prob_range must be a real number between 0 and 1 or a tuple with length 2. "
-                f"Got: {type(insertion_prob_range)}"
+                "All insertion_prob_range elements must be a real number between 0 and 1. "
+                f"Got: {insertion_prob_range}"
             )
-        if isinstance(insertion_prob_range, (float, int)):
-            if not (0.0 <= insertion_prob_range <= 1.0):
-                raise ValueError(
-                    "If insertion_prob_range is a real number, "
-                    f"it must be between 0 and 1. Got: {insertion_prob_range}"
-                )
-        elif isinstance(insertion_prob_range, tuple):
-            if len(insertion_prob_range) != 2:
-                raise ValueError(
-                    f"If insertion_prob_range is a tuple, it's length must be 2. Got: {insertion_prob_range}"
-                )
-            if not (0.0 <= insertion_prob_range[0] <= insertion_prob_range[1] <= 1.0):
-                raise ValueError(f"insertion_prob_range values must be between 0 and 1. Got: {insertion_prob_range}")
+        if not (0.0 <= insertion_prob_range[0] <= insertion_prob_range[1] <= 1.0):
+            raise ValueError(f"All insertion_prob_range elements must be between 0 and 1. Got: {insertion_prob_range}")
         if not isinstance(punctuation, tuple):
             raise TypeError(f"punctuation must be a tuple and all elements must be strings. Got: {type(punctuation)}")
         if not (punctuation and all(isinstance(punc, str) for punc in punctuation)):
@@ -175,7 +168,7 @@ class RandomDeletion(TextTransform):
             raise TypeError(f"deletion_prob must be a real number between 0 and 1. Got: {type(deletion_prob)}")
         if not (0.0 <= deletion_prob <= 1.0):
             raise ValueError(f"deletion_prob must be between 0 and 1. Got: {deletion_prob}")
-        if not isinstance(min_words_per_sentence, (float, int)):
+        if type(min_words_per_sentence) not in {float, int}:
             raise TypeError(
                 f"min_words_per_sentence must be either an int or a float. Got: {type(min_words_per_sentence)}"
             )
@@ -226,7 +219,7 @@ class RandomDeletionSentence(TextTransform):
             raise TypeError(f"deletion_prob must be a real number between 0 and 1. Got: {type(deletion_prob)}")
         if not (0.0 <= deletion_prob <= 1.0):
             raise ValueError(f"deletion_prob must be between 0 and 1. Got: {deletion_prob}")
-        if not isinstance(min_sentences, (float, int)):
+        if type(min_sentences) not in {float, int}:
             raise TypeError(f"min_sentences must be either an int or a float. Got: {type(min_sentences)}")
         if isinstance(min_sentences, float):
             if not (0.0 <= min_sentences <= 1.0):
