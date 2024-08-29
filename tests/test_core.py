@@ -6,7 +6,7 @@ import textmentations as T
 from textmentations.core.transforms_interface import TextTransform
 
 
-@pytest.mark.parametrize("always_apply", [True, False])
+@pytest.mark.parametrize("always_apply", [False, True])
 def test_always_apply_deprecation_warning(always_apply):
     with pytest.warns(DeprecationWarning):
         TextTransform(always_apply=always_apply)
