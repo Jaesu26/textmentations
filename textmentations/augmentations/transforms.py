@@ -66,13 +66,16 @@ class AEDA(TextTransform):
         self, *, insertion_prob_range: Union[float, Tuple[float, float]], punctuation: Tuple[str, ...]
     ) -> None:
         if not isinstance(insertion_prob_range, tuple):
-            raise TypeError("insertion_prob_range must be a tuple with length 2. " f"Got: {type(insertion_prob_range)}")
+            raise TypeError(
+                "insertion_prob_range must be a tuple with length 2"
+                f" and all elements must be a real number between 0 and 1. Got: {type(insertion_prob_range)}"
+            )
         if len(insertion_prob_range) != 2:
             raise ValueError(f"insertion_prob_range's length must be 2. Got: {insertion_prob_range}")
         if not all(isinstance(prob, (float, int)) for prob in insertion_prob_range):
             raise TypeError(
-                "All insertion_prob_range elements must be a real number between 0 and 1. "
-                f"Got: {insertion_prob_range}"
+                "All insertion_prob_range elements must be a real number between 0 and 1."
+                f" Got: {insertion_prob_range}"
             )
         if not (0.0 <= insertion_prob_range[0] <= insertion_prob_range[1] <= 1.0):
             raise ValueError(f"All insertion_prob_range elements must be between 0 and 1. Got: {insertion_prob_range}")
