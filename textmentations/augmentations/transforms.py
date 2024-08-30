@@ -234,9 +234,11 @@ class RandomDeletionSentence(TextTransform):
     def apply(self, text: Text, min_sentences: Union[float, int], **params: Any) -> Text:
         return F.delete_sentences(text, self.deletion_prob, min_sentences)
 
-    def get_params_dependent_on_data(self, params: Dict[str, Any], data: Dict[str, Any]) -> Dict[str, Any]:
-        target_as_params = {p: data.get(p, None) for p in self.targets_as_params}
-        return self.get_params_dependent_on_targets(params={**params, **target_as_params})
+    def get_params_dependent_on_data(
+        self, params: Dict[str, Any], data: Dict[str, Text]
+    ) -> Dict[str, Union[float, int]]:
+        target_as_params = {p: data.get(p, "") for p in self.targets_as_params}
+        return self.get_params_dependent_on_targets(params=target_as_params)
 
     @property
     def targets_as_params(self) -> List[str]:

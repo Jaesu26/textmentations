@@ -77,16 +77,16 @@ class TextTransform(BasicTransform):
     def targets(self) -> Dict[str, Callable[..., Text]]:
         return {"text": self.apply}
 
-    def update_params_shape(self, params: Dict[str, Any], data: Dict[str, Any]) -> Dict[str, Any]:
+    def update_params_shape(self, params: Dict[str, Any], data: Dict[str, Text]) -> Dict[str, Any]:
         return params
 
-    def update_params(self, params: Dict[str, Any], **kwargs: Any) -> Dict[str, Any]:
+    def update_params(self, params: Dict[str, Any], **kwargs: Text) -> Dict[str, Any]:
         return params
 
     def add_targets(self, additional_targets: Dict[str, str]) -> NoReturn:
         raise AttributeError("add_targets method is not available in TextTransform as it is not applicable to text.")
 
-    def get_params_dependent_on_targets(self, params: Dict[str, Any]) -> Dict[str, Any]:
+    def get_params_dependent_on_targets(self, params: Dict[str, Text]) -> Dict[str, Any]:
         return {}
 
     @classmethod
