@@ -41,9 +41,16 @@ def test_get_params_dependent_on_data_of_random_deletion_sentence(
 ):
     params = {}
     data = {"text": input_text}
-    rds = RandomDeletionSentence(ignore_first=ignore_first, min_sentences=min_sentences)
+    rds = RandomDeletionSentence(min_sentences=min_sentences, ignore_first=ignore_first)
     result = rds.get_params_dependent_on_data(params=params, data=data)
     assert result["min_sentences"] == expected_min_sentences
+
+
+def test_albumentations_compatibility(text):
+    rds1 = RandomDeletionSentence(min_sentences=3, ignore_first=True, p=1.0)
+    rds2 = RandomDeletionSentence(min_sentences=0.1, ignore_first=True, p=1.0)
+    rds1(text=text)
+    rds2(text=text)
 
 
 @pytest.mark.parametrize(
