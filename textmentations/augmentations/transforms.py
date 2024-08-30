@@ -234,33 +234,38 @@ class RandomDeletionSentence(TextTransform):
     def apply(self, text: Text, min_sentences: Union[float, int], **params: Any) -> Text:
         return F.delete_sentences(text, self.deletion_prob, min_sentences)
 
+    def get_params_dependent_on_data(self, params: Dict[str, Any], data: Dict[str, Any]) -> Dict[str, Any]:
+        target_as_params = {p: data.get(p, None) for p in self.targets_as_params}
+        params.update(target_as_params)
+        return self.get_params_dependent_on_targets(params=params)
+
     @property
     def targets_as_params(self) -> List[str]:
         return ["text"]
 
     def get_params_dependent_on_targets(self, params: Dict[str, Text]) -> Dict[str, Union[float, int]]:
         if isinstance(self.min_sentences, int):
-            return {"min_sentences": self.min_sentences - self.ignore_first}
-
+            return {"min_sentences": max(self.min_sentences - self.ignore_first, 0)}
         # When `min_sentences` is a float and `ignore_first` is True,
         # the proportion of sentences to retain in the text after deletion is grater than `min_sentences`
         # So, it is necessary to adjust `min_sentences` before passing it to the function's parameter
         # n: Length of original sentences (>= 2)
         # p: `min_sentences` ([0, 1]) If `ignore_first` is False
         # q: The minimum proportion of sentences to retain in the text after deletion if `ignore_first` is True
-        # If `ignore_first` is False: p == q
+        # If `ignore_first` is False: q = p
         # If `ignore_first` is True: See below
         # If not `ignore_first`: The minimum number of sentences after deleting is n * p
         # If `ignore_first`: The minimum number of sentences after deleting is 1 + (n - 1)*q
         # Therefore, n * p == 1 + (n - 1)*q, ===> q = (n*p - 1) / (n - 1)
+        # However, the formula must satisfy the condition (n*p - 1) > 0 and (n - 1) > 0
+        p = self.min_sentences
+        if not self.ignore_first:
+            return {"min_sentences": p}
         text = params["text"]
-        num_original_sentences = len(split_text_into_sentences(text)) + self.ignore_first
-        if num_original_sentences < 2:
-            return {"min_sentences": self.min_sentences}
-        return {
-            "min_sentences": (num_original_sentences * self.min_sentences - self.ignore_first)
-            / (num_original_sentences - self.ignore_first)
-        }
+        n = len(split_text_into_sentences(text)) + 1
+        if n <= 1 or n * p <= 1:
+            return {"min_sentences": p}
+        return {"min_sentences": (n * p - 1) / (n - 1)}
 
     def get_transform_init_args_names(self) -> Tuple[str, str]:
         return ("deletion_prob", "min_sentences")

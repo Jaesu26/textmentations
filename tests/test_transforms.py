@@ -21,6 +21,32 @@ def test_ignore_first(text, augmentation):
 
 
 @pytest.mark.parametrize(
+    ["input_text", "ignore_first", "min_sentences", "expected_min_sentences"],
+    [
+        ("짬짜면도 먹고 싶었다.", True, 0, 0),
+        ("짬짜면도 먹고 싶었다.", False, 0, 0),
+        ("짬짜면도 먹고 싶었다.", True, 1, 0),
+        ("짬짜면도 먹고 싶었다.", False, 1, 1),
+        ("짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다.", False, 0.5, 0.5),
+        ("", True, 0.5, 0.5),
+        ("짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다.", True, 0.33, 0.33),
+        ("짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다.", True, 0.5, 0.25),
+    ],
+)
+def test_get_params_dependent_on_data_of_random_deletion_sentence(
+    input_text,
+    ignore_first,
+    min_sentences,
+    expected_min_sentences,
+):
+    params = {}
+    data = {"text": input_text}
+    rds = RandomDeletionSentence(ignore_first=ignore_first, min_sentences=min_sentences)
+    result = rds.get_params_dependent_on_data(params=params, data=data)
+    assert result["min_sentences"] == expected_min_sentences
+
+
+@pytest.mark.parametrize(
     ["cls", "incorrect_minimum"],
     [
         (RandomDeletion, {"min_words_per_sentence": True}),
