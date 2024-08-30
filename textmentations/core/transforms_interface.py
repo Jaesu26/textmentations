@@ -77,6 +77,9 @@ class TextTransform(BasicTransform):
     def targets(self) -> Dict[str, Callable[..., Text]]:
         return {"text": self.apply}
 
+    def update_params_shape(self, params: Dict[str, Any], data: Dict[str, Any]) -> Dict[str, Any]:
+        return params
+
     def update_params(self, params: Dict[str, Any], **kwargs: Any) -> Dict[str, Any]:
         return params
 
