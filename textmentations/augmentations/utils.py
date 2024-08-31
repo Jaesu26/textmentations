@@ -27,7 +27,7 @@ def autopsy_sentence(
 
     Examples:
         >>> @autopsy_sentence
-        ... def remove_second_word(words: List[Word]) -> Word:
+        ... def remove_second_word(words: List[Word]) -> List[Word]:
         ...    try:
         ...        del words[1]
         ...        return words
@@ -66,7 +66,7 @@ def autopsy_text(
 
     Examples:
         >>> @autopsy_text
-        ... def remove_second_sentence(sentences: List[Sentence]) -> Sentence:
+        ... def remove_second_sentence(sentences: List[Sentence]) -> List[Sentence]:
         ...    try:
         ...        del sentences[1]
         ...        return sentences
