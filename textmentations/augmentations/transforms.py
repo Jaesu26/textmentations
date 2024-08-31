@@ -237,8 +237,8 @@ class RandomDeletionSentence(TextTransform):
     def get_params_dependent_on_data(
         self, params: Dict[str, Any], data: Dict[str, Text]
     ) -> Dict[str, Union[float, int]]:
-        target_as_params = {p: data.get(p, "") for p in self.targets_as_params}
-        return self.get_params_dependent_on_targets(params=target_as_params)
+        targets_as_params = {p: data.get(p, "") for p in self.targets_as_params}
+        return self.get_params_dependent_on_targets(params=targets_as_params)
 
     @property
     def targets_as_params(self) -> List[str]:

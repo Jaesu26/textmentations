@@ -34,10 +34,7 @@ def test_ignore_first(text, augmentation):
     ],
 )
 def test_get_params_dependent_on_data_of_random_deletion_sentence(
-    input_text,
-    ignore_first,
-    min_sentences,
-    expected_min_sentences,
+    input_text, ignore_first, min_sentences, expected_min_sentences
 ):
     params = {}
     data = {"text": input_text}
