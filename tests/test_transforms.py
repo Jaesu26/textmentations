@@ -39,8 +39,8 @@ def test_get_params_dependent_on_data_of_random_deletion_sentence(
     params = {}
     data = {"text": input_text}
     rds = RandomDeletionSentence(min_sentences=min_sentences, ignore_first=ignore_first)
-    result = rds.get_params_dependent_on_data(params=params, data=data)
-    assert result["min_sentences"] == expected_min_sentences
+    params_dependent_on_data = rds.get_params_dependent_on_data(params=params, data=data)
+    assert params_dependent_on_data["min_sentences"] == expected_min_sentences
 
 
 def test_albumentations_compatibility(text):
@@ -51,7 +51,7 @@ def test_albumentations_compatibility(text):
 
 
 @pytest.mark.parametrize(
-    ["cls", "incorrect_minimum"],
+    ["cls", "incorrect_minimum_params"],
     [
         (RandomDeletion, {"min_words_per_sentence": True}),
         (RandomDeletion, {"min_words_per_sentence": "1"}),
@@ -59,13 +59,13 @@ def test_albumentations_compatibility(text):
         (RandomDeletionSentence, {"min_sentences": "0.5"}),
     ],
 )
-def test_incorrect_minimum_type(cls, incorrect_minimum):
+def test_incorrect_minimum_type(cls, incorrect_minimum_params):
     with pytest.raises(TypeError):
-        cls(**incorrect_minimum)
+        cls(**incorrect_minimum_params)
 
 
 @pytest.mark.parametrize(
-    ["cls", "incorrect_minimum"],
+    ["cls", "incorrect_minimum_params"],
     [
         (RandomDeletion, {"min_words_per_sentence": 1.5}),
         (RandomDeletion, {"min_words_per_sentence": -2}),
@@ -73,9 +73,9 @@ def test_incorrect_minimum_type(cls, incorrect_minimum):
         (RandomDeletionSentence, {"min_sentences": -1}),
     ],
 )
-def test_incorrect_minimum_value(cls, incorrect_minimum):
+def test_incorrect_minimum_value(cls, incorrect_minimum_params):
     with pytest.raises(ValueError):
-        cls(**incorrect_minimum)
+        cls(**incorrect_minimum_params)
 
 
 @pytest.mark.parametrize("incorrect_n_times", [2j, 1.5, "0.0", None])
