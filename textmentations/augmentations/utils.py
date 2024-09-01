@@ -172,8 +172,8 @@ def wrap_text_with_sentences(
 
     Args:
         text: The input text to wrap with sentences.
-        prefix_sentences: list of sentences to add at the beginning of the text.
-        suffix_sentences: list of sentences to add at the end of the text.
+        prefix_sentences: The list of sentences to add at the beginning of the text.
+        suffix_sentences: The list of sentences to add at the end of the text.
 
     Returns:
         A wrapped text.
