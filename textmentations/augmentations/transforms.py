@@ -65,7 +65,7 @@ class AEDA(TextTransform):
         self.punctuation = punctuation
 
     def _validate_transform_init_args(
-        self, *, insertion_prob_range: float | tuple[float, float], punctuation: tuple[str, ...]
+        self, *, insertion_prob_range: tuple[float, float], punctuation: tuple[str, ...]
     ) -> None:
         if not isinstance(insertion_prob_range, tuple):
             raise TypeError(
