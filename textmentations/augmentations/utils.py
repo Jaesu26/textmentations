@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 import re
+from collections.abc import Callable
 from functools import wraps
-from typing import Callable, List, Optional
 
 from googletrans import Translator
 from typing_extensions import Concatenate, ParamSpec
@@ -12,7 +14,7 @@ _P = ParamSpec("_P")
 
 
 def autopsy_sentence(
-    func: Callable[Concatenate[List[Word], _P], List[Word]]
+    func: Callable[Concatenate[list[Word], _P], list[Word]]
 ) -> Callable[Concatenate[Sentence, _P], Sentence]:
     """A decorator follows these steps:
         1. Splits the input sentence into words.
@@ -27,7 +29,7 @@ def autopsy_sentence(
 
     Examples:
         >>> @autopsy_sentence
-        ... def remove_second_word(words: List[Word]) -> List[Word]:
+        ... def remove_second_word(words: list[Word]) -> list[Word]:
         ...    try:
         ...        del words[1]
         ...        return words
@@ -51,7 +53,7 @@ def autopsy_sentence(
 
 
 def autopsy_text(
-    func: Callable[Concatenate[List[Sentence], _P], List[Sentence]]
+    func: Callable[Concatenate[list[Sentence], _P], list[Sentence]]
 ) -> Callable[Concatenate[Text, _P], Text]:
     """A decorator follows these steps:
         1. Splits the input text into sentences.
@@ -66,7 +68,7 @@ def autopsy_text(
 
     Examples:
         >>> @autopsy_text
-        ... def remove_second_sentence(sentences: List[Sentence]) -> List[Sentence]:
+        ... def remove_second_sentence(sentences: list[Sentence]) -> list[Sentence]:
         ...    try:
         ...        del sentences[1]
         ...        return sentences
@@ -89,42 +91,42 @@ def autopsy_text(
     return wrapped
 
 
-def split_sentence_into_words(sentence: Sentence) -> List[Word]:
+def split_sentence_into_words(sentence: Sentence) -> list[Word]:
     """Splits the sentence into words."""
     words = sentence.split()
     words = strip_v2(words)
     return words
 
 
-def split_text_into_sentences(text: Text) -> List[Sentence]:
+def split_text_into_sentences(text: Text) -> list[Sentence]:
     """Splits the text into sentences."""
     sentences = re.split(r"[.]", text)
     sentences = strip_v2(sentences)
     return sentences
 
 
-def strip_v2(strings: List[Corpus]) -> List[Corpus]:
+def strip_v2(strings: list[Corpus]) -> list[Corpus]:
     """Removes leading and trailing whitespace from each string and filters out any strings that are empty."""
     return [stripped for s in strings if (stripped := s.strip())]
 
 
-def strip(strings: List[Corpus]) -> List[Corpus]:
+def strip(strings: list[Corpus]) -> list[Corpus]:
     """Removes leading and trailing whitespaces from each string in the list."""
     return [s.strip() for s in strings]
 
 
-def remove_empty_strings(strings: List[Corpus]) -> List[Corpus]:
+def remove_empty_strings(strings: list[Corpus]) -> list[Corpus]:
     """Removes empty strings from the list of strings."""
     return [s for s in strings if s]
 
 
-def join_words_into_sentence(words: List[Word]) -> Sentence:
+def join_words_into_sentence(words: list[Word]) -> Sentence:
     """Joins words into a sentence."""
     sentence = " ".join(words)
     return sentence
 
 
-def join_sentences_into_text(sentences: List[Sentence]) -> Text:
+def join_sentences_into_text(sentences: list[Sentence]) -> Text:
     """Joins sentences into a text."""
     text = ". ".join(sentences)
     if text:
@@ -164,14 +166,14 @@ def remove_nth_sentence(text: Text, n: int) -> Text:
 
 
 def wrap_text_with_sentences(
-    text: Text, *, prefix_sentences: Optional[List[Sentence]] = None, suffix_sentences: Optional[List[Sentence]] = None
+    text: Text, *, prefix_sentences: list[Sentence] | None = None, suffix_sentences: list[Sentence] | None = None
 ) -> Text:
     """Wraps the text with the specified prefix and suffix sentences.
 
     Args:
         text: The input text to wrap with sentences.
-        prefix_sentences: List of sentences to add at the beginning of the text.
-        suffix_sentences: List of sentences to add at the end of the text.
+        prefix_sentences: list of sentences to add at the beginning of the text.
+        suffix_sentences: list of sentences to add at the end of the text.
 
     Returns:
         A wrapped text.

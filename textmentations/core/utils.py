@@ -1,10 +1,12 @@
-from typing import Any, Dict, Type
+from __future__ import annotations
+
+from typing import Any
 
 from ..augmentations.utils import extract_first_sentence, remove_first_sentence, wrap_text_with_sentences
 from ..corpora.types import Sentence, Text
 
 
-def extract_first_sentence_by_key(key2text: Dict[str, Text]) -> Dict[str, Sentence]:
+def extract_first_sentence_by_key(key2text: dict[str, Text]) -> dict[str, Sentence]:
     """Extracts the first sentence from a dictionary of text inputs.
 
     Args:
@@ -16,7 +18,7 @@ def extract_first_sentence_by_key(key2text: Dict[str, Text]) -> Dict[str, Senten
     return {key: extract_first_sentence(text) for key, text in key2text.items()}
 
 
-def remove_first_sentence_by_key(key2text: Dict[str, Text]) -> Dict[str, Text]:
+def remove_first_sentence_by_key(key2text: dict[str, Text]) -> dict[str, Text]:
     """Removes the first sentence from the dictionary of text inputs.
 
     Args:
@@ -30,8 +32,8 @@ def remove_first_sentence_by_key(key2text: Dict[str, Text]) -> Dict[str, Text]:
 
 
 def wrap_text_with_first_sentence_by_key(
-    key2text_without_first_sentence: Dict[str, Text], key2first_sentence: Dict[str, Sentence]
-) -> Dict[str, Text]:
+    key2text_without_first_sentence: dict[str, Text], key2first_sentence: dict[str, Sentence]
+) -> dict[str, Text]:
     """Wraps text inputs with their corresponding first sentence.
 
     Args:
@@ -50,7 +52,7 @@ def wrap_text_with_first_sentence_by_key(
     }
 
 
-def get_shortest_class_fullname(cls: Type[Any]) -> str:
+def get_shortest_class_fullname(cls: type[Any]) -> str:
     """Returns the shortened full name of the given class."""
     class_fullname = f"{cls.__module__}.{cls.__name__}"
     return shorten_class_name(class_fullname)

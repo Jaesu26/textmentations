@@ -1,11 +1,12 @@
+from __future__ import annotations
+
 import random
-from typing import List
 
 from .corpora import STOPWORDS, WORDNET
 from .types import Word
 
 
-def get_synonyms(word: Word) -> List[Word]:
+def get_synonyms(word: Word) -> list[Word]:
     """Gets synonyms of the word from WordNet."""
     synonyms = WORDNET.get(word, [])
     return synonyms

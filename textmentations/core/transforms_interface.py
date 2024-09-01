@@ -1,4 +1,7 @@
-from typing import Any, Callable, Dict, NoReturn, Optional
+from __future__ import annotations
+
+from collections.abc import Callable
+from typing import Any, NoReturn
 from warnings import warn
 
 from albumentations.core.transforms_interface import BasicTransform
@@ -24,7 +27,7 @@ class TextTransform(BasicTransform):
         p: The probability of applying this transform.
     """
 
-    def __init__(self, ignore_first: bool = False, always_apply: Optional[bool] = None, p: float = 0.5) -> None:
+    def __init__(self, ignore_first: bool = False, always_apply: bool | None = None, p: float = 0.5) -> None:
         if always_apply is not None:
             if not isinstance(always_apply, bool):
                 raise TypeError(f"always_apply must be boolean. Got: {type(always_apply)}")
@@ -50,7 +53,7 @@ class TextTransform(BasicTransform):
         if not (0.0 <= p <= 1.0):
             raise ValueError(f"p must be between 0 and 1. Got: {p}")
 
-    def __call__(self, *args: Any, force_apply: bool = False, **kwargs: Text) -> Dict[str, Text]:
+    def __call__(self, *args: Any, force_apply: bool = False, **kwargs: Text) -> dict[str, Text]:
         if args:
             raise KeyError("You have to pass data to augmentations as named arguments, for example: augment(text=text)")
         if not all(isinstance(text, str) for _, text in kwargs.items()):
@@ -59,7 +62,7 @@ class TextTransform(BasicTransform):
             return super().__call__(force_apply=force_apply, **kwargs)
         return self.apply_without_first(force_apply=force_apply, **kwargs)
 
-    def apply_without_first(self, force_apply: bool = False, **kwargs: Text) -> Dict[str, Text]:
+    def apply_without_first(self, force_apply: bool = False, **kwargs: Text) -> dict[str, Text]:
         key2first_sentence = extract_first_sentence_by_key(kwargs)
         key2text_without_first_sentence = remove_first_sentence_by_key(kwargs)
         key2augmented_text_without_first_sentence = super().__call__(
@@ -74,29 +77,29 @@ class TextTransform(BasicTransform):
         raise NotImplementedError
 
     @property
-    def targets(self) -> Dict[str, Callable[..., Text]]:
+    def targets(self) -> dict[str, Callable[..., Text]]:
         return {"text": self.apply}
 
-    def update_params_shape(self, params: Dict[str, Any], data: Dict[str, Text]) -> Dict[str, Any]:
+    def update_params_shape(self, params: dict[str, Any], data: dict[str, Text]) -> dict[str, Any]:
         return params
 
-    def update_params(self, params: Dict[str, Any], **kwargs: Text) -> Dict[str, Any]:
+    def update_params(self, params: dict[str, Any], **kwargs: Text) -> dict[str, Any]:
         return params
 
-    def add_targets(self, additional_targets: Dict[str, str]) -> NoReturn:
+    def add_targets(self, additional_targets: dict[str, str]) -> NoReturn:
         raise AttributeError("add_targets method is not available in TextTransform as it is not applicable to text.")
 
-    def get_params_dependent_on_targets(self, params: Dict[str, Text]) -> Dict[str, Any]:
+    def get_params_dependent_on_targets(self, params: dict[str, Text]) -> dict[str, Any]:
         return {}
 
     @classmethod
     def get_class_fullname(cls) -> str:
         return get_shortest_class_fullname(cls)
 
-    def get_base_init_args(self) -> Dict[str, Any]:
+    def get_base_init_args(self) -> dict[str, Any]:
         return {"ignore_first": self.ignore_first, **super().get_base_init_args()}
 
-    def to_dict(self, on_not_implemented_error: str = "raise") -> Dict[str, Any]:
+    def to_dict(self, on_not_implemented_error: str = "raise") -> dict[str, Any]:
         serialized_dict = super().to_dict(on_not_implemented_error)
         serialized_dict["__version__"] = __version__
         return serialized_dict

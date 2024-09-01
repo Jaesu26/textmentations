@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 import random
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any
 from warnings import warn
 
 from googletrans.constants import LANGUAGES
@@ -24,14 +26,14 @@ class AEDA(TextTransform):
 
     def __init__(
         self,
-        insertion_prob_range: Tuple[float, float] = (0.0, 0.3),
-        punctuation: Tuple[str, ...] = (".", ";", "?", ":", "!", ","),
+        insertion_prob_range: tuple[float, float] = (0.0, 0.3),
+        punctuation: tuple[str, ...] = (".", ";", "?", ":", "!", ","),
         ignore_first: bool = False,
-        always_apply: Optional[bool] = None,
+        always_apply: bool | None = None,
         p: float = 0.5,
         *,
-        insertion_prob_limit: Optional[Union[float, Tuple[float, float]]] = None,
-        punctuations: Optional[Tuple[str, ...]] = None,
+        insertion_prob_limit: float | tuple[float, float] | None = None,
+        punctuations: tuple[str, ...] | None = None,
     ) -> None:
         super().__init__(ignore_first=ignore_first, always_apply=always_apply, p=p)
         if insertion_prob_limit is not None:
@@ -63,7 +65,7 @@ class AEDA(TextTransform):
         self.punctuation = punctuation
 
     def _validate_transform_init_args(
-        self, *, insertion_prob_range: Union[float, Tuple[float, float]], punctuation: Tuple[str, ...]
+        self, *, insertion_prob_range: float | tuple[float, float], punctuation: tuple[str, ...]
     ) -> None:
         if not isinstance(insertion_prob_range, tuple):
             raise TypeError(
@@ -87,10 +89,10 @@ class AEDA(TextTransform):
     def apply(self, text: Text, insertion_prob: float, **params: Any) -> Text:
         return F.insert_punctuation(text, insertion_prob, self.punctuation)
 
-    def get_params(self) -> Dict[str, float]:
+    def get_params(self) -> dict[str, float]:
         return {"insertion_prob": random.uniform(self.insertion_prob_range[0], self.insertion_prob_range[1])}
 
-    def get_transform_init_args_names(self) -> Tuple[str, str]:
+    def get_transform_init_args_names(self) -> tuple[str, str]:
         return ("insertion_prob_range", "punctuation")
 
 
@@ -108,7 +110,7 @@ class BackTranslation(TextTransform):
         from_lang: Language = "ko",
         to_lang: Language = "en",
         ignore_first: bool = False,
-        always_apply: Optional[bool] = None,
+        always_apply: bool | None = None,
         p: float = 0.5,
     ) -> None:
         super().__init__(ignore_first=ignore_first, always_apply=always_apply, p=p)
@@ -125,7 +127,7 @@ class BackTranslation(TextTransform):
     def apply(self, text: Text, **params: Any) -> Text:
         return F.back_translate(text, self.from_lang, self.to_lang)
 
-    def get_transform_init_args_names(self) -> Tuple[str, str]:
+    def get_transform_init_args_names(self) -> tuple[str, str]:
         return ("from_lang", "to_lang")
 
 
@@ -146,12 +148,12 @@ class RandomDeletion(TextTransform):
     def __init__(
         self,
         deletion_prob: float = 0.1,
-        min_words_per_sentence: Union[float, int] = 0.8,
+        min_words_per_sentence: float | int = 0.8,
         ignore_first: bool = False,
-        always_apply: Optional[bool] = None,
+        always_apply: bool | None = None,
         p: float = 0.5,
         *,
-        min_words_each_sentence: Optional[Union[float, int]] = None,
+        min_words_each_sentence: float | int | None = None,
     ) -> None:
         super().__init__(ignore_first=ignore_first, always_apply=always_apply, p=p)
         if min_words_each_sentence is not None:
@@ -166,7 +168,7 @@ class RandomDeletion(TextTransform):
         self.deletion_prob = deletion_prob
         self.min_words_per_sentence = min_words_per_sentence
 
-    def _validate_transform_init_args(self, *, deletion_prob: float, min_words_per_sentence: Union[float, int]) -> None:
+    def _validate_transform_init_args(self, *, deletion_prob: float, min_words_per_sentence: float | int) -> None:
         if not isinstance(deletion_prob, (float, int)):
             raise TypeError(f"deletion_prob must be a real number between 0 and 1. Got: {type(deletion_prob)}")
         if not (0.0 <= deletion_prob <= 1.0):
@@ -189,7 +191,7 @@ class RandomDeletion(TextTransform):
     def apply(self, text: Text, **params: Any) -> Text:
         return F.delete_words(text, self.deletion_prob, self.min_words_per_sentence)
 
-    def get_transform_init_args_names(self) -> Tuple[str, str]:
+    def get_transform_init_args_names(self) -> tuple[str, str]:
         return ("deletion_prob", "min_words_per_sentence")
 
 
@@ -207,9 +209,9 @@ class RandomDeletionSentence(TextTransform):
     def __init__(
         self,
         deletion_prob: float = 0.1,
-        min_sentences: Union[float, int] = 0.8,
+        min_sentences: float | int = 0.8,
         ignore_first: bool = False,
-        always_apply: Optional[bool] = None,
+        always_apply: bool | None = None,
         p: float = 0.5,
     ) -> None:
         super().__init__(ignore_first=ignore_first, always_apply=always_apply, p=p)
@@ -217,7 +219,7 @@ class RandomDeletionSentence(TextTransform):
         self.deletion_prob = deletion_prob
         self.min_sentences = min_sentences
 
-    def _validate_transform_init_args(self, *, deletion_prob: float, min_sentences: Union[float, int]) -> None:
+    def _validate_transform_init_args(self, *, deletion_prob: float, min_sentences: float | int) -> None:
         if not isinstance(deletion_prob, (float, int)):
             raise TypeError(f"deletion_prob must be a real number between 0 and 1. Got: {type(deletion_prob)}")
         if not (0.0 <= deletion_prob <= 1.0):
@@ -231,20 +233,18 @@ class RandomDeletionSentence(TextTransform):
             if min_sentences < 0:
                 raise ValueError(f"If min_sentences is an int, it must be non-negative. Got: {min_sentences}")
 
-    def apply(self, text: Text, min_sentences: Union[float, int], **params: Any) -> Text:
+    def apply(self, text: Text, min_sentences: float | int, **params: Any) -> Text:
         return F.delete_sentences(text, self.deletion_prob, min_sentences)
 
-    def get_params_dependent_on_data(
-        self, params: Dict[str, Any], data: Dict[str, Text]
-    ) -> Dict[str, Union[float, int]]:
+    def get_params_dependent_on_data(self, params: dict[str, Any], data: dict[str, Text]) -> dict[str, float | int]:
         targets_as_params = {p: data.get(p, "") for p in self.targets_as_params}
         return self.get_params_dependent_on_targets(params=targets_as_params)
 
     @property
-    def targets_as_params(self) -> List[str]:
+    def targets_as_params(self) -> list[str]:
         return ["text"]
 
-    def get_params_dependent_on_targets(self, params: Dict[str, Text]) -> Dict[str, Union[float, int]]:
+    def get_params_dependent_on_targets(self, params: dict[str, Text]) -> dict[str, float | int]:
         if isinstance(self.min_sentences, int):
             return {"min_sentences": max(self.min_sentences - self.ignore_first, 0)}
         # When `min_sentences` is a float and `ignore_first` is True,
@@ -268,7 +268,7 @@ class RandomDeletionSentence(TextTransform):
             return {"min_sentences": p}
         return {"min_sentences": (n * p - 1) / (n - 1)}
 
-    def get_transform_init_args_names(self) -> Tuple[str, str]:
+    def get_transform_init_args_names(self) -> tuple[str, str]:
         return ("deletion_prob", "min_sentences")
 
 
@@ -289,7 +289,7 @@ class RandomInsertion(TextTransform):
         insertion_prob: float = 0.2,
         n_times: int = 1,
         ignore_first: bool = False,
-        always_apply: Optional[bool] = None,
+        always_apply: bool | None = None,
         p: float = 0.5,
     ) -> None:
         super().__init__(ignore_first=ignore_first, always_apply=always_apply, p=p)
@@ -310,7 +310,7 @@ class RandomInsertion(TextTransform):
     def apply(self, text: Text, **params: Any) -> Text:
         return F.insert_synonyms(text, self.insertion_prob, self.n_times)
 
-    def get_transform_init_args_names(self) -> Tuple[str, str]:
+    def get_transform_init_args_names(self) -> tuple[str, str]:
         return ("insertion_prob", "n_times")
 
 
@@ -329,7 +329,7 @@ class RandomSwap(TextTransform):
         self,
         n_times: int = 1,
         ignore_first: bool = False,
-        always_apply: Optional[bool] = None,
+        always_apply: bool | None = None,
         p: float = 0.5,
     ) -> None:
         super().__init__(ignore_first=ignore_first, always_apply=always_apply, p=p)
@@ -345,7 +345,7 @@ class RandomSwap(TextTransform):
     def apply(self, text: Text, **params: Any) -> Text:
         return F.swap_words(text, self.n_times)
 
-    def get_transform_init_args_names(self) -> Tuple[str]:
+    def get_transform_init_args_names(self) -> tuple[str]:
         return ("n_times",)
 
 
@@ -361,7 +361,7 @@ class RandomSwapSentence(TextTransform):
         self,
         n_times: int = 1,
         ignore_first: bool = False,
-        always_apply: Optional[bool] = None,
+        always_apply: bool | None = None,
         p: float = 0.5,
     ) -> None:
         super().__init__(ignore_first=ignore_first, always_apply=always_apply, p=p)
@@ -377,7 +377,7 @@ class RandomSwapSentence(TextTransform):
     def apply(self, text: Text, **params: Any) -> Text:
         return F.swap_sentences(text, self.n_times)
 
-    def get_transform_init_args_names(self) -> Tuple[str]:
+    def get_transform_init_args_names(self) -> tuple[str]:
         return ("n_times",)
 
 
@@ -396,7 +396,7 @@ class SynonymReplacement(TextTransform):
         self,
         replacement_prob: float = 0.2,
         ignore_first: bool = False,
-        always_apply: Optional[bool] = None,
+        always_apply: bool | None = None,
         p: float = 0.5,
     ) -> None:
         super().__init__(ignore_first=ignore_first, always_apply=always_apply, p=p)
@@ -412,5 +412,5 @@ class SynonymReplacement(TextTransform):
     def apply(self, text: Text, **params: Any) -> Text:
         return F.replace_synonyms(text, self.replacement_prob)
 
-    def get_transform_init_args_names(self) -> Tuple[str]:
+    def get_transform_init_args_names(self) -> tuple[str]:
         return ("replacement_prob",)
