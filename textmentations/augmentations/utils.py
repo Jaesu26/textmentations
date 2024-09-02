@@ -4,12 +4,12 @@ import re
 from collections.abc import Callable
 from functools import wraps
 
-from googletrans import Translator
+from deep_translator import GoogleTranslator
 from typing_extensions import Concatenate, ParamSpec
 
 from ..corpora.types import Corpus, Sentence, Text, Word
 
-TRANSLATOR = Translator()
+TRANSLATOR = GoogleTranslator(source="ko", target="en")
 _P = ParamSpec("_P")
 
 
@@ -203,6 +203,6 @@ def pass_empty_text(func: Callable[Concatenate[Text, _P], Text]) -> Callable[Con
     return wrapped
 
 
-def get_translator() -> Translator:
+def get_translator() -> GoogleTranslator:
     """Returns an instance of Translator class"""
     return TRANSLATOR

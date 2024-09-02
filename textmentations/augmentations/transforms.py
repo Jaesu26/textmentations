@@ -4,12 +4,15 @@ import random
 from typing import Any
 from warnings import warn
 
-from googletrans.constants import LANGUAGES
+from deep_translator.constants import GOOGLE_LANGUAGES_TO_CODES
+from deep_translator.exceptions import LanguageNotSupportedException
 
 from ..core.transforms_interface import TextTransform
 from ..corpora.types import Language, Text
 from . import functional as F
 from .utils import split_text_into_sentences
+
+LANGUAGES = sorted(GOOGLE_LANGUAGES_TO_CODES.values())
 
 
 class AEDA(TextTransform):
@@ -120,9 +123,9 @@ class BackTranslation(TextTransform):
 
     def _validate_transform_init_args(self, *, from_lang: Language, to_lang: Language) -> None:
         if from_lang not in LANGUAGES:
-            raise ValueError(f"from_lang must be one of ({list(LANGUAGES.keys())}). Got: {from_lang}")
+            raise LanguageNotSupportedException(f"from_lang must be one of ({LANGUAGES}). Got: {from_lang}")
         if to_lang not in LANGUAGES:
-            raise ValueError(f"to_lang must be one of ({list(LANGUAGES.keys())}). Got: {to_lang}")
+            raise LanguageNotSupportedException(f"to_lang must be one of ({LANGUAGES}). Got: {to_lang}")
 
     def apply(self, text: Text, **params: Any) -> Text:
         return F.back_translate(text, self.from_lang, self.to_lang)

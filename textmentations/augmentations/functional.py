@@ -3,9 +3,9 @@ from __future__ import annotations
 import itertools
 import math
 import random
-from urllib.error import HTTPError
 
 import numpy as np
+from deep_translator.exceptions import NotValidLength, RequestError, TooManyRequests, TranslationNotFound
 
 from ..corpora.types import Corpus, Language, Sentence, Text, Word
 from ..corpora.utils import get_random_synonym, is_stopword
@@ -34,12 +34,14 @@ def back_translate(text: Text, from_lang: Language, to_lang: Language) -> Text:
         >>> back_translate(text, from_lang, to_lang)
         "나는 짜장면을 즐겼다. 짬뽕도 맛있게 먹었습니다. 짬짜면도 먹고 싶었어요."
     """
-    translator = get_translator()
     try:
-        translated_text = translator.translate(text, src=from_lang, dest=to_lang).text
-        back_translated_text = translator.translate(translated_text, src=to_lang, dest=from_lang).text
+        translator = get_translator()
+        translator.source, translator.target = from_lang, to_lang
+        translated_text = translator.translate(text)
+        translator.source, translator.target = to_lang, from_lang
+        back_translated_text = translator.translate(translated_text)
         return back_translated_text
-    except HTTPError:
+    except (NotValidLength, RequestError, TooManyRequests, TranslationNotFound):
         return text
 
 
