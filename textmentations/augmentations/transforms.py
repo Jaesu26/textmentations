@@ -123,9 +123,9 @@ class BackTranslation(TextTransform):
 
     def _validate_transform_init_args(self, *, from_lang: Language, to_lang: Language) -> None:
         if from_lang not in LANGUAGES:
-            raise LanguageNotSupportedException(f"from_lang must be one of ({LANGUAGES}). Got: {from_lang}")
+            raise LanguageNotSupportedException(f"from_lang must be one of {LANGUAGES}. Got: {from_lang}")
         if to_lang not in LANGUAGES:
-            raise LanguageNotSupportedException(f"to_lang must be one of ({LANGUAGES}). Got: {to_lang}")
+            raise LanguageNotSupportedException(f"to_lang must be one of {LANGUAGES}. Got: {to_lang}")
 
     def apply(self, text: Text, **params: Any) -> Text:
         return F.back_translate(text, self.from_lang, self.to_lang)

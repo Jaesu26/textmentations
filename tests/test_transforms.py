@@ -1,8 +1,10 @@
 import re
 
 import pytest
+from deep_translator.exceptions import LanguageNotSupportedException
 
-from textmentations import AEDA, RandomDeletion, RandomDeletionSentence
+from textmentations import AEDA, BackTranslation, RandomDeletion, RandomDeletionSentence
+from textmentations.augmentations.transforms import LANGUAGES
 from textmentations.augmentations.utils import extract_first_sentence
 
 
@@ -48,6 +50,23 @@ def test_albumentations_compatibility(text):
     rds2 = RandomDeletionSentence(min_sentences=0.1, ignore_first=True, p=1.0)
     rds1(text=text)
     rds2(text=text)
+
+
+@pytest.mark.parametrize(
+    "incorrect_lang_param",
+    [
+        {"from_lang": ""},
+        {"from_lang": "123"},
+        {"from_lang": "korean"},
+        {"to_lang": ""},
+        {"to_lang": "kor"},
+        {"to_lang": "english"},
+    ],
+)
+def test_incorrect_language(incorrect_lang_param):
+    expected_message = f"must be one of {LANGUAGES}."
+    with pytest.raises(LanguageNotSupportedException, match=re.escape(expected_message)):
+        BackTranslation(**incorrect_lang_param)
 
 
 @pytest.mark.parametrize(
