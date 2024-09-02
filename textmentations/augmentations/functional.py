@@ -24,9 +24,6 @@ def back_translate(text: Text, from_lang: Language, to_lang: Language) -> Text:
     Returns:
         A back-translated text.
 
-    Raises:
-        HTTPError: If there is an error while connecting to the translation API.
-
     Examples:
         >>> text = "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."
         >>> from_lang = "ko"
