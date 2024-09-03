@@ -12,7 +12,7 @@ pip install textmentations
 
 ## A simple example
 
-Textmentations provides text augmentation techniques implemented using the [TextTransform](https://github.com/Jaesu26/textmentations/blob/v1.2.3/textmentations/core/transforms_interface.py#L17),
+Textmentations provides text augmentation techniques implemented using the [TextTransform](https://github.com/Jaesu26/textmentations/blob/v1.2.4/textmentations/core/transforms_interface.py#L19),
 which inherits from the albumentations [BasicTransform](https://github.com/albumentations-team/albumentations/blob/1.4.14/albumentations/core/transforms_interface.py#L48).
 
 This allows textmentations to reuse the existing functionalities of albumentations.
@@ -45,14 +45,14 @@ print(eda(text=text)["text"])
 
 ## List of augmentations
 
-- [AEDA](https://github.com/Jaesu26/textmentations/blob/v1.2.3/textmentations/augmentations/transforms.py#L13)
-- [BackTranslation](https://github.com/Jaesu26/textmentations/blob/v1.2.3/textmentations/augmentations/transforms.py#L97)
-- [RandomDeletion](https://github.com/Jaesu26/textmentations/blob/v1.2.3/textmentations/augmentations/transforms.py#L132)
-- [RandomDeletionSentence](https://github.com/Jaesu26/textmentations/blob/v1.2.3/textmentations/augmentations/transforms.py#L196)
-- [RandomInsertion](https://github.com/Jaesu26/textmentations/blob/v1.2.3/textmentations/augmentations/transforms.py#L273)
-- [RandomSwap](https://github.com/Jaesu26/textmentations/blob/v1.2.3/textmentations/augmentations/transforms.py#L315)
-- [RandomSwapSentence](https://github.com/Jaesu26/textmentations/blob/v1.2.3/textmentations/augmentations/transforms.py#L350)
-- [SynonymReplacement](https://github.com/Jaesu26/textmentations/blob/v1.2.3/textmentations/augmentations/transforms.py#L382)
+- [AEDA](https://github.com/Jaesu26/textmentations/blob/v1.2.4/textmentations/augmentations/transforms.py#L18)
+- [BackTranslation](https://github.com/Jaesu26/textmentations/blob/v1.2.4/textmentations/augmentations/transforms.py#L104)
+- [RandomDeletion](https://github.com/Jaesu26/textmentations/blob/v1.2.4/textmentations/augmentations/transforms.py#L141)
+- [RandomDeletionSentence](https://github.com/Jaesu26/textmentations/blob/v1.2.4/textmentations/augmentations/transforms.py#L207)
+- [RandomInsertion](https://github.com/Jaesu26/textmentations/blob/v1.2.4/textmentations/augmentations/transforms.py#L286)
+- [RandomSwap](https://github.com/Jaesu26/textmentations/blob/v1.2.4/textmentations/augmentations/transforms.py#L330)
+- [RandomSwapSentence](https://github.com/Jaesu26/textmentations/blob/v1.2.4/textmentations/augmentations/transforms.py#L367)
+- [SynonymReplacement](https://github.com/Jaesu26/textmentations/blob/v1.2.4/textmentations/augmentations/transforms.py#L401)
 
 ## References
 
