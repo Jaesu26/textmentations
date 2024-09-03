@@ -6,8 +6,7 @@ from warnings import warn
 
 from albumentations.core.transforms_interface import BasicTransform
 
-from textmentations import __version__
-
+from .. import __version__
 from ..corpora.types import Text
 from .utils import (
     extract_first_sentence_by_key,
