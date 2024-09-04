@@ -59,7 +59,7 @@ def get_shortest_class_fullname(cls: type[Any]) -> str:
 
 
 def shorten_class_name(class_fullname: str) -> str:
-    """Shorten the given class full name."""
+    """Shortens the given class full name."""
     split = class_fullname.split(".")
     if len(split) == 1:
         return class_fullname
