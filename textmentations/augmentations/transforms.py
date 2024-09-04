@@ -110,6 +110,9 @@ class BackTranslation(TextTransform):
         ignore_first: Whether to ignore the first sentence when applying this transform.
             It is useful when the main idea of the text is expressed in the first sentence.
         p: The probability of applying this transform.
+
+    References:
+        https://arxiv.org/pdf/1808.09381
     """
 
     def __init__(
