@@ -18,7 +18,3 @@ def get_wordnet() -> dict[Word, list[Word]]:
     with open(path, encoding="utf-8") as f:
         wordnet = json.load(f)
     return wordnet
-
-
-STOPWORDS = get_stopwords()
-WORDNET = get_wordnet()

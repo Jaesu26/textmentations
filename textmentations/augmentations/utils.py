@@ -9,7 +9,7 @@ from typing_extensions import Concatenate, ParamSpec
 
 from ..corpora.types import Corpus, Sentence, Text, Word
 
-TRANSLATOR = GoogleTranslator(source="ko", target="en")
+_translator = GoogleTranslator(source="ko", target="en")
 _P = ParamSpec("_P")
 
 
@@ -155,7 +155,7 @@ def remove_first_sentence(text: Text) -> Text:
 
 
 def remove_nth_sentence(text: Text, n: int) -> Text:
-    """Removes the nth sentence from the text"""
+    """Removes the nth sentence from the text."""
     sentences = split_text_into_sentences(text)
     try:
         del sentences[n]
@@ -204,5 +204,5 @@ def pass_empty_text(func: Callable[Concatenate[Text, _P], Text]) -> Callable[Con
 
 
 def get_translator() -> GoogleTranslator:
-    """Returns an instance of Translator class"""
-    return TRANSLATOR
+    """Returns an instance of GoogleTranslator class."""
+    return _translator
