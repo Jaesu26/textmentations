@@ -36,7 +36,6 @@ def autopsy_sentence(
         ...    except IndexError:
         ...        return words
         ...
-        ...
         >>> sentence = "짜장면을 맛있게 먹었다"
         >>> remove_second_word(sentence)
         "짜장면을 먹었다"
@@ -74,7 +73,6 @@ def autopsy_text(
         ...        return sentences
         ...    except IndexError:
         ...        return sentences
-        ...
         ...
         >>> text = "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다."
         >>> remove_second_sentence(text)
