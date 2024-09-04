@@ -38,7 +38,7 @@ def autopsy_sentence(
         ...
         >>> sentence = "짜장면을 맛있게 먹었다"
         >>> remove_second_word(sentence)
-        "짜장면을 먹었다"
+        '짜장면을 먹었다'
     """
 
     @wraps(func)
@@ -76,7 +76,7 @@ def autopsy_text(
         ...
         >>> text = "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다."
         >>> remove_second_sentence(text)
-        "짜장면을 맛있게 먹었다."
+        '짜장면을 맛있게 먹었다.'
     """
 
     @wraps(func)
