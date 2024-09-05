@@ -14,7 +14,6 @@ AUGMENTATIONS = [
 ]
 AUGMENTATIONS_WITH_N_TIMES = [
     T.RandomInsertion,
-    T.RandomSwap,
     T.RandomSwapSentence,
 ]
 AUGMENTATIONS_WITH_PROBABILITY = [
