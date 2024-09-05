@@ -334,7 +334,10 @@ class RandomSwap(TextTransform):
     """Repeats n times the task of randomly swapping two words in a randomly selected sentence from the input text.
 
     Args:
-        n_times: The number of times to repeat the process.
+        alpha:
+            If a `float`, it is the number of times to repeat the process is calculated as `N = alpha * L`,
+            where `L` is the length of the text.
+            If an `int`, it is the number of times to repeat the process.
         ignore_first: Whether to ignore the first sentence when applying this transform.
             It is useful when the main idea of the text is expressed in the first sentence.
         p: The probability of applying this transform.
@@ -345,26 +348,39 @@ class RandomSwap(TextTransform):
 
     def __init__(
         self,
-        n_times: int = 1,
+        alpha: float | int = 1,
         ignore_first: bool = False,
         always_apply: bool | None = None,
         p: float = 0.5,
+        *,
+        n_times: int | None = None,
     ) -> None:
         super().__init__(ignore_first=ignore_first, always_apply=always_apply, p=p)
-        self._validate_transform_init_args(n_times=n_times)
-        self.n_times = n_times
+        if n_times is not None:
+            warn(
+                "n_times is deprecated. Use `alpha` instead. self.alpha will be set to n_times.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            alpha = n_times
+        self._validate_transform_init_args(alpha=alpha)
+        self.alpha = alpha
 
-    def _validate_transform_init_args(self, *, n_times: int) -> None:
-        if not isinstance(n_times, int):
-            raise TypeError(f"n_times must be a positive integer. Got: {type(n_times)}")
-        if n_times <= 0:
-            raise ValueError(f"n_times must be positive. Got: {n_times}")
+    def _validate_transform_init_args(self, *, alpha: float | int) -> None:
+        if type(alpha) not in {float, int}:
+            raise TypeError(f"alpha must be either an int or a float. Got: {type(alpha)}")
+        if isinstance(alpha, float):
+            if not (0.0 <= alpha <= 1.0):
+                raise ValueError(f"If alpha is a float, it must be between 0 and 1. Got: {alpha}")
+        elif isinstance(alpha, int):
+            if alpha < 0:
+                raise ValueError(f"If alpha is an int, it must be non-negative. Got: {alpha}")
 
     def apply(self, text: Text, **params: Any) -> Text:
-        return F.swap_words(text, self.n_times)
+        return F.swap_words(text, self.alpha)
 
     def get_transform_init_args_names(self) -> tuple[str]:
-        return ("n_times",)
+        return ("alpha",)
 
 
 class RandomSwapSentence(TextTransform):

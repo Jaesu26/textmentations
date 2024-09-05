@@ -3,9 +3,16 @@ import re
 import pytest
 from deep_translator.exceptions import LanguageNotSupportedException
 
-from textmentations import AEDA, BackTranslation, RandomDeletion, RandomDeletionSentence
+from textmentations import AEDA, BackTranslation, RandomDeletion, RandomDeletionSentence, RandomSwap
 from textmentations.augmentations.transforms import LANGUAGES
 from textmentations.augmentations.utils import extract_first_sentence
+
+
+def test_albumentations_compatibility(text):
+    rds1 = RandomDeletionSentence(min_sentences=3, ignore_first=True, p=1.0)
+    rds2 = RandomDeletionSentence(min_sentences=0.1, ignore_first=True, p=1.0)
+    rds1(text=text)
+    rds2(text=text)
 
 
 @pytest.mark.parametrize("ignore_first", [False, True])
@@ -45,13 +52,6 @@ def test_get_params_dependent_on_data_of_random_deletion_sentence(
     assert params_dependent_on_data["min_sentences"] == expected_min_sentences
 
 
-def test_albumentations_compatibility(text):
-    rds1 = RandomDeletionSentence(min_sentences=3, ignore_first=True, p=1.0)
-    rds2 = RandomDeletionSentence(min_sentences=0.1, ignore_first=True, p=1.0)
-    rds1(text=text)
-    rds2(text=text)
-
-
 @pytest.mark.parametrize(
     "incorrect_lang_param",
     [
@@ -67,34 +67,6 @@ def test_incorrect_language(incorrect_lang_param):
     expected_message = f"must be one of {LANGUAGES}."
     with pytest.raises(LanguageNotSupportedException, match=re.escape(expected_message)):
         BackTranslation(**incorrect_lang_param)
-
-
-@pytest.mark.parametrize(
-    ["cls", "incorrect_minimum_param"],
-    [
-        (RandomDeletion, {"min_words_per_sentence": True}),
-        (RandomDeletion, {"min_words_per_sentence": "1"}),
-        (RandomDeletionSentence, {"min_sentences": False}),
-        (RandomDeletionSentence, {"min_sentences": "0.5"}),
-    ],
-)
-def test_incorrect_minimum_type(cls, incorrect_minimum_param):
-    with pytest.raises(TypeError):
-        cls(**incorrect_minimum_param)
-
-
-@pytest.mark.parametrize(
-    ["cls", "incorrect_minimum_param"],
-    [
-        (RandomDeletion, {"min_words_per_sentence": 1.5}),
-        (RandomDeletion, {"min_words_per_sentence": -2}),
-        (RandomDeletionSentence, {"min_sentences": -0.8}),
-        (RandomDeletionSentence, {"min_sentences": -1}),
-    ],
-)
-def test_incorrect_minimum_value(cls, incorrect_minimum_param):
-    with pytest.raises(ValueError):
-        cls(**incorrect_minimum_param)
 
 
 @pytest.mark.parametrize("incorrect_n_times", [2j, 1.5, "0.0", None])
@@ -158,21 +130,42 @@ def test_incorrect_prob_range_value(augmentation_with_prob_range, incorrect_prob
         augmentation_with_prob_range(**incorrect_prob_range_param)
 
 
+@pytest.mark.parametrize(
+    ["cls", "incorrect_proportion_param"],
+    [
+        (RandomDeletion, {"min_words_per_sentence": True}),
+        (RandomDeletion, {"min_words_per_sentence": "1"}),
+        (RandomDeletionSentence, {"min_sentences": False}),
+        (RandomDeletionSentence, {"min_sentences": "0.5"}),
+        (RandomSwap, {"alpha": True}),
+        (RandomSwap, {"alpha": "0"}),
+    ],
+)
+def test_incorrect_proportion_type(cls, incorrect_proportion_param):
+    with pytest.raises(TypeError):
+        cls(**incorrect_proportion_param)
+
+
+@pytest.mark.parametrize(
+    ["cls", "incorrect_proportion_param"],
+    [
+        (RandomDeletion, {"min_words_per_sentence": 1.5}),
+        (RandomDeletion, {"min_words_per_sentence": -2}),
+        (RandomDeletionSentence, {"min_sentences": -0.8}),
+        (RandomDeletionSentence, {"min_sentences": -1}),
+        (RandomSwap, {"alpha": 2.0}),
+        (RandomSwap, {"alpha": -3}),
+    ],
+)
+def test_incorrect_proportion_value(cls, incorrect_proportion_param):
+    with pytest.raises(ValueError):
+        cls(**incorrect_proportion_param)
+
+
 @pytest.mark.parametrize("incorrect_punctuation", [0, ",", ["."], (), (",", ":", None)])
 def test_incorrect_punctuation_type(incorrect_punctuation):
     with pytest.raises(TypeError):
         AEDA(punctuation=incorrect_punctuation)
-
-
-def test_random_deletion_deprecation_warning():
-    min_words_per_sentence = 0.2
-    expected_message = (
-        "min_words_each_sentence is deprecated. Use `min_words_per_sentence` instead."
-        " self.min_words_per_sentence will be set to min_words_each_sentence."
-    )
-    with pytest.warns(DeprecationWarning, match=expected_message):
-        rd = RandomDeletion(min_words_each_sentence=min_words_per_sentence)
-    assert rd.min_words_per_sentence == min_words_per_sentence
 
 
 def test_aeda_punctuations_deprecation_warning():
@@ -213,3 +206,22 @@ def test_aeda_insertion_prob_range_non_tuple_deprecation_warning():
     with pytest.warns(DeprecationWarning, match=re.escape(expected_message)):
         aeda = AEDA(insertion_prob_range=insertion_prob_range)
     assert aeda.insertion_prob_range == (0.0, insertion_prob_range)
+
+
+def test_random_deletion_deprecation_warning():
+    min_words_per_sentence = 0.2
+    expected_message = (
+        "min_words_each_sentence is deprecated. Use `min_words_per_sentence` instead."
+        " self.min_words_per_sentence will be set to min_words_each_sentence."
+    )
+    with pytest.warns(DeprecationWarning, match=expected_message):
+        rd = RandomDeletion(min_words_each_sentence=min_words_per_sentence)
+    assert rd.min_words_per_sentence == min_words_per_sentence
+
+
+def test_random_swap_deprecation_warning():
+    alpha = 1
+    expected_message = "n_times is deprecated. Use `alpha` instead. self.alpha will be set to n_times."
+    with pytest.warns(DeprecationWarning, match=expected_message):
+        rs = RandomSwap(n_times=alpha)
+    assert rs.alpha == alpha

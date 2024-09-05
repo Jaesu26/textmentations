@@ -287,31 +287,39 @@ def _replace_word_with_synonym(word: Word, replacement_prob: float) -> Word:
 
 
 @pass_empty_text
-def swap_words(text: Text, n_times: int) -> Text:
+def swap_words(text: Text, alpha: float | int) -> Text:
     """Repeats n times the task of randomly swapping two words in a randomly selected sentence from the text.
 
     Args:
         text: The input text.
-        n_times: The number of times to repeat the word-swapping process in a randomly selected sentence.
+        alpha:
+            If a `float`, it is the number of times to repeat the process is calculated as `N = alpha * L`,
+            where `L` is the length of the text.
+            If an `int`, it is the number of times to repeat the process.
 
     Returns:
         A text with randomly shuffled words each sentence.
 
     Examples:
         >>> text = "짜장면을 맛있게 먹었다. 짬뽕도 먹고 싶었다."
-        >>> n_times = 2
-        >>> swap_words(text, n_times)
+        >>> alpha = 2
+        >>> swap_words(text, alpha)
         "맛있게 짜장면을 먹었다. 먹고 짬뽕도 싶었다."
     """
-    return _swap_words(text, n_times)
+    return _swap_words(text, alpha)
 
 
 @autopsy_text
-def _swap_words(sentences: list[Sentence], n_times: int) -> list[Sentence]:
+def _swap_words(sentences: list[Sentence], alpha: float | int) -> list[Sentence]:
     """Repeats n times the task of randomly swapping two words in a randomly selected sentence."""
     num_sentences = len(sentences)
+    sentence_lengths = [*map(len, sentences)]
+    num_punctuation = num_sentences - 1
+    text_length = sum(sentence_lengths) + num_punctuation
+    n_times = math.ceil(text_length * alpha) if isinstance(alpha, float) else alpha
     for _ in range(n_times):
-        index = random.randrange(num_sentences)
+        indices = random.choices(range(num_sentences), weights=sentence_lengths, k=1)
+        index = indices[0]
         sentences[index] = _swap_two_words_in_sentence(sentences[index])
     return sentences
 
@@ -337,7 +345,7 @@ def swap_sentences(text: Text, n_times: int) -> Text:
 
     Args:
         text: The input text.
-        n_times: The number of times to repeat the sentence-swapping process.
+        n_times: The number of times to repeat the process.
 
     Returns:
         A text with randomly shuffled sentences.

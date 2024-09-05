@@ -69,8 +69,8 @@ def test_replace_synonyms(text, is_same, request):
 
 def test_swap_words(text):
     original_sentences = split_text_into_sentences(text)
-    n_times = 1
-    augmented_text = F.swap_words(text, n_times)
+    alpha = 0.01
+    augmented_text = F.swap_words(text, alpha)
     augmented_sentences = split_text_into_sentences(augmented_text)
     assert sum([original != augmented for original, augmented in zip(original_sentences, augmented_sentences)]) == 1
 
