@@ -191,8 +191,7 @@ def _insert_synonyms_in_words(
             continue
         insertion_index = random.randint(0, num_words - 1)
         augmented_words[insertion_index].append(synonym)
-    # flatten the list of lists
-    return [*itertools.chain(*augmented_words)]  # type: ignore
+    return [*itertools.chain(*augmented_words)]  # flatten the list of lists
 
 
 @pass_empty_text
