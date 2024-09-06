@@ -53,13 +53,21 @@ def wrap_text_with_first_sentence_by_key(
 
 
 def get_shortest_class_fullname(cls: type[Any]) -> str:
-    """Returns the shortened full name of the given class."""
+    """Returns the shortened full name of the given class.
+
+    References:
+        https://github.com/albumentations-team/albumentations/blob/1.4.3/albumentations/core/serialization.py#L293
+    """
     class_fullname = f"{cls.__module__}.{cls.__name__}"
     return shorten_class_name(class_fullname)
 
 
 def shorten_class_name(class_fullname: str) -> str:
-    """Shortens the given class full name."""
+    """Shortens the given class full name.
+
+    References:
+        https://github.com/albumentations-team/albumentations/blob/1.4.3/albumentations/core/serialization.py#L27
+    """
     split = class_fullname.split(".")
     if len(split) == 1:
         return class_fullname
