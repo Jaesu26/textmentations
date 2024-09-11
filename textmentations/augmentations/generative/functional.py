@@ -2,13 +2,16 @@ from __future__ import annotations
 
 import random
 import re
+from typing import Any
 
 import torch
 
-from ..utils import _squeeze_first, autopsy_sentence, autopsy_text, join_words_into_sentence
+from ...corpora.types import Sentence, Text, Word
+from ..utils import _squeeze_first, autopsy_sentence, autopsy_text, join_words_into_sentence, pass_empty_text
 
 
-def iterative_mask_fill(text, model, tokenizer, top_k, device):
+@pass_empty_text
+def iterative_mask_fill(text: Text, model: Any, tokenizer: Any, top_k: int, device: str | torch.device) -> Text:
     model.to(device)
     augmented_text = _iterative_mask_fill(text, model, tokenizer, top_k, device)
     augmented_text = re.sub(r"\s*##\b", "", augmented_text)  # ex) 나는 짬뽕 ##을 먹었다. -> 나는 짬뽕을 먹었다.
@@ -16,7 +19,13 @@ def iterative_mask_fill(text, model, tokenizer, top_k, device):
 
 
 @autopsy_text
-def _iterative_mask_fill(sentences, model, tokenizer, top_k, device):
+def _iterative_mask_fill(
+    sentences: list[Sentence],
+    model: Any,
+    tokenizer: Any,
+    top_k: int,
+    device: str | torch.device,
+) -> list[Sentence]:
     num_sentences = len(sentences)
     index = random.randrange(0, num_sentences)
     sentence = sentences[index]
@@ -25,7 +34,13 @@ def _iterative_mask_fill(sentences, model, tokenizer, top_k, device):
 
 
 @autopsy_sentence
-def _iterative_mask_fill_in_sentence(words, model, tokenizer, top_k, device):
+def _iterative_mask_fill_in_sentence(
+    words: list[Word],
+    model: Any,
+    tokenizer: Any,
+    top_k: int,
+    device: str | torch.device,
+) -> list[Word]:
     for masking_index, word in enumerate(words):
         words[masking_index] = tokenizer.mask_token
         sentence = join_words_into_sentence(words)
@@ -38,7 +53,7 @@ def _iterative_mask_fill_in_sentence(words, model, tokenizer, top_k, device):
     return words
 
 
-def _predict_mask(sentence, model, tokenizer, top_k, device):
+def _predict_mask(sentence: Sentence, model: Any, tokenizer: Any, top_k: int, device: str | torch.device) -> list[Word]:
     mask_token_id = tokenizer.mask_token_id
     input_ids = tokenizer.encode(sentence, truncation=True, return_tensors="pt")
     if mask_token_id not in input_ids:
