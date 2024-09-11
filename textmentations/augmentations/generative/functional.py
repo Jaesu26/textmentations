@@ -53,6 +53,7 @@ def _iterative_mask_fill_in_sentence(
     return words
 
 
+# TODO: 마스크 토큰이 여러 개일 때 plausible_words의 shape 확인 하기
 def _predict_mask(sentence: Sentence, model: Any, tokenizer: Any, top_k: int, device: str | torch.device) -> list[Word]:
     mask_token_id = tokenizer.mask_token_id
     input_ids = tokenizer.encode(sentence, truncation=True, return_tensors="pt")

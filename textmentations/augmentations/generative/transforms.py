@@ -37,14 +37,13 @@ class IterativeMaskFilling(TextTransform):
         if type(top_k) is not int:
             raise TypeError(f"top_k must be a positive integer. Got: {type(top_k)}")
         if top_k <= 0:
-            raise ValueError(f"n_times must be positive. Got: {top_k}")
+            raise ValueError(f"top_k must be positive. Got: {top_k}")
         if top_k > self._vocab_size:
             raise ValueError(
                 f"top_k exceeds the tokenizer's vocabulary size. Maximum allowed: {self._vocab_size}. Got: {top_k}"
             )
         dummy_tensor = torch.tensor([0])
-        dummy_tensor = dummy_tensor.to(device)  # Raise original error
-        dummy_tensor = dummy_tensor.detach.cpu()
+        dummy_tensor = dummy_tensor.to(device).cpu()  # Raise original error
 
     def apply(self, text: Text, **params: Any) -> Text:
         return F.iterative_mask_fill(text, self._model, self._tokenizer, self.top_k, self.device)
