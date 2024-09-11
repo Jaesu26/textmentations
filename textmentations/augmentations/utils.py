@@ -1,16 +1,20 @@
 from __future__ import annotations
 
+import os
 import re
 from collections.abc import Callable
 from functools import wraps
+from typing import TypeVar
 
 from deep_translator import GoogleTranslator
+from transformers import AlbertForMaskedLM, BertTokenizerFast
 from typing_extensions import Concatenate, ParamSpec
 
 from ..corpora.types import Corpus, Sentence, Text, Word
 
 _translator = GoogleTranslator(source="ko", target="en")
 _P = ParamSpec("_P")
+_T = TypeVar("_T")
 
 
 def autopsy_sentence(
@@ -201,6 +205,25 @@ def pass_empty_text(func: Callable[Concatenate[Text, _P], Text]) -> Callable[Con
     return wrapped
 
 
+def _squeeze_first(list_: list[_T]) -> _T:
+    if len(list_) != 1:
+        raise ValueError("Input list must contain exactly one element.")
+    return list_[0]
+
+
 def get_translator() -> GoogleTranslator:
     """Returns an instance of GoogleTranslator class."""
     return _translator
+
+
+def _get_albert_mlm(model_path: str | os.PathLike) -> AlbertForMaskedLM:
+    model = AlbertForMaskedLM.from_pretrained(pretrained_model_name_or_path=model_path)
+    return model
+
+
+def _get_bert_tokenizer_fast(model_path: str | os.PathLike) -> BertTokenizerFast:
+    tokenizer = BertTokenizerFast.from_pretrained(
+        pretrained_model_name_or_path=model_path,
+        clean_up_tokenization_spaces=True,
+    )
+    return tokenizer
