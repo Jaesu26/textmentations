@@ -12,9 +12,21 @@ from ..utils import _squeeze_first, autopsy_sentence, autopsy_text, join_words_i
 
 @pass_empty_text
 def iterative_mask_fill(text: Text, model: Any, tokenizer: Any, top_k: int, device: str | torch.device) -> Text:
+    """Iteratively masks words in a randomly selected sentence and replaces them with language model predictions.
+
+    Args:
+        text: The input text.
+        model: The masked language model used for making predictions.
+        tokenizer: The tokenizer that will be used to encode text for the model and decode the model's output.
+        top_k: The number of candidate words to replace the masked word at each iteration
+        device: The device to use for computation (e.g., "cpu", "cuda:1", torch.device("cuda")).
+
+    Returns:
+        A augmented text.
+    """
     model.to(device)
     augmented_text = _iterative_mask_fill(text, model, tokenizer, top_k, device)
-    augmented_text = re.sub(r"\s*##\b", "", augmented_text)  # ex) 나는 짬뽕 ##을 먹었다. -> 나는 짬뽕을 먹었다.
+    augmented_text = re.sub(r"\s*##\b", "", augmented_text)  # e.g., 나는 짬뽕 ##을 먹었다. -> 나는 짬뽕을 먹었다.
     return augmented_text
 
 
@@ -53,7 +65,6 @@ def _iterative_mask_fill_in_sentence(
     return words
 
 
-# TODO: 마스크 토큰이 여러 개일 때 plausible_words의 shape 확인 하기
 def _predict_mask(sentence: Sentence, model: Any, tokenizer: Any, top_k: int, device: str | torch.device) -> list[Word]:
     mask_token_id = tokenizer.mask_token_id
     input_ids = tokenizer.encode(sentence, truncation=True, return_tensors="pt")

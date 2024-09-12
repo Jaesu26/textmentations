@@ -16,6 +16,19 @@ _albert_tokenizer = _get_bert_tokenizer_fast(model_path=_ALBERT_MODEL_PATH)
 
 
 class IterativeMaskFilling(TextTransform):
+    """Iteratively masks words in a randomly selected sentence and replaces them with language model predictions.
+
+    Args:
+        top_k: The number of candidate words to replace the masked word at each iteration
+        device: The device to use for computation (e.g., "cpu", "cuda:1", torch.device("cuda")).
+        ignore_first: Whether to ignore the first sentence when applying this transform.
+            It is useful when the main idea of the text is in the first sentence.
+        p: The probability of applying this transform.
+
+    References:
+        https://arxiv.org/pdf/2401.01830
+    """
+
     _model = _albert_model
     _tokenizer = _albert_tokenizer
     _vocab_size = _tokenizer.vocab_size
@@ -42,8 +55,7 @@ class IterativeMaskFilling(TextTransform):
             raise ValueError(
                 f"top_k exceeds the tokenizer's vocabulary size. Maximum allowed: {self._vocab_size}. Got: {top_k}"
             )
-        dummy_tensor = torch.tensor([0])
-        dummy_tensor = dummy_tensor.to(device).cpu()  # Raise original error
+        torch.device(device)  # Checks if the device is valid
 
     def apply(self, text: Text, **params: Any) -> Text:
         return F.iterative_mask_fill(text, self._model, self._tokenizer, self.top_k, self.device)

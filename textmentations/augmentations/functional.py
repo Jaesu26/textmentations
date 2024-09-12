@@ -17,7 +17,7 @@ def back_translate(text: Text, from_lang: Language, to_lang: Language) -> Text:
     """Back-translates the text by translating it to the target language and then back to the original.
 
     Args:
-        text: The input text to be back-translated.
+        text: The input text.
         from_lang: The language of the input text.
         to_lang: The language to which the input text will be translated.
 
