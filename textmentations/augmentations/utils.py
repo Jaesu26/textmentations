@@ -1,22 +1,26 @@
 from __future__ import annotations
 
+import os
 import re
 from collections.abc import Callable
 from functools import wraps
+from typing import TypeVar
 
 from deep_translator import GoogleTranslator
+from transformers import AlbertForMaskedLM, BertTokenizerFast
 from typing_extensions import Concatenate, ParamSpec
 
 from ..corpora.types import Corpus, Sentence, Text, Word
 
 _translator = GoogleTranslator(source="ko", target="en")
 _P = ParamSpec("_P")
+_T = TypeVar("_T")
 
 
 def autopsy_sentence(
     func: Callable[Concatenate[list[Word], _P], list[Word]]
 ) -> Callable[Concatenate[Sentence, _P], Sentence]:
-    """A decorator follows these steps:
+    """The decorator follows these steps:
         1. Splits the input sentence into words.
         2. Applies the `func` to the words.
         3. Joins the words returned by `func` into a sentence.
@@ -54,7 +58,7 @@ def autopsy_sentence(
 def autopsy_text(
     func: Callable[Concatenate[list[Sentence], _P], list[Sentence]]
 ) -> Callable[Concatenate[Text, _P], Text]:
-    """A decorator follows these steps:
+    """The decorator follows these steps:
         1. Splits the input text into sentences.
         2. Applies the `func` to the sentences.
         3. Joins the sentences returned by `func` into a text.
@@ -201,6 +205,38 @@ def pass_empty_text(func: Callable[Concatenate[Text, _P], Text]) -> Callable[Con
     return wrapped
 
 
+def _squeeze_first(list_: list[_T]) -> _T:
+    """Returns the first and only element in the list containing exactly one element.
+
+    Args:
+        list_: The list that is expected to contain exactly one element.
+
+    Returns:
+        The single element in the list.
+
+    Raises:
+        ValueError: If the list does not contain exactly one element.
+    """
+    if len(list_) != 1:
+        raise ValueError("Input list must contain exactly one element.")
+    return list_[0]
+
+
 def get_translator() -> GoogleTranslator:
     """Returns an instance of GoogleTranslator class."""
     return _translator
+
+
+def _get_albert_mlm(model_path: str | os.PathLike) -> AlbertForMaskedLM:
+    """Gets an ALBERT model for masked language modeling."""
+    model = AlbertForMaskedLM.from_pretrained(pretrained_model_name_or_path=model_path)
+    return model
+
+
+def _get_bert_tokenizer_fast(model_path: str | os.PathLike) -> BertTokenizerFast:
+    """Gets a fast BERT tokenizer."""
+    tokenizer = BertTokenizerFast.from_pretrained(
+        pretrained_model_name_or_path=model_path,
+        clean_up_tokenization_spaces=True,
+    )
+    return tokenizer

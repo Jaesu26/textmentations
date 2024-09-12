@@ -3,7 +3,14 @@ import re
 import pytest
 from deep_translator.exceptions import LanguageNotSupportedException
 
-from textmentations import AEDA, BackTranslation, RandomDeletion, RandomDeletionSentence, RandomSwap
+from textmentations import (
+    AEDA,
+    BackTranslation,
+    IterativeMaskFilling,
+    RandomDeletion,
+    RandomDeletionSentence,
+    RandomSwap,
+)
 from textmentations.augmentations.transforms import LANGUAGES
 from textmentations.augmentations.utils import extract_first_sentence
 
@@ -166,6 +173,19 @@ def test_incorrect_proportion_value(cls, incorrect_proportion_param):
 def test_incorrect_punctuation_type(incorrect_punctuation):
     with pytest.raises(TypeError):
         AEDA(punctuation=incorrect_punctuation)
+
+
+@pytest.mark.parametrize("incorrect_top_k", [2j, 1.5, "0.0", None])
+def test_incorrect_top_k_type(incorrect_top_k):
+    expected_message = f"top_k must be a positive integer. Got: {type(incorrect_top_k)}"
+    with pytest.raises(TypeError, match=expected_message):
+        IterativeMaskFilling(top_k=incorrect_top_k)
+
+
+@pytest.mark.parametrize("incorrect_top_k", [-1, 0, 500000])
+def test_incorrect_top_k_value(incorrect_top_k):
+    with pytest.raises(ValueError):
+        IterativeMaskFilling(top_k=incorrect_top_k)
 
 
 def test_aeda_punctuations_deprecation_warning():

@@ -56,9 +56,10 @@ print(eda(text=text)["text"])
 
 ## References
 
-- [albumentations](https://github.com/albumentations-team/albumentations)
-- [AEDA: An Easier Data Augmentation Technique for Text Classification](https://arxiv.org/pdf/2108.13230.pdf)
-- [EDA: Easy Data Augmentation Techniques for Boosting Performance on
-Text Classification Tasks](https://arxiv.org/pdf/1901.11196.pdf)
+- [AEDA: An Easier Data Augmentation Technique for Text Classification](https://arxiv.org/pdf/2108.13230)
+- [EDA: Easy Data Augmentation Techniques for Boosting Performance on Text Classification Tasks](https://arxiv.org/pdf/1901.11196)
+- [Iterative Mask Filling: An Effective Text Augmentation Method Using Masked Language Modeling](https://arxiv.org/pdf/2401.01830)
 - [Korean Stopwords](https://www.ranks.nl/stopwords/korean)
 - [Korean WordNet](http://wordnet.kaist.ac.kr/)
+- [albumentations](https://github.com/albumentations-team/albumentations)
+- [kykim/albert-kor-base](https://huggingface.co/kykim/albert-kor-base)

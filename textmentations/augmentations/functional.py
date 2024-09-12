@@ -9,7 +9,7 @@ from deep_translator.exceptions import NotValidLength, RequestError, TooManyRequ
 
 from ..corpora.types import Corpus, Language, Sentence, Text, Word
 from ..corpora.utils import get_random_synonym, is_stopword
-from .utils import autopsy_sentence, autopsy_text, get_translator, pass_empty_text
+from .utils import _squeeze_first, autopsy_sentence, autopsy_text, get_translator, pass_empty_text
 
 
 @pass_empty_text
@@ -17,7 +17,7 @@ def back_translate(text: Text, from_lang: Language, to_lang: Language) -> Text:
     """Back-translates the text by translating it to the target language and then back to the original.
 
     Args:
-        text: The input text to be back-translated.
+        text: The input text.
         from_lang: The language of the input text.
         to_lang: The language to which the input text will be translated.
 
@@ -189,7 +189,7 @@ def _insert_synonyms_in_words(
         synonym = get_random_synonym(word)
         if synonym == word:
             continue
-        insertion_index = random.randint(0, num_words - 1)
+        insertion_index = random.randrange(0, num_words)
         augmented_words[insertion_index].append(synonym)
     return [*itertools.chain(*augmented_words)]  # flatten the list of lists
 
@@ -318,7 +318,7 @@ def _swap_words(sentences: list[Sentence], alpha: float | int) -> list[Sentence]
     n_times = math.ceil(text_length * alpha) if isinstance(alpha, float) else alpha
     for _ in range(n_times):
         indices = random.choices(range(num_sentences), weights=sentence_lengths, k=1)
-        index = indices[0]
+        index = _squeeze_first(indices)
         sentences[index] = _swap_two_words_in_sentence(sentences[index])
     return sentences
 

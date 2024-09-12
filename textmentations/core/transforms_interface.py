@@ -21,7 +21,7 @@ class TextTransform(BasicTransform):
 
     Args:
         ignore_first: Whether to ignore the first sentence when applying this transform.
-            It is useful when the main idea of the text is expressed in the first sentence.
+            It is useful when the main idea of the text is in the first sentence.
         always_apply: Whether to always apply this transform.
         p: The probability of applying this transform.
     """

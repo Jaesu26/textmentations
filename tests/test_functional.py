@@ -1,6 +1,8 @@
 import pytest
 
 import textmentations.augmentations.functional as F
+from textmentations.augmentations.generative.functional import iterative_mask_fill
+from textmentations.augmentations.generative.transforms import _albert_model, _albert_tokenizer
 from textmentations.augmentations.utils import split_text_into_sentences
 
 
@@ -57,6 +59,13 @@ def test_insert_punctuation(text_without_synonyms):
     augmented_text = F.insert_punctuation(text_without_synonyms, insertion_prob, punctuation)
     expected_text = "; 짜장면을 ; 맛있게 ; 먹었다. ; 짬뽕도 ; 맛있게 ; 먹었다. ; 짬짜면도 ; 먹고 ; 싶었다."
     assert augmented_text == expected_text
+
+
+def test_iterative_mask_fill(text):
+    original_sentences = split_text_into_sentences(text)
+    augmented_text = iterative_mask_fill(text, model=_albert_model, tokenizer=_albert_tokenizer, top_k=5, device="cpu")
+    augmented_sentences = split_text_into_sentences(augmented_text)
+    assert sum([original != augmented for original, augmented in zip(original_sentences, augmented_sentences)]) == 1
 
 
 @pytest.mark.parametrize(["text", "is_same"], [("text_with_synonyms", False), ("text_without_synonyms", True)])

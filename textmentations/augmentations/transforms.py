@@ -22,11 +22,11 @@ class AEDA(TextTransform):
         insertion_prob_range: The Range for probability of inserting a punctuation mark.
         punctuation: Punctuation to be inserted at random.
         ignore_first: Whether to ignore the first sentence when applying this transform.
-            It is useful when the main idea of the text is expressed in the first sentence.
+            It is useful when the main idea of the text is in the first sentence.
         p: The probability of applying this transform.
 
     References:
-        https://arxiv.org/pdf/2108.13230.pdf
+        https://arxiv.org/pdf/2108.13230
     """
 
     def __init__(
@@ -108,7 +108,7 @@ class BackTranslation(TextTransform):
         from_lang: The language of the input text.
         to_lang: The language to which the input text will be translated.
         ignore_first: Whether to ignore the first sentence when applying this transform.
-            It is useful when the main idea of the text is expressed in the first sentence.
+            It is useful when the main idea of the text is in the first sentence.
         p: The probability of applying this transform.
 
     References:
@@ -150,11 +150,11 @@ class RandomDeletion(TextTransform):
             If a `float`, it is the minimum proportion of words to retain in each sentence.
             If an `int`, it is the minimum number of words in each sentence.
         ignore_first: Whether to ignore the first sentence when applying this transform.
-            It is useful when the main idea of the text is expressed in the first sentence.
+            It is useful when the main idea of the text is in the first sentence.
         p: The probability of applying this transform.
 
     References:
-        https://arxiv.org/pdf/1901.11196.pdf
+        https://arxiv.org/pdf/1901.11196
     """
 
     def __init__(
@@ -216,7 +216,7 @@ class RandomDeletionSentence(TextTransform):
             If a `float`, it is the minimum proportion of sentences to retain in the text.
             If an `int`, it is the minimum number of sentences in the text.
         ignore_first: Whether to ignore the first sentence when applying this transform.
-            It is useful when the main idea of the text is expressed in the first sentence.
+            It is useful when the main idea of the text is in the first sentence.
         p: The probability of applying this transform.
     """
 
@@ -293,11 +293,11 @@ class RandomInsertion(TextTransform):
         insertion_prob: The probability of inserting a synonym.
         n_times: The number of times to repeat the process.
         ignore_first: Whether to ignore the first sentence when applying this transform.
-            It is useful when the main idea of the text is expressed in the first sentence.
+            It is useful when the main idea of the text is in the first sentence.
         p: The probability of applying this transform.
 
     References:
-        https://arxiv.org/pdf/1901.11196.pdf
+        https://arxiv.org/pdf/1901.11196
     """
 
     def __init__(
@@ -339,11 +339,11 @@ class RandomSwap(TextTransform):
             where `L` is the length of the text.
             If an `int`, it is the number of times to repeat the process.
         ignore_first: Whether to ignore the first sentence when applying this transform.
-            It is useful when the main idea of the text is expressed in the first sentence.
+            It is useful when the main idea of the text is in the first sentence.
         p: The probability of applying this transform.
 
     References:
-        https://arxiv.org/pdf/1901.11196.pdf
+        https://arxiv.org/pdf/1901.11196
     """
 
     def __init__(
@@ -389,7 +389,7 @@ class RandomSwapSentence(TextTransform):
     Args:
         n_times: The number of times to repeat the process.
         ignore_first: Whether to ignore the first sentence when applying this transform.
-            It is useful when the main idea of the text is expressed in the first sentence.
+            It is useful when the main idea of the text is in the first sentence.
         p: The probability of applying this transform.
     """
 
@@ -423,11 +423,11 @@ class SynonymReplacement(TextTransform):
     Args:
         replacement_prob: The probability of replacing a word with a synonym.
         ignore_first: Whether to ignore the first sentence when applying this transform.
-            It is useful when the main idea of the text is expressed in the first sentence.
+            It is useful when the main idea of the text is in the first sentence.
         p: The probability of applying this transform.
 
     References:
-        https://arxiv.org/pdf/1901.11196.pdf
+        https://arxiv.org/pdf/1901.11196
     """
 
     def __init__(
