@@ -2,10 +2,9 @@ import albumentations as A
 import pytest
 from albumentations.core.serialization import SERIALIZABLE_REGISTRY
 
+from tests.conftest import AUGMENTATIONS
+from tests.utils import set_seed
 from textmentations import Compose
-
-from .conftest import AUGMENTATIONS
-from .utils import set_seed
 
 
 def test_class_fullname(augmentation):

@@ -11,7 +11,7 @@ from textmentations import (
     RandomDeletionSentence,
     RandomSwap,
 )
-from textmentations.augmentations.transforms import LANGUAGES
+from textmentations.augmentations.generation.transforms import LANGUAGES
 from textmentations.augmentations.utils import extract_first_sentence
 
 

@@ -1,9 +1,8 @@
 __version__ = "1.2.5"
 
-from .augmentations.generative.transforms import IterativeMaskFilling
-from .augmentations.transforms import (
+from textmentations.augmentations.generation.transforms import BackTranslation, IterativeMaskFilling
+from textmentations.augmentations.modification.transforms import (
     AEDA,
-    BackTranslation,
     RandomDeletion,
     RandomDeletionSentence,
     RandomInsertion,
@@ -11,8 +10,8 @@ from .augmentations.transforms import (
     RandomSwapSentence,
     SynonymReplacement,
 )
-from .core.composition import BaseCompose, Compose, OneOf, OneOrOther, Sequential, SomeOf
-from .core.transforms_interface import TextTransform
+from textmentations.core.composition import BaseCompose, Compose, OneOf, OneOrOther, Sequential, SomeOf
+from textmentations.core.transforms_interface import TextTransform
 
 __all__ = [
     "AEDA",

@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 import os
 
-from .types import Word
+from textmentations.corpora.types import Word
 
 
 def get_stopwords() -> frozenset[Word]:

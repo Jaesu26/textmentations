@@ -4,15 +4,58 @@ from pathlib import Path
 from typing import Any
 
 import torch
+from deep_translator.constants import GOOGLE_LANGUAGES_TO_CODES
+from deep_translator.exceptions import LanguageNotSupportedException
 
-from ...core.transforms_interface import TextTransform
-from ...corpora.types import Text
-from ..utils import _get_albert_mlm, _get_bert_tokenizer_fast
-from . import functional as F
+import textmentations.augmentations.generation.functional as fg
+from textmentations.augmentations.utils import _get_albert_mlm, _get_bert_tokenizer_fast
+from textmentations.core.transforms_interface import TextTransform
+from textmentations.corpora.types import Language, Text
 
+LANGUAGES = sorted(GOOGLE_LANGUAGES_TO_CODES.values())
 _ALBERT_MODEL_PATH = Path(__file__).resolve().parent / "_models" / "kykim-albert-kor-base"
 _albert_model = _get_albert_mlm(model_path=_ALBERT_MODEL_PATH).eval()
 _albert_tokenizer = _get_bert_tokenizer_fast(model_path=_ALBERT_MODEL_PATH)
+
+
+class BackTranslation(TextTransform):
+    """Back-translates the input text by translating it to the target language and then back to the original.
+
+    Args:
+        from_lang: The language of the input text.
+        to_lang: The language to which the input text will be translated.
+        ignore_first: Whether to ignore the first sentence when applying this transform.
+            It is useful when the main idea of the text is in the first sentence.
+        p: The probability of applying this transform.
+
+    References:
+        https://arxiv.org/pdf/1808.09381
+    """
+
+    def __init__(
+        self,
+        from_lang: Language = "ko",
+        to_lang: Language = "en",
+        ignore_first: bool = False,
+        always_apply: bool | None = None,
+        p: float = 0.5,
+    ) -> None:
+        super().__init__(ignore_first=ignore_first, always_apply=always_apply, p=p)
+        self._validate_transform_init_args(from_lang=from_lang, to_lang=to_lang)
+        self.from_lang = from_lang
+        self.to_lang = to_lang
+
+    def _validate_transform_init_args(self, *, from_lang: Language, to_lang: Language) -> None:
+        if from_lang not in LANGUAGES:
+            raise LanguageNotSupportedException(f"from_lang must be one of {LANGUAGES}. Got: {from_lang}")
+        if to_lang not in LANGUAGES:
+            raise LanguageNotSupportedException(f"to_lang must be one of {LANGUAGES}. Got: {to_lang}")
+
+    def apply(self, text: Text, **params: Any) -> Text:
+        return fg.back_translate(text, self.from_lang, self.to_lang)
+
+    def get_transform_init_args_names(self) -> tuple[str, str]:
+        return ("from_lang", "to_lang")
 
 
 class IterativeMaskFilling(TextTransform):
@@ -58,7 +101,7 @@ class IterativeMaskFilling(TextTransform):
         torch.device(device)  # Checks if the device is valid
 
     def apply(self, text: Text, **params: Any) -> Text:
-        return F.iterative_mask_fill(text, self._model, self._tokenizer, self.top_k, self.device)
+        return fg.iterative_mask_fill(text, self._model, self._tokenizer, self.top_k, self.device)
 
     def get_transform_init_args_names(self) -> tuple[str, str]:
         return ("top_k", "device")

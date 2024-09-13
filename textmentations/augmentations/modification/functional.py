@@ -5,41 +5,10 @@ import math
 import random
 
 import numpy as np
-from deep_translator.exceptions import NotValidLength, RequestError, TooManyRequests, TranslationNotFound
 
-from ..corpora.types import Corpus, Language, Sentence, Text, Word
-from ..corpora.utils import get_random_synonym, is_stopword
-from .utils import _squeeze_first, autopsy_sentence, autopsy_text, get_translator, pass_empty_text
-
-
-@pass_empty_text
-def back_translate(text: Text, from_lang: Language, to_lang: Language) -> Text:
-    """Back-translates the text by translating it to the target language and then back to the original.
-
-    Args:
-        text: The input text.
-        from_lang: The language of the input text.
-        to_lang: The language to which the input text will be translated.
-
-    Returns:
-        A back-translated text.
-
-    Examples:
-        >>> text = "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."
-        >>> from_lang = "ko"
-        >>> to_lang = "en"
-        >>> back_translate(text, from_lang, to_lang)
-        "나는 짜장면을 즐겼다. 짬뽕도 맛있게 먹었습니다. 짬짜면도 먹고 싶었어요."
-    """
-    try:
-        translator = get_translator()
-        translator.source, translator.target = from_lang, to_lang
-        translated_text = translator.translate(text)
-        translator.source, translator.target = to_lang, from_lang
-        back_translated_text = translator.translate(translated_text)
-        return back_translated_text
-    except (NotValidLength, RequestError, TooManyRequests, TranslationNotFound):
-        return text
+from textmentations.augmentations.utils import _squeeze_first, autopsy_sentence, autopsy_text, pass_empty_text
+from textmentations.corpora.types import Corpus, Sentence, Text, Word
+from textmentations.corpora.utils import get_random_synonym, is_stopword
 
 
 @pass_empty_text

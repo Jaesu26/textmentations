@@ -6,14 +6,14 @@ from warnings import warn
 
 from albumentations.core.transforms_interface import BasicTransform
 
-from .. import __version__
-from ..corpora.types import Text
-from .utils import (
+from textmentations import __version__
+from textmentations.core.utils import (
     extract_first_sentence_by_key,
     get_shortest_class_fullname,
     remove_first_sentence_by_key,
     wrap_text_with_first_sentence_by_key,
 )
+from textmentations.corpora.types import Text
 
 
 class TextTransform(BasicTransform):

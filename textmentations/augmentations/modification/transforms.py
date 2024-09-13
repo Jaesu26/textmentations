@@ -4,15 +4,10 @@ import random
 from typing import Any
 from warnings import warn
 
-from deep_translator.constants import GOOGLE_LANGUAGES_TO_CODES
-from deep_translator.exceptions import LanguageNotSupportedException
-
-from ..core.transforms_interface import TextTransform
-from ..corpora.types import Language, Text
-from . import functional as F
-from .utils import split_text_into_sentences
-
-LANGUAGES = sorted(GOOGLE_LANGUAGES_TO_CODES.values())
+import textmentations.augmentations.modification.functional as fm
+from textmentations.augmentations.utils import split_text_into_sentences
+from textmentations.core.transforms_interface import TextTransform
+from textmentations.corpora.types import Text
 
 
 class AEDA(TextTransform):
@@ -92,53 +87,13 @@ class AEDA(TextTransform):
             raise TypeError(f"All punctuation elements must be strings. Got: {punctuation}")
 
     def apply(self, text: Text, insertion_prob: float, **params: Any) -> Text:
-        return F.insert_punctuation(text, insertion_prob, self.punctuation)
+        return fm.insert_punctuation(text, insertion_prob, self.punctuation)
 
     def get_params(self) -> dict[str, float]:
         return {"insertion_prob": random.uniform(self.insertion_prob_range[0], self.insertion_prob_range[1])}
 
     def get_transform_init_args_names(self) -> tuple[str, str]:
         return ("insertion_prob_range", "punctuation")
-
-
-class BackTranslation(TextTransform):
-    """Back-translates the input text by translating it to the target language and then back to the original.
-
-    Args:
-        from_lang: The language of the input text.
-        to_lang: The language to which the input text will be translated.
-        ignore_first: Whether to ignore the first sentence when applying this transform.
-            It is useful when the main idea of the text is in the first sentence.
-        p: The probability of applying this transform.
-
-    References:
-        https://arxiv.org/pdf/1808.09381
-    """
-
-    def __init__(
-        self,
-        from_lang: Language = "ko",
-        to_lang: Language = "en",
-        ignore_first: bool = False,
-        always_apply: bool | None = None,
-        p: float = 0.5,
-    ) -> None:
-        super().__init__(ignore_first=ignore_first, always_apply=always_apply, p=p)
-        self._validate_transform_init_args(from_lang=from_lang, to_lang=to_lang)
-        self.from_lang = from_lang
-        self.to_lang = to_lang
-
-    def _validate_transform_init_args(self, *, from_lang: Language, to_lang: Language) -> None:
-        if from_lang not in LANGUAGES:
-            raise LanguageNotSupportedException(f"from_lang must be one of {LANGUAGES}. Got: {from_lang}")
-        if to_lang not in LANGUAGES:
-            raise LanguageNotSupportedException(f"to_lang must be one of {LANGUAGES}. Got: {to_lang}")
-
-    def apply(self, text: Text, **params: Any) -> Text:
-        return F.back_translate(text, self.from_lang, self.to_lang)
-
-    def get_transform_init_args_names(self) -> tuple[str, str]:
-        return ("from_lang", "to_lang")
 
 
 class RandomDeletion(TextTransform):
@@ -201,7 +156,7 @@ class RandomDeletion(TextTransform):
                 )
 
     def apply(self, text: Text, **params: Any) -> Text:
-        return F.delete_words(text, self.deletion_prob, self.min_words_per_sentence)
+        return fm.delete_words(text, self.deletion_prob, self.min_words_per_sentence)
 
     def get_transform_init_args_names(self) -> tuple[str, str]:
         return ("deletion_prob", "min_words_per_sentence")
@@ -248,7 +203,7 @@ class RandomDeletionSentence(TextTransform):
                 raise ValueError(f"If min_sentences is an int, it must be non-negative. Got: {min_sentences}")
 
     def apply(self, text: Text, min_sentences: float | int, **params: Any) -> Text:
-        return F.delete_sentences(text, self.deletion_prob, min_sentences)
+        return fm.delete_sentences(text, self.deletion_prob, min_sentences)
 
     def get_params_dependent_on_data(self, params: dict[str, Any], data: dict[str, Text]) -> dict[str, float | int]:
         targets_as_params = {p: data.get(p, "") for p in self.targets_as_params}
@@ -324,7 +279,7 @@ class RandomInsertion(TextTransform):
             raise ValueError(f"n_times must be positive. Got: {n_times}")
 
     def apply(self, text: Text, **params: Any) -> Text:
-        return F.insert_synonyms(text, self.insertion_prob, self.n_times)
+        return fm.insert_synonyms(text, self.insertion_prob, self.n_times)
 
     def get_transform_init_args_names(self) -> tuple[str, str]:
         return ("insertion_prob", "n_times")
@@ -377,7 +332,7 @@ class RandomSwap(TextTransform):
                 raise ValueError(f"If alpha is an int, it must be non-negative. Got: {alpha}")
 
     def apply(self, text: Text, **params: Any) -> Text:
-        return F.swap_words(text, self.alpha)
+        return fm.swap_words(text, self.alpha)
 
     def get_transform_init_args_names(self) -> tuple[str]:
         return ("alpha",)
@@ -411,7 +366,7 @@ class RandomSwapSentence(TextTransform):
             raise ValueError(f"n_times must be positive. Got: {n_times}")
 
     def apply(self, text: Text, **params: Any) -> Text:
-        return F.swap_sentences(text, self.n_times)
+        return fm.swap_sentences(text, self.n_times)
 
     def get_transform_init_args_names(self) -> tuple[str]:
         return ("n_times",)
@@ -448,7 +403,7 @@ class SynonymReplacement(TextTransform):
             raise ValueError(f"replacement_prob must be between 0 and 1. Got: {replacement_prob}")
 
     def apply(self, text: Text, **params: Any) -> Text:
-        return F.replace_synonyms(text, self.replacement_prob)
+        return fm.replace_synonyms(text, self.replacement_prob)
 
     def get_transform_init_args_names(self) -> tuple[str]:
         return ("replacement_prob",)

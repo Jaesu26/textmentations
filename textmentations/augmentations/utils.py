@@ -10,7 +10,7 @@ from deep_translator import GoogleTranslator
 from transformers import AlbertForMaskedLM, BertTokenizerFast
 from typing_extensions import Concatenate, ParamSpec
 
-from ..corpora.types import Corpus, Sentence, Text, Word
+from textmentations.corpora.types import Corpus, Sentence, Text, Word
 
 _translator = GoogleTranslator(source="ko", target="en")
 _P = ParamSpec("_P")

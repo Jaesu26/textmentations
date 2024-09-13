@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import random
 
-from .corpora import get_stopwords, get_wordnet
-from .types import Word
+from textmentations.corpora.corpora import get_stopwords, get_wordnet
+from textmentations.corpora.types import Word
 
 _STOPWORDS = get_stopwords()
 _WORDNET = get_wordnet()

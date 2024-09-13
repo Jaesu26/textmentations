@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from typing import Any
 
-from ..augmentations.utils import extract_first_sentence, remove_first_sentence, wrap_text_with_sentences
-from ..corpora.types import Sentence, Text
+from textmentations.augmentations.utils import extract_first_sentence, remove_first_sentence, wrap_text_with_sentences
+from textmentations.corpora.types import Sentence, Text
 
 
 def extract_first_sentence_by_key(key2text: dict[str, Text]) -> dict[str, Sentence]:
