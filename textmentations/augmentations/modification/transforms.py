@@ -20,6 +20,12 @@ class AEDA(TextTransform):
             It is useful when the main idea of the text is in the first sentence.
         p: The probability of applying this transform.
 
+    Examples:
+        >>> import textmentations as T
+        >>> text = "어제 식당에 갔다. 목이 너무 말랐다. 먼저 물 한 잔을 마셨다. 그리고 탕수육을 맛있게 먹었다."
+        >>> aeda = T.AEDA(insertion_prob_range=(0.1, 0.3), punctuation=(".", "?", "!", ","), p=1.0)
+        >>> augmented_text = aeda(text=text)["text"]
+
     References:
         https://arxiv.org/pdf/2108.13230
     """
@@ -108,6 +114,12 @@ class RandomDeletion(TextTransform):
             It is useful when the main idea of the text is in the first sentence.
         p: The probability of applying this transform.
 
+    Examples:
+        >>> import textmentations as T
+        >>> text = "어제 식당에 갔다. 목이 너무 말랐다. 먼저 물 한 잔을 마셨다. 그리고 탕수육을 맛있게 먹었다."
+        >>> rd = T.RandomDeletion(deletion_prob=0.1, min_words_per_sentence=0.8, p=1.0)
+        >>> augmented_text = rd(text=text)["text"]
+
     References:
         https://arxiv.org/pdf/1901.11196
     """
@@ -173,6 +185,12 @@ class RandomDeletionSentence(TextTransform):
         ignore_first: Whether to ignore the first sentence when applying this transform.
             It is useful when the main idea of the text is in the first sentence.
         p: The probability of applying this transform.
+
+    Examples:
+        >>> import textmentations as T
+        >>> text = "어제 식당에 갔다. 목이 너무 말랐다. 먼저 물 한 잔을 마셨다. 그리고 탕수육을 맛있게 먹었다."
+        >>> rd = T.RandomDeletionSentence(deletion_prob=0.05, min_sentences=0.9, p=1.0)
+        >>> augmented_text = rd(text=text)["text"]
     """
 
     def __init__(
@@ -251,6 +269,12 @@ class RandomInsertion(TextTransform):
             It is useful when the main idea of the text is in the first sentence.
         p: The probability of applying this transform.
 
+    Examples:
+        >>> import textmentations as T
+        >>> text = "어제 식당에 갔다. 목이 너무 말랐다. 먼저 물 한 잔을 마셨다. 그리고 탕수육을 맛있게 먹었다."
+        >>> ri = T.RandomInsertion(insertion_prob=0.2, n_times=1, p=1.0)
+        >>> augmented_text = ri(text=text)["text"]
+
     References:
         https://arxiv.org/pdf/1901.11196
     """
@@ -296,6 +320,12 @@ class RandomSwap(TextTransform):
         ignore_first: Whether to ignore the first sentence when applying this transform.
             It is useful when the main idea of the text is in the first sentence.
         p: The probability of applying this transform.
+
+    Examples:
+        >>> import textmentations as T
+        >>> text = "어제 식당에 갔다. 목이 너무 말랐다. 먼저 물 한 잔을 마셨다. 그리고 탕수육을 맛있게 먹었다."
+        >>> rs = T.RandomSwap(alpha=0.1, p=1.0)
+        >>> augmented_text = rs(text=text)["text"]
 
     References:
         https://arxiv.org/pdf/1901.11196
@@ -346,6 +376,12 @@ class RandomSwapSentence(TextTransform):
         ignore_first: Whether to ignore the first sentence when applying this transform.
             It is useful when the main idea of the text is in the first sentence.
         p: The probability of applying this transform.
+
+    Examples:
+        >>> import textmentations as T
+        >>> text = "어제 식당에 갔다. 목이 너무 말랐다. 먼저 물 한 잔을 마셨다. 그리고 탕수육을 맛있게 먹었다."
+        >>> rss = T.RandomSwapSentence(n_times=1, p=1.0)
+        >>> augmented_text = rss(text=text)["text"]
     """
 
     def __init__(
@@ -380,6 +416,12 @@ class SynonymReplacement(TextTransform):
         ignore_first: Whether to ignore the first sentence when applying this transform.
             It is useful when the main idea of the text is in the first sentence.
         p: The probability of applying this transform.
+
+    Examples:
+        >>> import textmentations as T
+        >>> text = "어제 식당에 갔다. 목이 너무 말랐다. 먼저 물 한 잔을 마셨다. 그리고 탕수육을 맛있게 먹었다."
+        >>> sr = T.SynonymReplacement(replacement_prob=0.2, p=1.0)
+        >>> augmented_text = sr(text=text)["text"]
 
     References:
         https://arxiv.org/pdf/1901.11196

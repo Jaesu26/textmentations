@@ -28,6 +28,12 @@ class BackTranslation(TextTransform):
             It is useful when the main idea of the text is in the first sentence.
         p: The probability of applying this transform.
 
+    Examples:
+        >>> import textmentations as T
+        >>> text = "어제 식당에 갔다. 목이 너무 말랐다. 먼저 물 한 잔을 마셨다. 그리고 탕수육을 맛있게 먹었다."
+        >>> bt = T.BackTranslation(from_lang="ko", to_lang="en", p=1.0)
+        >>> augmented_text = bt(text=text)["text"]
+
     References:
         https://arxiv.org/pdf/1808.09381
     """
@@ -67,6 +73,12 @@ class IterativeMaskFilling(TextTransform):
         ignore_first: Whether to ignore the first sentence when applying this transform.
             It is useful when the main idea of the text is in the first sentence.
         p: The probability of applying this transform.
+
+    Examples:
+        >>> import textmentations as T
+        >>> text = "어제 식당에 갔다. 목이 너무 말랐다. 먼저 물 한 잔을 마셨다. 그리고 탕수육을 맛있게 먹었다."
+        >>> imf = T.IterativeMaskFilling(top_k=5, device="cuda:0", p=1.0)
+        >>> augmented_text = imf(text=text)["text"]
 
     References:
         https://arxiv.org/pdf/2401.01830
