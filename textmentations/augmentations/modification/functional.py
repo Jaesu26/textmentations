@@ -26,11 +26,11 @@ def delete_words(text: Text, deletion_prob: float, min_words_per_sentence: float
         A text with randomly deleted words.
 
     Examples:
+        >>> import textmentations.augmentations.modification.functional as fm
         >>> text = "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."
-        >>> deletion_prob = 0.7
-        >>> min_words_per_sentence = 1
-        >>> delete_words(text, deletion_prob, min_words_per_sentence)
-        "짜장면을. 짬뽕도. 먹고 싶었다."
+        >>> deletion_prob = 0.1
+        >>> min_words_per_sentence = 0.8
+        >>> augmented_text = fm.delete_words(text, deletion_prob, min_words_per_sentence)
     """
     return _delete_words(text, deletion_prob, min_words_per_sentence)
 
@@ -88,11 +88,11 @@ def delete_sentences(text: Text, deletion_prob: float, min_sentences: float | in
         A text with randomly deleted sentences.
 
     Examples:
+        >>> import textmentations.augmentations.modification.functional as fm
         >>> text = "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."
-        >>> deletion_prob = 0.5
-        >>> min_sentences = 1
-        >>> delete_sentences(text, deletion_prob, min_sentences)
-        "짬짜면도 먹고 싶었다."
+        >>> deletion_prob = 0.05
+        >>> min_sentences = 0.9
+        >>> augmented_text = fm.delete_sentences(text, deletion_prob, min_sentences)
     """
     return _delete_sentences(text, deletion_prob, min_sentences)
 
@@ -120,11 +120,11 @@ def insert_synonyms(text: Text, insertion_prob: float, n_times: int) -> Text:
         A text with randomly inserted synonyms.
 
     Examples:
+        >>> import textmentations.augmentations.modification.functional as fm
         >>> text = "물 한 잔만 주세요."
-        >>> insertion_prob = 0.7
-        >>> n_times = 2
-        >>> insert_synonyms(text, insertion_prob, n_times)
-        "음료 물 한 잔만 상수도 주세요."
+        >>> insertion_prob = 0.2
+        >>> n_times = 1
+        >>> augmented_text = fm.insert_synonyms(text, insertion_prob, n_times)
     """
     return _insert_synonyms(text, insertion_prob, n_times)
 
@@ -176,11 +176,11 @@ def insert_punctuation(text: Text, insertion_prob: float, punctuation: tuple[str
         A text with randomly inserted punctuation.
 
     Examples:
+        >>> import textmentations.augmentations.modification.functional as fm
         >>> text = "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."
-        >>> insertion_prob = 0.5
+        >>> insertion_prob = 0.2
         >>> punctuation = (".", ";", "?", ":", "!", ",")
-        >>> insert_punctuation(text, insertion_prob, punctuation)
-        "짜장면을 , 맛있게 먹었다. ; 짬뽕도 ? 맛있게 먹었다. ! 짬짜면도 먹고 , 싶었다."
+        >>> augmented_text = fm.insert_punctuation(text, insertion_prob, punctuation)
     """
     return _insert_punctuation(text, insertion_prob, punctuation)
 
@@ -226,10 +226,10 @@ def replace_synonyms(text: Text, replacement_prob: float) -> Text:
         A text with random words replaced by synonyms.
 
     Examples:
+        >>> import textmentations.augmentations.modification.functional as fm
         >>> text = "물 한 잔만 주세요."
-        >>> replacement_prob = 0.5
-        >>> replace_synonyms(text, replacement_prob)
-        "음료 한 잔만 주세요."
+        >>> replacement_prob = 0.2
+        >>> augmented_text = fm.replace_synonyms(text, replacement_prob)
     """
     return _replace_synonyms(text, replacement_prob)
 
@@ -269,10 +269,10 @@ def swap_words(text: Text, alpha: float | int) -> Text:
         A text with randomly shuffled words each sentence.
 
     Examples:
-        >>> text = "짜장면을 맛있게 먹었다. 짬뽕도 먹고 싶었다."
-        >>> alpha = 2
-        >>> swap_words(text, alpha)
-        "맛있게 짜장면을 먹었다. 먹고 짬뽕도 싶었다."
+        >>> import textmentations.augmentations.modification.functional as fm
+        >>> text = "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."
+        >>> alpha = 0.1
+        >>> augmented_text = fm.swap_words(text, alpha)
     """
     return _swap_words(text, alpha)
 
@@ -319,9 +319,10 @@ def swap_sentences(text: Text, n_times: int) -> Text:
         A text with randomly shuffled sentences.
 
     Examples:
+        >>> import textmentations.augmentations.modification.functional as fm
         >>> text = "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."
         >>> n_times = 1
-        >>> swap_sentences(text, n_times)
+        >>> augmented_text = fm.swap_sentences(text, n_times)
         "짜장면을 맛있게 먹었다. 짬짜면도 먹고 싶었다. 짬뽕도 맛있게 먹었다."
     """
     return _swap_sentences(text, n_times)

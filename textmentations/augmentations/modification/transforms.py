@@ -23,7 +23,7 @@ class AEDA(TextTransform):
     Examples:
         >>> import textmentations as T
         >>> text = "어제 식당에 갔다. 목이 너무 말랐다. 먼저 물 한 잔을 마셨다. 그리고 탕수육을 맛있게 먹었다."
-        >>> aeda = T.AEDA(insertion_prob_range=(0.1, 0.3), punctuation=(".", "?", "!", ","), p=1.0)
+        >>> aeda = T.AEDA(insertion_prob_range=(0.1, 0.3), punctuation=(".", ";", "?", ":", "!", ","), p=1.0)
         >>> augmented_text = aeda(text=text)["text"]
 
     References:

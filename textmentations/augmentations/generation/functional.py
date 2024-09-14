@@ -31,11 +31,11 @@ def back_translate(text: Text, from_lang: Language, to_lang: Language) -> Text:
         A back-translated text.
 
     Examples:
+        >>> import textmentations.augmentations.generation.functional as fg
         >>> text = "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."
         >>> from_lang = "ko"
         >>> to_lang = "en"
-        >>> back_translate(text, from_lang, to_lang)
-        "나는 짜장면을 즐겼다. 짬뽕도 맛있게 먹었습니다. 짬짜면도 먹고 싶었어요."
+        >>> augmented_text = fg.back_translate(text, from_lang, to_lang)
     """
     try:
         translator = get_translator()
@@ -61,6 +61,17 @@ def iterative_mask_fill(text: Text, model: Any, tokenizer: Any, top_k: int, devi
 
     Returns:
         A augmented text.
+
+    Examples:
+        >>> import textmentations.augmentations.generation.functional as fg
+        >>> from transformers import AutoModelForMaskedLM, AutoTokenizer
+        >>> text = "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."
+        >>> pretrained_model_name_or_path = "Pre-trained huggingface masked language model name or path you want to use"
+        >>> model = AutoModelForMaskedLM.from_pretrained(pretrained_model_name_or_path)
+        >>> tokenizer = AutoTokenizer.from_pretrained(pretrained_model_name_or_path)
+        >>> top_k = 5
+        >>> device = "cuda:0"
+        >>> augmented_text = fg.iterative_mask_fill(text, model, tokenizer, top_k, device)
     """
     model.to(device)
     augmented_text = _iterative_mask_fill(text, model, tokenizer, top_k, device)
