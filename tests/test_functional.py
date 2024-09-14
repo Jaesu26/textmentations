@@ -1,4 +1,7 @@
+from unittest.mock import patch
+
 import pytest
+from deep_translator.exceptions import TooManyRequests
 
 import textmentations.augmentations.generation.functional as fg
 import textmentations.augmentations.modification.functional as fm
@@ -10,6 +13,15 @@ def test_back_translate():
     text = "나는 목이 말라서 물을 마셨다."
     augmented_text = fg.back_translate(text, from_lang="ko", to_lang="en")
     assert augmented_text != text
+
+
+def test_back_translate_too_many_requests():
+    text = "나는 목이 말라서 물을 마셨다."
+    with patch("textmentations.augmentations.generation.functional.get_translator") as mock_get_translator:
+        mock_translator = mock_get_translator.return_value
+        mock_translator.translate.side_effect = TooManyRequests
+        augmented_text = fg.back_translate(text, from_lang="ko", to_lang="en")
+        assert augmented_text == text
 
 
 @pytest.mark.parametrize(
