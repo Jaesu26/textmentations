@@ -21,26 +21,26 @@ This allows textmentations to reuse the existing functionalities of albumentatio
 import textmentations as T
 
 text = "어제 식당에 갔다. 목이 너무 말랐다. 먼저 물 한 잔을 마셨다. 그리고 탕수육을 맛있게 먹었다."
-rd = T.RandomDeletion(deletion_prob=0.3, min_words_per_sentence=1)
-ri = T.RandomInsertion(insertion_prob=0.3, n_times=1)
-rs = T.RandomSwap(alpha=3)
-sr = T.SynonymReplacement(replacement_prob=0.3)
+rd = T.RandomDeletion(deletion_prob=0.1, min_words_per_sentence=0.8)
+ri = T.RandomInsertion(insertion_prob=0.2, n_times=1)
+rs = T.RandomSwap(alpha=1)
+sr = T.SynonymReplacement(replacement_prob=0.2)
 eda = T.Compose([rd, ri, rs, sr])
 
 print(rd(text=text)["text"])
-# 식당에 갔다. 목이 너무 말랐다. 먼저 물 잔을. 그리고 탕수육을 맛있게.
+# 식당에 갔다. 목이 너무 말랐다. 먼저 물 잔을 마셨다. 그리고 탕수육을 맛있게 먹었다.
 
 print(ri(text=text)["text"])
 # 어제 최근 식당에 갔다. 목이 너무 말랐다. 먼저 물 한 잔을 마셨다 음료수. 그리고 탕수육을 맛있게 먹었다.
 
 print(rs(text=text)["text"])
-# 어제 갔다 식당에. 목이 너무 말랐다. 물 먼저 한 잔을 마셨다. 그리고 먹었다 맛있게 탕수육을.
+# 어제 갔다 식당에. 목이 너무 말랐다. 물 먼저 한 잔을 마셨다. 그리고 탕수육을 맛있게 먹었다..
 
 print(sr(text=text)["text"])
 # 과거 식당에 갔다. 목이 너무 말랐다. 먼저 소주 한 잔을 마셨다. 그리고 탕수육을 맛있게 먹었다.
 
 print(eda(text=text)["text"])
-# 식당에 어제 과거. 너무 말랐다. 상수 한 잔을 마셨다 맹물. 먹었다 그리고 맛있게.
+# 식당에 어제 과거 갔다. 너무 말랐다. 먼저 상수 한 잔을 마셨다 맹물. 그리고 맛있게 먹었다.
 ```
 
 ## List of augmentations
