@@ -323,7 +323,6 @@ def swap_sentences(text: Text, n_times: int) -> Text:
         >>> text = "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."
         >>> n_times = 1
         >>> augmented_text = fm.swap_sentences(text, n_times)
-        "짜장면을 맛있게 먹었다. 짬짜면도 먹고 싶었다. 짬뽕도 맛있게 먹었다."
     """
     return _swap_sentences(text, n_times)
 
