@@ -16,7 +16,7 @@ __all__ = [
     "SomeOf",
     "TextTransform",
 ]
-__version__ = "1.2.5"
+__version__ = "1.3.0"
 
 from textmentations.augmentations.generation.transforms import BackTranslation, IterativeMaskFilling
 from textmentations.augmentations.modification.transforms import (
