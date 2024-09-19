@@ -99,7 +99,7 @@ class AEDA(TextTransform):
         return {"insertion_prob": random.uniform(self.insertion_prob_range[0], self.insertion_prob_range[1])}
 
     def get_transform_init_args_names(self) -> tuple[str, str]:
-        return ("insertion_prob_range", "punctuation")
+        return "insertion_prob_range", "punctuation"
 
 
 class RandomDeletion(TextTransform):
@@ -171,7 +171,7 @@ class RandomDeletion(TextTransform):
         return fm.delete_words(text, self.deletion_prob, self.min_words_per_sentence)
 
     def get_transform_init_args_names(self) -> tuple[str, str]:
-        return ("deletion_prob", "min_words_per_sentence")
+        return "deletion_prob", "min_words_per_sentence"
 
 
 class RandomDeletionSentence(TextTransform):
@@ -256,7 +256,7 @@ class RandomDeletionSentence(TextTransform):
         return {"min_sentences": (n * p - 1) / (n - 1)}
 
     def get_transform_init_args_names(self) -> tuple[str, str]:
-        return ("deletion_prob", "min_sentences")
+        return "deletion_prob", "min_sentences"
 
 
 class RandomInsertion(TextTransform):
@@ -306,7 +306,7 @@ class RandomInsertion(TextTransform):
         return fm.insert_synonyms(text, self.insertion_prob, self.n_times)
 
     def get_transform_init_args_names(self) -> tuple[str, str]:
-        return ("insertion_prob", "n_times")
+        return "insertion_prob", "n_times"
 
 
 class RandomSwap(TextTransform):

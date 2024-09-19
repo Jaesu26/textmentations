@@ -4,15 +4,15 @@ from pathlib import Path
 from typing import Any
 
 import torch
-from deep_translator.constants import GOOGLE_LANGUAGES_TO_CODES
-from deep_translator.exceptions import LanguageNotSupportedException
+from deep_translator.constants import GOOGLE_LANGUAGES_TO_CODES as CODE_BY_GOOGLE_LANGUAGE
+from deep_translator.exceptions import LanguageNotSupportedException as LanguageNotSupportedError
 
 import textmentations.augmentations.generation.functional as fg
 from textmentations.augmentations.utils import _get_albert_mlm, _get_bert_tokenizer_fast
 from textmentations.core.transforms_interface import TextTransform
 from textmentations.corpora.types import Language, Text
 
-LANGUAGES = sorted(GOOGLE_LANGUAGES_TO_CODES.values())
+LANGUAGES = sorted(CODE_BY_GOOGLE_LANGUAGE.values())
 _ALBERT_MODEL_PATH = Path(__file__).resolve().parent / "_models" / "kykim-albert-kor-base"
 _albert_model = _get_albert_mlm(model_path=_ALBERT_MODEL_PATH).eval()
 _albert_tokenizer = _get_bert_tokenizer_fast(model_path=_ALBERT_MODEL_PATH)
@@ -53,15 +53,15 @@ class BackTranslation(TextTransform):
 
     def _validate_transform_init_args(self, *, from_lang: Language, to_lang: Language) -> None:
         if from_lang not in LANGUAGES:
-            raise LanguageNotSupportedException(f"from_lang must be one of {LANGUAGES}. Got: {from_lang}")
+            raise LanguageNotSupportedError(f"from_lang must be one of {LANGUAGES}. Got: {from_lang}")
         if to_lang not in LANGUAGES:
-            raise LanguageNotSupportedException(f"to_lang must be one of {LANGUAGES}. Got: {to_lang}")
+            raise LanguageNotSupportedError(f"to_lang must be one of {LANGUAGES}. Got: {to_lang}")
 
     def apply(self, text: Text, **params: Any) -> Text:
         return fg.back_translate(text, self.from_lang, self.to_lang)
 
     def get_transform_init_args_names(self) -> tuple[str, str]:
-        return ("from_lang", "to_lang")
+        return "from_lang", "to_lang"
 
 
 class IterativeMaskFilling(TextTransform):
@@ -116,4 +116,4 @@ class IterativeMaskFilling(TextTransform):
         return fg.iterative_mask_fill(text, self._model, self._tokenizer, self.top_k, self.device)
 
     def get_transform_init_args_names(self) -> tuple[str, str]:
-        return ("top_k", "device")
+        return "top_k", "device"

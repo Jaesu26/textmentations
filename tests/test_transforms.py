@@ -1,7 +1,7 @@
 import re
 
 import pytest
-from deep_translator.exceptions import LanguageNotSupportedException
+from deep_translator.exceptions import LanguageNotSupportedException as LanguageNotSupportedError
 
 from textmentations import (
     AEDA,
@@ -72,7 +72,7 @@ def test_get_params_dependent_on_data_of_random_deletion_sentence(
 )
 def test_incorrect_language(incorrect_lang_param):
     expected_message = f"must be one of {LANGUAGES}."
-    with pytest.raises(LanguageNotSupportedException, match=re.escape(expected_message)):
+    with pytest.raises(LanguageNotSupportedError, match=re.escape(expected_message)):
         BackTranslation(**incorrect_lang_param)
 
 
