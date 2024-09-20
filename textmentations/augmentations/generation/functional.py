@@ -104,17 +104,21 @@ def _iterative_mask_fill_in_sentence(
 ) -> list[Word]:
     for masking_index, word in enumerate(words):
         words[masking_index] = tokenizer.mask_token
-        sentence = join_words_into_sentence(words)
-        plausible_words = _predict_mask(sentence, model, tokenizer, top_k, device)
-        if not plausible_words:
-            words[masking_index] = word
-            continue
-        plausible_word = _squeeze_first(plausible_words)
+        sentence_with_masking = join_words_into_sentence(words)
+        plausible_words = _predict_masks(sentence_with_masking, model, tokenizer, top_k, device)
+        plausible_word_iter = iter(plausible_words)
+        plausible_word = next(plausible_word_iter, word)
         words[masking_index] = plausible_word
     return words
 
 
-def _predict_mask(sentence: Sentence, model: Any, tokenizer: Any, top_k: int, device: str | torch.device) -> list[Word]:
+def _predict_masks(
+    sentence: Sentence,
+    model: Any,
+    tokenizer: Any,
+    top_k: int,
+    device: str | torch.device,
+) -> list[Word]:
     mask_token_id = tokenizer.mask_token_id
     input_ids = tokenizer.encode(sentence, truncation=True, return_tensors="pt")
     if mask_token_id not in input_ids:
@@ -131,3 +135,45 @@ def _predict_mask(sentence: Sentence, model: Any, tokenizer: Any, top_k: int, de
         token_ids_to_decode.append(token_id)
     plausible_words = [tokenizer.decode(token_id) for token_id in token_ids_to_decode]
     return plausible_words
+
+
+@pass_empty_text
+def replace_contextual_words(
+    text: Text,
+    model: Any,
+    tokenizer: Any,
+    masking_prob: float,
+    device: str | torch.device,
+) -> Text:
+    return _replace_contextual_words(text, model, tokenizer, masking_prob, device)
+
+
+@autopsy_text
+def _replace_contextual_words(
+    sentences: list[Sentence],
+    model: Any,
+    tokenizer: Any,
+    masking_prob: float,
+    device: str | torch.device,
+) -> list[Sentence]:
+    return [
+        _replace_contextual_words_in_sentence(sentence, model, tokenizer, masking_prob, device)
+        for sentence in sentences
+    ]
+
+
+@autopsy_sentence
+def _replace_contextual_words_in_sentence(
+    words: list[Word],
+    model: Any,
+    tokenizer: Any,
+    masking_prob: float,
+    device: str | torch.device,
+) -> list[Word]:
+    mask_token = tokenizer.mask_token
+    words_with_masking = [mask_token if random.random() < masking_prob else word for word in words]
+    sentence_with_masking = join_words_into_sentence(words_with_masking)
+    plausible_words = _predict_masks(sentence_with_masking, model, tokenizer, tokenizer.vocab_size, device)
+    plausible_word_iter = iter(plausible_words)
+    augmented_words = [next(plausible_word_iter, word) if word == mask_token else word for word in words_with_masking]
+    return augmented_words

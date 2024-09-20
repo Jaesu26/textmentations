@@ -64,6 +64,37 @@ class BackTranslation(TextTransform):
         return "from_lang", "to_lang"
 
 
+class ContextualReplacement(TextTransform):
+    _model = _albert_model
+    _tokenizer = _albert_tokenizer
+
+    def __init__(
+        self,
+        masking_prob: float,
+        device: str | torch.device,
+        ignore_first: bool = False,
+        always_apply: bool | None = None,
+        p: float = 0.5,
+    ) -> None:
+        super().__init__(ignore_first=ignore_first, always_apply=always_apply, p=p)
+        self._validate_transform_init_args(masking_prob=masking_prob, device=device)
+        self.masking_prob = masking_prob
+        self.device = device
+
+    def _validate_transform_init_args(self, *, masking_prob: float, device: str | torch.device) -> None:
+        if not isinstance(masking_prob, (float, int)):
+            raise TypeError(f"masking_prob must be a real number between 0 and 1. Got: {type(masking_prob)}")
+        if not (0.0 <= masking_prob <= 1.0):
+            raise ValueError(f"masking_prob must be between 0 and 1. Got: {masking_prob}")
+        torch.device(device)  # Checks if the device is valid
+
+    def apply(self, text: Text, *args: Any, **params: Any) -> Text:
+        return fg.replace_contextual_words(text, self._model, self._tokenizer, self.masking_prob, self.device)
+
+    def get_transform_init_args_names(self) -> tuple[str, str]:
+        return "masking_prob", "device"
+
+
 class IterativeMaskFilling(TextTransform):
     """Iteratively masks words in a randomly selected sentence and replaces them with language model predictions.
 
