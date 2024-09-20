@@ -58,6 +58,8 @@ print(eda(text=text)["text"])
 ## References
 
 - [AEDA: An Easier Data Augmentation Technique for Text Classification](https://arxiv.org/pdf/2108.13230)
+- [Conditional BERT Contextual Augmentation](https://arxiv.org/pdf/1812.06705)
+- [Contextual Augmentation: Data Augmentation by Words with Paradigmatic Relations](https://arxiv.org/pdf/1805.06201)
 - [EDA: Easy Data Augmentation Techniques for Boosting Performance on Text Classification Tasks](https://arxiv.org/pdf/1901.11196)
 - [Iterative Mask Filling: An Effective Text Augmentation Method Using Masked Language Modeling](https://arxiv.org/pdf/2401.01830)
 - [Korean Stopwords](https://www.ranks.nl/stopwords/korean)
