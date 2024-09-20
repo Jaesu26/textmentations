@@ -37,8 +37,8 @@ def back_translate(text: Text, from_lang: Language, to_lang: Language) -> Text:
         >>> to_lang = "en"
         >>> augmented_text = fg.back_translate(text, from_lang, to_lang)
     """
+    translator = get_translator()
     try:
-        translator = get_translator()
         translator.source, translator.target = from_lang, to_lang
         translated_text = translator.translate(text)
         translator.source, translator.target = to_lang, from_lang
