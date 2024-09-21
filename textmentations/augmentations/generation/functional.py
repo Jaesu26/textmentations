@@ -87,6 +87,7 @@ def _iterative_mask_fill(
     top_k: int,
     device: str | torch.device,
 ) -> list[Sentence]:
+    """Iteratively masks words in a randomly selected sentence and replaces them with language model predictions."""
     num_sentences = len(sentences)
     index = random.randrange(0, num_sentences)
     sentence = sentences[index]
@@ -102,6 +103,7 @@ def _iterative_mask_fill_in_sentence(
     top_k: int,
     device: str | torch.device,
 ) -> list[Word]:
+    """Iteratively masks each word in the list of words and replaces it with language model predictions."""
     for masking_index, word in enumerate(words):
         words[masking_index] = tokenizer.mask_token
         sentence_with_masking = join_words_into_sentence(words)
@@ -119,6 +121,7 @@ def _predict_masks(
     top_k: int,
     device: str | torch.device,
 ) -> list[Word]:
+    """Predicts plausible words to replace mask tokens in the sentence using the masked language model."""
     mask_token_id = tokenizer.mask_token_id
     input_ids = tokenizer.encode(sentence, truncation=True, return_tensors="pt")
     if mask_token_id not in input_ids:
@@ -168,7 +171,10 @@ def replace_contextual_words(
         >>> device = "cuda:0"
         >>> augmented_text = fg.replace_contextual_words(text, model, tokenizer, masking_prob, top_k, device)
     """
-    return _replace_contextual_words(text, model, tokenizer, masking_prob, top_k, device)
+    model.to(device)
+    augmented_text = _replace_contextual_words(text, model, tokenizer, masking_prob, top_k, device)
+    augmented_text = re.sub(r"\s*##\b", "", augmented_text)  # e.g., 나는 짬뽕 ##을 먹었다. -> 나는 짬뽕을 먹었다.
+    return augmented_text
 
 
 @autopsy_text
@@ -180,6 +186,7 @@ def _replace_contextual_words(
     top_k: int,
     device: str | torch.device,
 ) -> list[Sentence]:
+    """Randomly replaces words in each sentence with mask tokens and fills them with language model predictions."""
     return [
         _replace_contextual_words_in_sentence(sentence, model, tokenizer, masking_prob, top_k, device)
         for sentence in sentences
@@ -195,6 +202,7 @@ def _replace_contextual_words_in_sentence(
     top_k: int,
     device: str | torch.device,
 ) -> list[Word]:
+    """Randomly replaces words in the list of words with mask tokens and fills them with language model predictions."""
     mask_token = tokenizer.mask_token
     words_with_masking = [mask_token if random.random() < masking_prob else word for word in words]
     sentence_with_masking = join_words_into_sentence(words_with_masking)
