@@ -11,16 +11,20 @@ from textmentations.augmentations.utils import split_text_into_sentences
 
 def test_back_translate():
     text = "나는 목이 말라서 물을 마셨다."
-    augmented_text = fg.back_translate(text, from_lang="ko", to_lang="en")
+    from_lang = "ko"
+    to_lang = "en"
+    augmented_text = fg.back_translate(text, from_lang, to_lang)
     assert augmented_text != text
 
 
 def test_back_translate_too_many_requests():
     text = "나는 목이 말라서 물을 마셨다."
+    from_lang = "ko"
+    to_lang = "en"
     with patch("textmentations.augmentations.generation.functional.get_translator") as mock_get_translator:
         mock_translator = mock_get_translator.return_value
         mock_translator.translate.side_effect = TooManyRequests
-        augmented_text = fg.back_translate(text, from_lang="ko", to_lang="en")
+        augmented_text = fg.back_translate(text, from_lang, to_lang)
         assert augmented_text == text
 
 
@@ -58,9 +62,12 @@ def test_delete_sentences(text_without_synonyms, deletion_prob, min_sentences, e
 
 def test_insert_contextual_words():
     text = "나는 목이 말라서 물을 마셨다."
-    augmented_text = fg.insert_contextual_words(
-        text, model=_albert_model, tokenizer=_albert_tokenizer, insertion_prob=1.0, top_k=5, device="cpu"
-    )
+    model = _albert_model
+    tokenizer = _albert_tokenizer
+    insertion_prob = 1.0
+    top_k = 5
+    device = "cpu"
+    augmented_text = fg.insert_contextual_words(text, model, tokenizer, insertion_prob, top_k, device)
     assert augmented_text != text
 
 
@@ -83,18 +90,23 @@ def test_insert_punctuation(text_without_synonyms):
 
 def test_iterative_mask_fill(text):
     original_sentences = split_text_into_sentences(text)
-    augmented_text = fg.iterative_mask_fill(
-        text, model=_albert_model, tokenizer=_albert_tokenizer, top_k=5, device="cpu"
-    )
+    model = _albert_model
+    tokenizer = _albert_tokenizer
+    top_k = 5
+    device = "cpu"
+    augmented_text = fg.iterative_mask_fill(text, model, tokenizer, top_k, device)
     augmented_sentences = split_text_into_sentences(augmented_text)
     assert sum([original != augmented for original, augmented in zip(original_sentences, augmented_sentences)]) == 1
 
 
 def test_replace_contextual_words():
     text = "나는 목이 말라서 물을 마셨다."
-    augmented_text = fg.replace_contextual_words(
-        text, model=_albert_model, tokenizer=_albert_tokenizer, masking_prob=1.0, top_k=5, device="cpu"
-    )
+    model = _albert_model
+    tokenizer = _albert_tokenizer
+    masking_prob = 1.0
+    top_k = 5
+    device = "cpu"
+    augmented_text = fg.replace_contextual_words(text, model, tokenizer, masking_prob, top_k, device)
     assert augmented_text != text
 
 

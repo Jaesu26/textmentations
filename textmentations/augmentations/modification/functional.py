@@ -61,15 +61,15 @@ def _delete_strings(strings: list[Corpus], deletion_prob: float, min_strings: fl
     min_strings = math.ceil(num_strings * min_strings) if isinstance(min_strings, float) else min_strings
     if num_strings <= min_strings:
         return strings
-    retained_indices = set()
+    indices_to_retain = set()
     num_possible_deletions = num_strings - min_strings
     shuffled_indices = np.random.permutation(num_strings).tolist()
     for index in shuffled_indices:
         if random.random() < deletion_prob and num_possible_deletions > 0:
             num_possible_deletions -= 1
             continue
-        retained_indices.add(index)
-    augmented_strings = [string for index, string in enumerate(strings) if index in retained_indices]
+        indices_to_retain.add(index)
+    augmented_strings = [string for index, string in enumerate(strings) if index in indices_to_retain]
     return augmented_strings
 
 
@@ -274,17 +274,15 @@ def swap_words(text: Text, alpha: float | int) -> Text:
         >>> alpha = 0.1
         >>> augmented_text = fm.swap_words(text, alpha)
     """
-    return _swap_words(text, alpha)
+    n_times = math.ceil(len(text) * alpha) if isinstance(alpha, float) else alpha
+    return _swap_words(text, n_times)
 
 
 @autopsy_text
-def _swap_words(sentences: list[Sentence], alpha: float | int) -> list[Sentence]:
+def _swap_words(sentences: list[Sentence], n_times: int) -> list[Sentence]:
     """Repeats n times the task of randomly swapping two words in a randomly selected sentence."""
     num_sentences = len(sentences)
     sentence_lengths = [*map(len, sentences)]
-    num_punctuation = num_sentences - 1
-    text_length = sum(sentence_lengths) + num_punctuation
-    n_times = math.ceil(text_length * alpha) if isinstance(alpha, float) else alpha
     for _ in range(n_times):
         indices = random.choices(range(num_sentences), weights=sentence_lengths, k=1)
         index = _squeeze_first(indices)
