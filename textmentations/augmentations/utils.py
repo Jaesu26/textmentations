@@ -12,6 +12,8 @@ from typing_extensions import Concatenate, ParamSpec
 
 from textmentations.corpora.types import Corpus, Sentence, Text, Word
 
+EMPTY_STRING = ""
+SPACE = " "
 _translator = GoogleTranslator(source="ko", target="en")
 _P = ParamSpec("_P")
 _T = TypeVar("_T")
@@ -124,7 +126,7 @@ def remove_empty_strings(strings: list[Corpus]) -> list[Corpus]:
 
 def join_words_into_sentence(words: list[Word]) -> Sentence:
     """Joins words into a sentence."""
-    sentence = " ".join(words)
+    sentence = SPACE.join(words)
     return sentence
 
 
@@ -148,7 +150,7 @@ def extract_nth_sentence(text: Text, n: int) -> Sentence:
         nth_sentence = sentences[n]
         return nth_sentence
     except IndexError:
-        return ""
+        return EMPTY_STRING
 
 
 def remove_first_sentence(text: Text) -> Text:
@@ -180,9 +182,9 @@ def wrap_text_with_sentences(
     Returns:
         A wrapped text.
     """
-    prefix_text = join_sentences_into_text(prefix_sentences) if prefix_sentences else ""
-    suffix_text = join_sentences_into_text(suffix_sentences) if suffix_sentences else ""
-    wrapped_text = " ".join([prefix_text, text, suffix_text]).strip()
+    prefix_text = join_sentences_into_text(prefix_sentences) if prefix_sentences else EMPTY_STRING
+    suffix_text = join_sentences_into_text(suffix_sentences) if suffix_sentences else EMPTY_STRING
+    wrapped_text = SPACE.join([prefix_text, text, suffix_text]).strip()
     return wrapped_text
 
 

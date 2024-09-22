@@ -6,6 +6,8 @@ from deep_translator.exceptions import LanguageNotSupportedException as Language
 from textmentations import (
     AEDA,
     BackTranslation,
+    ContextualInsertion,
+    ContextualReplacement,
     IterativeMaskFilling,
     RandomDeletion,
     RandomDeletionSentence,
@@ -175,17 +177,19 @@ def test_incorrect_punctuation_type(incorrect_punctuation):
         AEDA(punctuation=incorrect_punctuation)
 
 
+@pytest.mark.parametrize("cls", [ContextualInsertion, ContextualReplacement, IterativeMaskFilling])
 @pytest.mark.parametrize("incorrect_top_k", [2j, 1.5, "0.0", None])
-def test_incorrect_top_k_type(incorrect_top_k):
+def test_incorrect_top_k_type(cls, incorrect_top_k):
     expected_message = f"top_k must be a positive integer. Got: {type(incorrect_top_k)}"
     with pytest.raises(TypeError, match=expected_message):
-        IterativeMaskFilling(top_k=incorrect_top_k)
+        cls(top_k=incorrect_top_k)
 
 
-@pytest.mark.parametrize("incorrect_top_k", [-1, 0, 500000])
-def test_incorrect_top_k_value(incorrect_top_k):
+@pytest.mark.parametrize("cls", [ContextualInsertion, ContextualReplacement, IterativeMaskFilling])
+@pytest.mark.parametrize("incorrect_top_k", [-1, 0, 50000])
+def test_incorrect_top_k_value(cls, incorrect_top_k):
     with pytest.raises(ValueError):
-        IterativeMaskFilling(top_k=incorrect_top_k)
+        cls(top_k=incorrect_top_k)
 
 
 def test_aeda_punctuations_deprecation_warning():

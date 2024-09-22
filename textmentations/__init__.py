@@ -1,6 +1,8 @@
 __all__ = [
     "AEDA",
     "BackTranslation",
+    "ContextualInsertion",
+    "ContextualReplacement",
     "IterativeMaskFilling",
     "RandomDeletion",
     "RandomDeletionSentence",
@@ -18,7 +20,12 @@ __all__ = [
 ]
 __version__ = "1.3.0"
 
-from textmentations.augmentations.generation.transforms import BackTranslation, IterativeMaskFilling
+from textmentations.augmentations.generation.transforms import (
+    BackTranslation,
+    ContextualInsertion,
+    ContextualReplacement,
+    IterativeMaskFilling,
+)
 from textmentations.augmentations.modification.transforms import (
     AEDA,
     RandomDeletion,

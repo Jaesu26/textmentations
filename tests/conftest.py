@@ -5,6 +5,8 @@ import textmentations as T
 AUGMENTATIONS = [
     T.AEDA,
     T.BackTranslation,
+    T.ContextualInsertion,
+    T.ContextualReplacement,
     T.IterativeMaskFilling,
     T.RandomDeletion,
     T.RandomDeletionSentence,
@@ -18,6 +20,8 @@ AUGMENTATIONS_WITH_N_TIMES = [
     T.RandomSwapSentence,
 ]
 AUGMENTATIONS_WITH_PROBABILITY = [
+    T.ContextualInsertion,
+    T.ContextualReplacement,
     T.RandomDeletion,
     T.RandomDeletionSentence,
     T.RandomInsertion,
