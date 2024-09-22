@@ -56,6 +56,14 @@ def test_delete_sentences(text_without_synonyms, deletion_prob, min_sentences, e
     assert augmented_text == expected_text
 
 
+def test_insert_contextual_words():
+    text = "나는 목이 말라서 물을 마셨다."
+    augmented_text = fg.insert_contextual_words(
+        text, model=_albert_model, tokenizer=_albert_tokenizer, insertion_prob=1.0, top_k=5, device="cpu"
+    )
+    assert augmented_text != text
+
+
 @pytest.mark.parametrize(["text", "is_same"], [("text_with_synonyms", False), ("text_without_synonyms", True)])
 def test_insert_synonyms(text, is_same, request):
     text = request.getfixturevalue(text)
@@ -87,7 +95,7 @@ def test_replace_contextual_words():
     augmented_text = fg.replace_contextual_words(
         text, model=_albert_model, tokenizer=_albert_tokenizer, masking_prob=1.0, top_k=5, device="cpu"
     )
-    assert augmented_text == text
+    assert augmented_text != text
 
 
 @pytest.mark.parametrize(["text", "is_same"], [("text_with_synonyms", False), ("text_without_synonyms", True)])

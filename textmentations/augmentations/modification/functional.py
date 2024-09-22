@@ -6,7 +6,7 @@ import random
 
 import numpy as np
 
-from textmentations.augmentations.utils import _squeeze_first, autopsy_sentence, autopsy_text, pass_empty_text
+from textmentations.augmentations.utils import SPACE, _squeeze_first, autopsy_sentence, autopsy_text, pass_empty_text
 from textmentations.corpora.types import Corpus, Sentence, Text, Word
 from textmentations.corpora.utils import get_random_synonym, is_stopword
 
@@ -209,7 +209,7 @@ def _insert_punctuation_mark_into_word(word: Word, insertion_prob: float, punctu
     """Randomly inserts a punctuation mark at the beginning of a word."""
     if random.random() < insertion_prob:
         punctuation_mark = random.choice(punctuation)
-        word_with_punctuation_mark = " ".join([punctuation_mark, word])
+        word_with_punctuation_mark = SPACE.join([punctuation_mark, word])
         return word_with_punctuation_mark
     return word
 

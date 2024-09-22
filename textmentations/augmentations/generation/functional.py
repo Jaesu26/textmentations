@@ -8,6 +8,8 @@ import torch
 from deep_translator.exceptions import NotValidLength, RequestError, TooManyRequests, TranslationNotFound
 
 from textmentations.augmentations.utils import (
+    EMPTY_STRING,
+    SPACE,
     _squeeze_first,
     autopsy_sentence,
     autopsy_text,
@@ -142,93 +144,6 @@ def _predict_masks(
 
 
 @pass_empty_text
-def replace_contextual_words(
-    text: Text,
-    model: Any,
-    tokenizer: Any,
-    masking_prob: float,
-    top_k: int,
-    device: str | torch.device,
-) -> Text:
-    """Randomly replaces words in the text with mask tokens and fills them with language model predictions.
-
-    Args:
-        text: The input text.
-        model: The masked language model used for making predictions.
-        tokenizer: The tokenizer that will be used to encode text for the model and decode the model's output.
-        masking_prob: The probability of masking a word.
-        top_k: The number of candidate words to replace the masked word at each iteration
-        device: The device to use for computation (e.g., "cpu", "cuda:1", torch.device("cuda")).
-
-    Examples:
-        >>> import textmentations.augmentations.generation.functional as fg
-        >>> from transformers import AutoModelForMaskedLM, AutoTokenizer
-        >>> text = "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."
-        >>> pretrained_model_name_or_path = "Pre-trained huggingface masked language model name or path you want to use"
-        >>> model = AutoModelForMaskedLM.from_pretrained(pretrained_model_name_or_path)
-        >>> tokenizer = AutoTokenizer.from_pretrained(pretrained_model_name_or_path)
-        >>> masking_prob = 0.15
-        >>> top_k = 5
-        >>> device = "cuda:0"
-        >>> augmented_text = fg.replace_contextual_words(text, model, tokenizer, masking_prob, top_k, device)
-    """
-    model.to(device)
-    augmented_text = _replace_contextual_words(text, model, tokenizer, masking_prob, top_k, device)
-    augmented_text = re.sub(r"\s*##\b", "", augmented_text)  # e.g., 나는 짬뽕 ##을 먹었다. -> 나는 짬뽕을 먹었다.
-    return augmented_text
-
-
-@autopsy_text
-def _replace_contextual_words(
-    sentences: list[Sentence],
-    model: Any,
-    tokenizer: Any,
-    masking_prob: float,
-    top_k: int,
-    device: str | torch.device,
-) -> list[Sentence]:
-    """Randomly replaces words in each sentence with mask tokens and fills them with language model predictions."""
-    return [
-        _replace_contextual_words_in_sentence(sentence, model, tokenizer, masking_prob, top_k, device)
-        for sentence in sentences
-    ]
-
-
-@autopsy_sentence
-def _replace_contextual_words_in_sentence(
-    words: list[Word],
-    model: Any,
-    tokenizer: Any,
-    masking_prob: float,
-    top_k: int,
-    device: str | torch.device,
-) -> list[Word]:
-    """Randomly replaces words in the list of words with mask tokens and fills them with language model predictions."""
-    mask_token = tokenizer.mask_token
-    masked_words = []
-    words_with_masking = []
-    for word in words:
-        if random.random() < masking_prob:
-            masked_words.append(word)
-            words_with_masking.append(mask_token)
-            continue
-        words_with_masking.append(word)
-    sentence_with_masking = join_words_into_sentence(words_with_masking)
-    plausible_words = _predict_masks(sentence_with_masking, model, tokenizer, top_k, device)
-    plausible_word_iter = iter(plausible_words)
-    masked_words_iter = iter(masked_words)
-    augmented_words = []
-    for word in words_with_masking:
-        if word != mask_token:
-            augmented_words.append(word)
-            continue
-        unmasked_word = next(masked_words_iter)
-        plausible_word = next(plausible_word_iter, unmasked_word)
-        augmented_words.append(plausible_word)
-    return augmented_words
-
-
-@pass_empty_text
 def insert_contextual_words(
     text: Text,
     model: Any,
@@ -292,14 +207,85 @@ def _insert_contextual_words_in_sentence(
 ) -> list[Word]:
     """Randomly inserts mask tokens in the list of words and fills them with language model predictions."""
     mask_token = tokenizer.mask_token
-    words_with_masking = []
-    for word in words:
-        if random.random() < insertion_prob:
-            words_with_masking.append(mask_token)
-        words_with_masking.append(word)
+    words_with_masking = [SPACE.join([mask_token, w]) if random.random() < insertion_prob else w for w in words]
     sentence_with_masking = join_words_into_sentence(words_with_masking)
     plausible_words = _predict_masks(sentence_with_masking, model, tokenizer, top_k, device)
     plausible_word_iter = iter(plausible_words)
-    augmented_words = [next(plausible_word_iter, "") if word == mask_token else word for word in words_with_masking]
+    augmented_words = [next(plausible_word_iter, EMPTY_STRING) if w == mask_token else w for w in words_with_masking]
     augmented_words = remove_empty_strings(augmented_words)
+    return augmented_words
+
+
+@pass_empty_text
+def replace_contextual_words(
+    text: Text,
+    model: Any,
+    tokenizer: Any,
+    masking_prob: float,
+    top_k: int,
+    device: str | torch.device,
+) -> Text:
+    """Randomly replaces words in the text with mask tokens and fills them with language model predictions.
+
+    Args:
+        text: The input text.
+        model: The masked language model used for making predictions.
+        tokenizer: The tokenizer that will be used to encode text for the model and decode the model's output.
+        masking_prob: The probability of masking a word.
+        top_k: The number of candidate words to replace the masked word at each iteration
+        device: The device to use for computation (e.g., "cpu", "cuda:1", torch.device("cuda")).
+
+    Examples:
+        >>> import textmentations.augmentations.generation.functional as fg
+        >>> from transformers import AutoModelForMaskedLM, AutoTokenizer
+        >>> text = "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."
+        >>> pretrained_model_name_or_path = "Pre-trained huggingface masked language model name or path you want to use"
+        >>> model = AutoModelForMaskedLM.from_pretrained(pretrained_model_name_or_path)
+        >>> tokenizer = AutoTokenizer.from_pretrained(pretrained_model_name_or_path)
+        >>> masking_prob = 0.15
+        >>> top_k = 5
+        >>> device = "cuda:0"
+        >>> augmented_text = fg.replace_contextual_words(text, model, tokenizer, masking_prob, top_k, device)
+    """
+    model.to(device)
+    augmented_text = _replace_contextual_words(text, model, tokenizer, masking_prob, top_k, device)
+    augmented_text = re.sub(r"\s*##\b", "", augmented_text)  # e.g., 나는 짬뽕 ##을 먹었다. -> 나는 짬뽕을 먹었다.
+    return augmented_text
+
+
+@autopsy_text
+def _replace_contextual_words(
+    sentences: list[Sentence],
+    model: Any,
+    tokenizer: Any,
+    masking_prob: float,
+    top_k: int,
+    device: str | torch.device,
+) -> list[Sentence]:
+    """Randomly replaces words in each sentence with mask tokens and fills them with language model predictions."""
+    return [
+        _replace_contextual_words_in_sentence(sentence, model, tokenizer, masking_prob, top_k, device)
+        for sentence in sentences
+    ]
+
+
+@autopsy_sentence
+def _replace_contextual_words_in_sentence(
+    words: list[Word],
+    model: Any,
+    tokenizer: Any,
+    masking_prob: float,
+    top_k: int,
+    device: str | torch.device,
+) -> list[Word]:
+    """Randomly replaces words in the list of words with mask tokens and fills them with language model predictions."""
+    mask_token = tokenizer.mask_token
+    words_with_masking = [mask_token if random.random() < masking_prob else word for word in words]
+    sentence_with_masking = join_words_into_sentence(words_with_masking)
+    plausible_words = _predict_masks(sentence_with_masking, model, tokenizer, top_k, device)
+    plausible_word_iter = iter(plausible_words)
+    augmented_words = [
+        next(plausible_word_iter, words[index]) if word == mask_token else word
+        for index, word in enumerate(words_with_masking)
+    ]
     return augmented_words
