@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import random
-import re
 from typing import Any
 
 import torch
@@ -17,6 +16,7 @@ from textmentations.augmentations.utils import (
     join_words_into_sentence,
     pass_empty_text,
     remove_empty_strings,
+    with_cleared_double_hash_tokens,
 )
 from textmentations.corpora.types import Language, Sentence, Text, Word
 
@@ -52,6 +52,7 @@ def back_translate(text: Text, from_lang: Language, to_lang: Language) -> Text:
 
 
 @pass_empty_text
+@with_cleared_double_hash_tokens
 def iterative_mask_fill(text: Text, model: Any, tokenizer: Any, top_k: int, device: str | torch.device) -> Text:
     """Iteratively masks words in a randomly selected sentence and replaces them with language model predictions.
 
@@ -77,9 +78,7 @@ def iterative_mask_fill(text: Text, model: Any, tokenizer: Any, top_k: int, devi
         >>> augmented_text = fg.iterative_mask_fill(text, model, tokenizer, top_k, device)
     """
     model.to(device)
-    augmented_text = _iterative_mask_fill(text, model, tokenizer, top_k, device)
-    augmented_text = re.sub(r"\s*##\b", "", augmented_text)  # e.g., 나는 짬뽕 ##을 먹었다. -> 나는 짬뽕을 먹었다.
-    return augmented_text
+    return _iterative_mask_fill(text, model, tokenizer, top_k, device)
 
 
 @autopsy_text
@@ -91,10 +90,8 @@ def _iterative_mask_fill(
     device: str | torch.device,
 ) -> list[Sentence]:
     """Iteratively masks words in a randomly selected sentence and replaces them with language model predictions."""
-    num_sentences = len(sentences)
-    index = random.randrange(0, num_sentences)
-    sentence = sentences[index]
-    sentences[index] = _iterative_mask_fill_in_sentence(sentence, model, tokenizer, top_k, device)
+    index = random.randrange(0, len(sentences))
+    sentences[index] = _iterative_mask_fill_in_sentence(sentences[index], model, tokenizer, top_k, device)
     return sentences
 
 
@@ -144,6 +141,7 @@ def _predict_masks(
 
 
 @pass_empty_text
+@with_cleared_double_hash_tokens
 def insert_contextual_words(
     text: Text,
     model: Any,
@@ -175,9 +173,7 @@ def insert_contextual_words(
         >>> augmented_text = fg.insert_contextual_words(text, model, tokenizer, insertion_prob, top_k, device)
     """
     model.to(device)
-    augmented_text = _insert_contextual_words(text, model, tokenizer, insertion_prob, top_k, device)
-    augmented_text = re.sub(r"\s*##\b", "", augmented_text)  # e.g., 나는 짬뽕 ##을 먹었다. -> 나는 짬뽕을 먹었다.
-    return augmented_text
+    return _insert_contextual_words(text, model, tokenizer, insertion_prob, top_k, device)
 
 
 @autopsy_text
@@ -217,6 +213,7 @@ def _insert_contextual_words_in_sentence(
 
 
 @pass_empty_text
+@with_cleared_double_hash_tokens
 def replace_contextual_words(
     text: Text,
     model: Any,
@@ -248,9 +245,7 @@ def replace_contextual_words(
         >>> augmented_text = fg.replace_contextual_words(text, model, tokenizer, masking_prob, top_k, device)
     """
     model.to(device)
-    augmented_text = _replace_contextual_words(text, model, tokenizer, masking_prob, top_k, device)
-    augmented_text = re.sub(r"\s*##\b", "", augmented_text)  # e.g., 나는 짬뽕 ##을 먹었다. -> 나는 짬뽕을 먹었다.
-    return augmented_text
+    return _replace_contextual_words(text, model, tokenizer, masking_prob, top_k, device)
 
 
 @autopsy_text

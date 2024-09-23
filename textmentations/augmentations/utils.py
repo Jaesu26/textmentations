@@ -147,8 +147,7 @@ def extract_nth_sentence(text: Text, n: int) -> Sentence:
     """Extracts the nth sentence from the text."""
     sentences = split_text_into_sentences(text)
     try:
-        nth_sentence = sentences[n]
-        return nth_sentence
+        return sentences[n]
     except IndexError:
         return EMPTY_STRING
 
@@ -163,8 +162,7 @@ def remove_nth_sentence(text: Text, n: int) -> Text:
     sentences = split_text_into_sentences(text)
     try:
         del sentences[n]
-        text_without_nth_sentence = join_sentences_into_text(sentences)
-        return text_without_nth_sentence
+        return join_sentences_into_text(sentences)
     except IndexError:
         return text
 
@@ -186,6 +184,40 @@ def wrap_text_with_sentences(
     suffix_text = join_sentences_into_text(suffix_sentences) if suffix_sentences else EMPTY_STRING
     wrapped_text = SPACE.join([prefix_text, text, suffix_text]).strip()
     return wrapped_text
+
+
+def with_cleared_double_hash_tokens(func: Callable[_P, Text]) -> Callable[_P, Text]:
+    """Decorator that clears all double-hash ("##") subword tokens from the text returned by the decorated function.
+
+    Args:
+        func: The function to be decorated.
+
+    Returns:
+        A wrapper function.
+
+    Examples:
+        >>> @with_cleared_double_hash_tokens
+        ... def create_example() -> Text:
+        ...     return "나는 짬뽕 ##을 먹었다."
+        ...
+        >>> create_example()
+        '나는 짬뽕을 먹었다.'
+    """
+
+    @wraps(func)
+    def wrapped(*args: _P.args, **kwargs: _P.kwargs) -> Text:
+        text = func(*args, **kwargs)
+        cleared_text = clear_double_hash_tokens(text)
+        return cleared_text
+
+    return wrapped
+
+
+def clear_double_hash_tokens(text: Text) -> Text:
+    """Clears all double-hash ("##") subword tokens from the text."""
+    double_hash_token_pattern = r"\s*##\b"
+    cleared_text = re.sub(double_hash_token_pattern, EMPTY_STRING, text)
+    return cleared_text
 
 
 def pass_empty_text(func: Callable[Concatenate[Text, _P], Text]) -> Callable[Concatenate[Text, _P], Text]:
