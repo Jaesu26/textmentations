@@ -5,6 +5,7 @@ from deep_translator.exceptions import TooManyRequests
 
 import textmentations.augmentations.generation.functional as fg
 import textmentations.augmentations.modification.functional as fm
+from tests.utils import contains_mask_token
 from textmentations.augmentations.generation.transforms import _albert_model, _albert_tokenizer
 from textmentations.augmentations.utils import split_text_into_sentences
 
@@ -69,6 +70,7 @@ def test_insert_contextual_words():
     device = "cpu"
     augmented_text = fg.insert_contextual_words(text, model, tokenizer, insertion_prob, top_k, device)
     assert augmented_text != text
+    assert not contains_mask_token(augmented_text)
 
 
 @pytest.mark.parametrize(["text", "is_same"], [("text_with_synonyms", False), ("text_without_synonyms", True)])
@@ -97,6 +99,7 @@ def test_iterative_mask_fill(text):
     augmented_text = fg.iterative_mask_fill(text, model, tokenizer, top_k, device)
     augmented_sentences = split_text_into_sentences(augmented_text)
     assert sum([original != augmented for original, augmented in zip(original_sentences, augmented_sentences)]) == 1
+    assert not contains_mask_token(augmented_text)
 
 
 def test_replace_contextual_words():
@@ -108,6 +111,7 @@ def test_replace_contextual_words():
     device = "cpu"
     augmented_text = fg.replace_contextual_words(text, model, tokenizer, masking_prob, top_k, device)
     assert augmented_text != text
+    assert not contains_mask_token(augmented_text)
 
 
 @pytest.mark.parametrize(["text", "is_same"], [("text_with_synonyms", False), ("text_without_synonyms", True)])

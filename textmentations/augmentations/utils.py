@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import itertools
 import os
 import re
 from collections.abc import Callable
@@ -136,6 +137,11 @@ def join_sentences_into_text(sentences: list[Sentence]) -> Text:
     if text:
         text += "."
     return text
+
+
+def flatten(list_of_lists: list[list[_T]]) -> list[_T]:
+    """Flattens the list of lists."""
+    return [*itertools.chain.from_iterable(list_of_lists)]
 
 
 def extract_first_sentence(text: Text) -> Sentence:

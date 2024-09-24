@@ -1,12 +1,18 @@
 from __future__ import annotations
 
-import itertools
 import math
 import random
 
 import numpy as np
 
-from textmentations.augmentations.utils import SPACE, _squeeze_first, autopsy_sentence, autopsy_text, pass_empty_text
+from textmentations.augmentations.utils import (
+    SPACE,
+    _squeeze_first,
+    autopsy_sentence,
+    autopsy_text,
+    flatten,
+    pass_empty_text,
+)
 from textmentations.corpora.types import Corpus, Sentence, Text, Word
 from textmentations.corpora.utils import get_random_synonym, is_stopword
 
@@ -160,7 +166,7 @@ def _insert_synonyms_in_words(
             continue
         insertion_index = random.randrange(0, num_words)
         augmented_words[insertion_index].append(synonym)
-    return [*itertools.chain(*augmented_words)]  # flatten the list of lists
+    return flatten(augmented_words)
 
 
 @pass_empty_text
