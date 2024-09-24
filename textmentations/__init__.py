@@ -18,7 +18,7 @@ __all__ = [
     "SomeOf",
     "TextTransform",
 ]
-__version__ = "1.3.0"
+__version__ = "1.3.1"
 
 from textmentations.augmentations.generation.transforms import (
     BackTranslation,
