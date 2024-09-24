@@ -22,7 +22,7 @@ _T = TypeVar("_T")
 def autopsy_sentence(
     func: Callable[Concatenate[list[Word], _P], list[Word]]
 ) -> Callable[Concatenate[Sentence, _P], Sentence]:
-    """The decorator follows these steps:
+    """Decorator that follows these steps:
         1. Splits the input sentence into words.
         2. Applies the `func` to the words.
         3. Joins the words returned by `func` into a sentence.
@@ -60,7 +60,7 @@ def autopsy_sentence(
 def autopsy_text(
     func: Callable[Concatenate[list[Sentence], _P], list[Sentence]]
 ) -> Callable[Concatenate[Text, _P], Text]:
-    """The decorator follows these steps:
+    """Decorator that follows these steps:
         1. Splits the input text into sentences.
         2. Applies the `func` to the sentences.
         3. Joins the sentences returned by `func` into a text.
@@ -162,9 +162,10 @@ def remove_nth_sentence(text: Text, n: int) -> Text:
     sentences = split_text_into_sentences(text)
     try:
         del sentences[n]
-        return join_sentences_into_text(sentences)
     except IndexError:
         return text
+    else:
+        return join_sentences_into_text(sentences)
 
 
 def wrap_text_with_sentences(

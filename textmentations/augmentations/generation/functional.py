@@ -77,7 +77,6 @@ def iterative_mask_fill(text: Text, model: Any, tokenizer: Any, top_k: int, devi
         >>> device = "cuda:0"
         >>> augmented_text = fg.iterative_mask_fill(text, model, tokenizer, top_k, device)
     """
-    model.to(device)
     return _iterative_mask_fill(text, model, tokenizer, top_k, device)
 
 
@@ -126,6 +125,7 @@ def _predict_masks(
     input_ids = tokenizer.encode(sentence, truncation=True, return_tensors="pt")
     if mask_token_id not in input_ids:
         return []
+    model.to(device)
     input_ids = input_ids.to(device)
     with torch.no_grad():
         mlm_output = model(input_ids)
@@ -172,7 +172,6 @@ def insert_contextual_words(
         >>> device = "cuda:0"
         >>> augmented_text = fg.insert_contextual_words(text, model, tokenizer, insertion_prob, top_k, device)
     """
-    model.to(device)
     return _insert_contextual_words(text, model, tokenizer, insertion_prob, top_k, device)
 
 
@@ -244,7 +243,6 @@ def replace_contextual_words(
         >>> device = "cuda:0"
         >>> augmented_text = fg.replace_contextual_words(text, model, tokenizer, masking_prob, top_k, device)
     """
-    model.to(device)
     return _replace_contextual_words(text, model, tokenizer, masking_prob, top_k, device)
 
 

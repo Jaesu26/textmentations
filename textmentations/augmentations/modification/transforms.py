@@ -96,7 +96,7 @@ class AEDA(TextTransform):
         return fm.insert_punctuation(text, insertion_prob, self.punctuation)
 
     def get_params(self) -> dict[str, float]:
-        return {"insertion_prob": random.uniform(self.insertion_prob_range[0], self.insertion_prob_range[1])}
+        return {"insertion_prob": random.uniform(*self.insertion_prob_range)}
 
     def get_transform_init_args_names(self) -> tuple[str, str]:
         return "insertion_prob_range", "punctuation"
