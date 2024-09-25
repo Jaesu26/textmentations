@@ -28,14 +28,14 @@ def test_albumentations_compatibility(text):
 def test_empty_input_text(augmentation, ignore_first):
     text = ""
     augment = augmentation(ignore_first=ignore_first, p=1.0)
-    data = augment(text=text)
-    assert data["text"] == ""
+    augmented_data = augment(text=text)
+    assert augmented_data["text"] == ""
 
 
 def test_ignore_first(text, augmentation):
     augment = augmentation(ignore_first=True, p=1.0)
-    data = augment(text=text)
-    assert extract_first_sentence(data["text"]) == extract_first_sentence(text)
+    augmented_data = augment(text=text)
+    assert extract_first_sentence(augmented_data["text"]) == extract_first_sentence(text)
 
 
 @pytest.mark.parametrize(

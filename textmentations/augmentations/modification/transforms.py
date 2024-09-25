@@ -5,7 +5,7 @@ from typing import Any
 from warnings import warn
 
 import textmentations.augmentations.modification.functional as fm
-from textmentations.augmentations.utils import split_text_into_sentences
+from textmentations.augmentations.utils import EMPTY_STRING, split_text_into_sentences
 from textmentations.core.transforms_interface import TextTransform
 from textmentations.corpora.types import Text
 
@@ -89,7 +89,7 @@ class AEDA(TextTransform):
             raise ValueError(f"All insertion_prob_range elements must be between 0 and 1. Got: {insertion_prob_range}")
         if not isinstance(punctuation, tuple):
             raise TypeError(f"punctuation must be a tuple and all elements must be strings. Got: {type(punctuation)}")
-        if not (punctuation and all(isinstance(punc, str) for punc in punctuation)):
+        if not (punctuation and all(isinstance(punctuation_mark, str) for punctuation_mark in punctuation)):
             raise TypeError(f"All punctuation elements must be strings. Got: {punctuation}")
 
     def apply(self, text: Text, insertion_prob: float, **params: Any) -> Text:
@@ -224,7 +224,7 @@ class RandomDeletionSentence(TextTransform):
         return fm.delete_sentences(text, self.deletion_prob, min_sentences)
 
     def get_params_dependent_on_data(self, params: dict[str, Any], data: dict[str, Text]) -> dict[str, float | int]:
-        targets_as_params = {p: data.get(p, "") for p in self.targets_as_params}
+        targets_as_params = {p: data.get(p, EMPTY_STRING) for p in self.targets_as_params}
         return self.get_params_dependent_on_targets(params=targets_as_params)
 
     @property

@@ -40,8 +40,9 @@ def test_back_translate_too_many_requests():
         (True, 3, "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."),
     ],
 )
-def test_delete_words(text_without_synonyms, deletion_prob, min_words_per_sentence, expected_text):
-    augmented_text = fm.delete_words(text_without_synonyms, deletion_prob, min_words_per_sentence)
+def test_delete_words(deletion_prob, min_words_per_sentence, expected_text):
+    text = "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."
+    augmented_text = fm.delete_words(text, deletion_prob, min_words_per_sentence)
     assert augmented_text == expected_text
 
 
@@ -56,8 +57,9 @@ def test_delete_words(text_without_synonyms, deletion_prob, min_words_per_senten
         (True, 3, "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."),
     ],
 )
-def test_delete_sentences(text_without_synonyms, deletion_prob, min_sentences, expected_text):
-    augmented_text = fm.delete_sentences(text_without_synonyms, deletion_prob, min_sentences)
+def test_delete_sentences(deletion_prob, min_sentences, expected_text):
+    text = "짜장면을 맛있게 먹었다. 짬뽕도 맛있게 먹었다. 짬짜면도 먹고 싶었다."
+    augmented_text = fm.delete_sentences(text, deletion_prob, min_sentences)
     assert augmented_text == expected_text
 
 
@@ -73,9 +75,9 @@ def test_insert_contextual_words():
     assert not contains_mask_token(augmented_text)
 
 
-@pytest.mark.parametrize(["text", "is_same"], [("text_with_synonyms", False), ("text_without_synonyms", True)])
-def test_insert_synonyms(text, is_same, request):
-    text = request.getfixturevalue(text)
+@pytest.mark.parametrize(["input_text", "is_same"], [("text_with_synonyms", False), ("text_without_synonyms", True)])
+def test_insert_synonyms(input_text, is_same, request):
+    text = request.getfixturevalue(input_text)
     insertion_prob = 1.0
     n_times = 1
     augmented_text = fm.insert_synonyms(text, insertion_prob, n_times)
@@ -98,7 +100,7 @@ def test_iterative_mask_fill(text):
     device = "cpu"
     augmented_text = fg.iterative_mask_fill(text, model, tokenizer, top_k, device)
     augmented_sentences = split_text_into_sentences(augmented_text)
-    assert sum([original != augmented for original, augmented in zip(original_sentences, augmented_sentences)]) == 1
+    assert sum([augmented != original for augmented, original in zip(augmented_sentences, original_sentences)]) == 1
     assert not contains_mask_token(augmented_text)
 
 
@@ -114,9 +116,9 @@ def test_replace_contextual_words():
     assert not contains_mask_token(augmented_text)
 
 
-@pytest.mark.parametrize(["text", "is_same"], [("text_with_synonyms", False), ("text_without_synonyms", True)])
-def test_replace_synonyms(text, is_same, request):
-    text = request.getfixturevalue(text)
+@pytest.mark.parametrize(["input_text", "is_same"], [("text_with_synonyms", False), ("text_without_synonyms", True)])
+def test_replace_synonyms(input_text, is_same, request):
+    text = request.getfixturevalue(input_text)
     replacement_prob = 1.0
     augmented_text = fm.replace_synonyms(text, replacement_prob)
     assert (augmented_text == text) == is_same
@@ -127,7 +129,7 @@ def test_swap_words(text):
     alpha = 0.01
     augmented_text = fm.swap_words(text, alpha)
     augmented_sentences = split_text_into_sentences(augmented_text)
-    assert sum([original != augmented for original, augmented in zip(original_sentences, augmented_sentences)]) == 1
+    assert sum([augmented != original for augmented, original in zip(augmented_sentences, original_sentences)]) == 1
 
 
 def test_swap_sentences(text):
@@ -137,4 +139,4 @@ def test_swap_sentences(text):
     n_times = 1
     augmented_text = fm.swap_sentences(text, n_times)
     augmented_sentences = split_text_into_sentences(augmented_text)
-    assert sum([original != augmented for original, augmented in zip(original_sentences, augmented_sentences)]) == 2
+    assert sum([augmented != original for augmented, original in zip(augmented_sentences, original_sentences)]) == 2
