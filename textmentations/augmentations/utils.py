@@ -2,11 +2,13 @@ from __future__ import annotations
 
 import itertools
 import os
+import random
 import re
 from collections.abc import Callable
 from functools import wraps
 from typing import TypeVar
 
+import numpy as np
 from deep_translator import GoogleTranslator
 from transformers import AlbertForMaskedLM, BertTokenizerFast
 from typing_extensions import Concatenate, ParamSpec
@@ -139,11 +141,6 @@ def join_sentences_into_text(sentences: list[Sentence]) -> Text:
     return text
 
 
-def flatten(list_of_lists: list[list[_T]]) -> list[_T]:
-    """Flattens the list of lists."""
-    return [*itertools.chain.from_iterable(list_of_lists)]
-
-
 def extract_first_sentence(text: Text) -> Sentence:
     """Extracts the first sentence from the text."""
     return extract_nth_sentence(text, 0)
@@ -244,6 +241,37 @@ def pass_empty_text(func: Callable[Concatenate[Text, _P], Text]) -> Callable[Con
         return func(text, *args, **kwargs)
 
     return wrapped
+
+
+def check_rng(seed: int | np.random.Generator | None = None) -> np.random.Generator:
+    """Returns a numpy random number generator.
+
+    Args:
+        seed: The seed for a random number generator. Can be None, an integer, or an instance of np.random.Generator.
+
+    Returns:
+        A NumPy random generator instance.
+
+    Raises:
+        ValueError: If the provided seed is not valid.
+    """
+    if seed is None:
+        return np.random.default_rng(_get_random_seed())
+    if isinstance(seed, int):
+        return np.random.default_rng(seed)
+    if isinstance(seed, np.random.Generator):
+        return seed
+    raise ValueError(f"{seed} cannot be used to seed a numpy.random.default_rng function.")
+
+
+def _get_random_seed() -> int:
+    """Generates a random seed within the valid range for numpy random number generator."""
+    return random.randrange(0, 2**32)
+
+
+def flatten(list_of_lists: list[list[_T]]) -> list[_T]:
+    """Flattens the list of lists."""
+    return [*itertools.chain.from_iterable(list_of_lists)]
 
 
 def _squeeze_first(list_: list[_T]) -> _T:

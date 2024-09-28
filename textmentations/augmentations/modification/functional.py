@@ -10,6 +10,7 @@ from textmentations.augmentations.utils import (
     _squeeze_first,
     autopsy_sentence,
     autopsy_text,
+    check_rng,
     flatten,
     pass_empty_text,
 )
@@ -18,7 +19,12 @@ from textmentations.corpora.utils import get_random_synonym, is_stopword
 
 
 @pass_empty_text
-def delete_words(text: Text, deletion_prob: float, min_words_per_sentence: float | int) -> Text:
+def delete_words(
+    text: Text,
+    deletion_prob: float,
+    min_words_per_sentence: float | int,
+    seed: int | np.random.Generator | None = None,
+) -> Text:
     """Randomly deletes words in the text.
 
     Args:
@@ -27,6 +33,7 @@ def delete_words(text: Text, deletion_prob: float, min_words_per_sentence: float
         min_words_per_sentence:
             If a `float`, it is the minimum proportion of words to retain in each sentence.
             If an `int`, it is the minimum number of words in each sentence.
+        seed: The seed for a random number generator. Can be None, an integer, or an instance of np.random.Generator.
 
     Returns:
         A text with randomly deleted words.
@@ -38,7 +45,8 @@ def delete_words(text: Text, deletion_prob: float, min_words_per_sentence: float
         >>> min_words_per_sentence = 0.8
         >>> augmented_text = fm.delete_words(text, deletion_prob, min_words_per_sentence)
     """
-    return _delete_words(text, deletion_prob, min_words_per_sentence)
+    rng = check_rng(seed)
+    return _delete_words(text, deletion_prob, min_words_per_sentence, rng)
 
 
 @autopsy_text
@@ -46,22 +54,33 @@ def _delete_words(
     sentences: list[Sentence],
     deletion_prob: float,
     min_words_per_sentence: float | int,
+    rng: np.random.Generator,
 ) -> list[Sentence]:
     """Randomly deletes words in each sentence."""
     return [
         augmented_sentence
         for sentence in sentences
-        if (augmented_sentence := _delete_words_in_sentence(sentence, deletion_prob, min_words_per_sentence))
+        if (augmented_sentence := _delete_words_in_sentence(sentence, deletion_prob, min_words_per_sentence, rng))
     ]
 
 
 @autopsy_sentence
-def _delete_words_in_sentence(words: list[Word], deletion_prob: float, min_words: float | int) -> list[Word]:
+def _delete_words_in_sentence(
+    words: list[Word],
+    deletion_prob: float,
+    min_words: float | int,
+    rng: np.random.Generator,
+) -> list[Word]:
     """Randomly deletes words in the list of words."""
-    return _delete_strings(words, deletion_prob, min_words)
+    return _delete_strings(words, deletion_prob, min_words, rng)
 
 
-def _delete_strings(strings: list[Corpus], deletion_prob: float, min_strings: float | int) -> list[Corpus]:
+def _delete_strings(
+    strings: list[Corpus],
+    deletion_prob: float,
+    min_strings: float | int,
+    rng: np.random.Generator,
+) -> list[Corpus]:
     """Randomly deletes strings in the list of strings."""
     num_strings = len(strings)
     min_strings = math.ceil(num_strings * min_strings) if isinstance(min_strings, float) else min_strings
@@ -69,9 +88,10 @@ def _delete_strings(strings: list[Corpus], deletion_prob: float, min_strings: fl
         return strings
     indices_to_retain = set()
     num_possible_deletions = num_strings - min_strings
-    shuffled_indices = np.random.permutation(num_strings).tolist()
-    for index in shuffled_indices:
-        if random.random() < deletion_prob and num_possible_deletions > 0:
+    randomized_indices = rng.permutation(num_strings).tolist()
+    deletion_mask = rng.random(size=num_strings).__le__(deletion_prob).tolist()
+    for index, can_delete in zip(randomized_indices, deletion_mask):
+        if can_delete and num_possible_deletions > 0:
             num_possible_deletions -= 1
             continue
         indices_to_retain.add(index)
@@ -80,7 +100,12 @@ def _delete_strings(strings: list[Corpus], deletion_prob: float, min_strings: fl
 
 
 @pass_empty_text
-def delete_sentences(text: Text, deletion_prob: float, min_sentences: float | int) -> Text:
+def delete_sentences(
+    text: Text,
+    deletion_prob: float,
+    min_sentences: float | int,
+    seed: int | np.random.Generator | None = None,
+) -> Text:
     """Randomly deletes sentences in the text.
 
     Args:
@@ -89,6 +114,7 @@ def delete_sentences(text: Text, deletion_prob: float, min_sentences: float | in
         min_sentences:
             If a `float`, it is the minimum proportion of sentences to retain in the text.
             If an `int`, it is the minimum number of sentences in the text.
+        seed: The seed for a random number generator. Can be None, an integer, or an instance of np.random.Generator.
 
     Returns:
         A text with randomly deleted sentences.
@@ -100,7 +126,8 @@ def delete_sentences(text: Text, deletion_prob: float, min_sentences: float | in
         >>> min_sentences = 0.9
         >>> augmented_text = fm.delete_sentences(text, deletion_prob, min_sentences)
     """
-    return _delete_sentences(text, deletion_prob, min_sentences)
+    rng = check_rng(seed)
+    return _delete_sentences(text, deletion_prob, min_sentences, rng)
 
 
 @autopsy_text
@@ -108,19 +135,26 @@ def _delete_sentences(
     sentences: list[Sentence],
     deletion_prob: float,
     min_sentences: float | int,
+    rng: np.random.Generator,
 ) -> list[Sentence]:
     """Randomly deletes sentences in the list of sentences."""
-    return _delete_strings(sentences, deletion_prob, min_sentences)
+    return _delete_strings(sentences, deletion_prob, min_sentences, rng)
 
 
 @pass_empty_text
-def insert_synonyms(text: Text, insertion_prob: float, n_times: int) -> Text:
+def insert_synonyms(
+    text: Text,
+    insertion_prob: float,
+    n_times: int,
+    seed: int | np.random.Generator | None = None,
+) -> Text:
     """Repeats n times the task of randomly inserting synonyms of words that are not stopwords in the text.
 
     Args:
         text: The input text.
         insertion_prob: The probability of inserting a synonym.
         n_times: The number of times to repeat the synonym-insertion process.
+        seed: The seed for a random number generator. Can be None, an integer, or an instance of np.random.Generator.
 
     Returns:
         A text with randomly inserted synonyms.
@@ -132,34 +166,43 @@ def insert_synonyms(text: Text, insertion_prob: float, n_times: int) -> Text:
         >>> n_times = 1
         >>> augmented_text = fm.insert_synonyms(text, insertion_prob, n_times)
     """
-    return _insert_synonyms(text, insertion_prob, n_times)
+    rng = check_rng(seed)
+    return _insert_synonyms(text, insertion_prob, n_times, rng)
 
 
 @autopsy_text
-def _insert_synonyms(sentences: list[Sentence], insertion_prob: float, n_times: int) -> list[Sentence]:
+def _insert_synonyms(
+    sentences: list[Sentence],
+    insertion_prob: float,
+    n_times: int,
+    rng: np.random.Generator,
+) -> list[Sentence]:
     """Repeats n times the task of randomly inserting synonyms of words that are not stopwords in each sentence."""
-    return [_insert_synonyms_in_sentence(sentence, insertion_prob, n_times) for sentence in sentences]
+    return [_insert_synonyms_in_sentence(sentence, insertion_prob, n_times, rng) for sentence in sentences]
 
 
 @autopsy_sentence
-def _insert_synonyms_in_sentence(words: list[Word], insertion_prob: float, n_times: int) -> list[Word]:
+def _insert_synonyms_in_sentence(
+    words: list[Word],
+    insertion_prob: float,
+    n_times: int,
+    rng: np.random.Generator,
+) -> list[Word]:
     """Repeats n times the task of randomly inserting synonyms of words that are not stopwords in the list of words."""
     for _ in range(n_times):
-        words = _insert_synonyms_in_words(words, insertion_prob)
+        words = _insert_synonyms_in_words(words, insertion_prob, rng)
     return words
 
 
-def _insert_synonyms_in_words(
-    words: list[Word],
-    insertion_prob: float,
-) -> list[Word]:
+def _insert_synonyms_in_words(words: list[Word], insertion_prob: float, rng: np.random.Generator) -> list[Word]:
     """Randomly inserts synonyms of words that are not stopwords in the list of words."""
     num_words = len(words)
     augmented_words = [[word] for word in words]
-    shuffled_indices = np.random.permutation(num_words).tolist()
-    for index in shuffled_indices:
+    randomized_indices = rng.permutation(num_words).tolist()
+    insertion_mask = rng.random(size=num_words).__le__(insertion_prob).tolist()
+    for index, can_insert in zip(randomized_indices, insertion_mask):
         word = words[index]
-        if is_stopword(word) or random.random() >= insertion_prob:
+        if not can_insert or is_stopword(word):
             continue
         synonym = get_random_synonym(word)
         if synonym == word:
@@ -290,8 +333,7 @@ def _swap_words(sentences: list[Sentence], n_times: int) -> list[Sentence]:
     num_sentences = len(sentences)
     sentence_lengths = [*map(len, sentences)]
     for _ in range(n_times):
-        indices = random.choices(range(num_sentences), weights=sentence_lengths, k=1)
-        index = _squeeze_first(indices)
+        index = _squeeze_first(random.choices(range(num_sentences), weights=sentence_lengths, k=1))
         sentences[index] = _swap_two_words_in_sentence(sentences[index])
     return sentences
 
