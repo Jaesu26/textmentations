@@ -1,20 +1,11 @@
 from __future__ import annotations
 
 import math
-import random
 from typing import List
 
 import numpy as np
 
-from textmentations.augmentations.utils import (
-    SPACE,
-    _squeeze_first,
-    autopsy_sentence,
-    autopsy_text,
-    check_rng,
-    flatten,
-    pass_empty_text,
-)
+from textmentations.augmentations.utils import autopsy_sentence, autopsy_text, check_rng, flatten, pass_empty_text
 from textmentations.corpora.types import Corpus, Sentence, Text, Word
 from textmentations.corpora.utils import get_random_synonym, is_stopword
 
@@ -24,6 +15,7 @@ def delete_words(
     text: Text,
     deletion_prob: float,
     min_words_per_sentence: float | int,
+    *,
     seed: int | np.random.Generator | None = None,
 ) -> Text:
     """Randomly deletes words in the text.
@@ -90,7 +82,7 @@ def _delete_strings(
     indices_to_retain = set()
     num_possible_deletions = num_strings - min_strings
     randomized_indices = rng.permutation(num_strings).tolist()
-    deletion_mask = rng.random(size=num_strings).__le__(deletion_prob).tolist()
+    deletion_mask = rng.random(size=num_strings).__lt__(deletion_prob).tolist()
     for index, can_delete in zip(randomized_indices, deletion_mask):
         if can_delete and num_possible_deletions > 0:
             num_possible_deletions -= 1
@@ -105,6 +97,7 @@ def delete_sentences(
     text: Text,
     deletion_prob: float,
     min_sentences: float | int,
+    *,
     seed: int | np.random.Generator | None = None,
 ) -> Text:
     """Randomly deletes sentences in the text.
@@ -147,6 +140,7 @@ def insert_synonyms(
     text: Text,
     insertion_prob: float,
     n_times: int,
+    *,
     seed: int | np.random.Generator | None = None,
 ) -> Text:
     """Repeats n times the task of randomly inserting synonyms of words that are not stopwords in the text.
@@ -201,27 +195,39 @@ def _insert_synonyms_in_words(words: list[Word], insertion_prob: float, rng: np.
     augmented_words: List[List[Word]] = [[]]  # To insert synonyms in front of the words
     augmented_words.extend([word] for word in words)
     randomized_indices = rng.permutation(num_words).tolist()
-    insertion_mask = rng.random(size=num_words).__le__(insertion_prob).tolist()
+    insertion_mask = rng.random(size=num_words).__lt__(insertion_prob).tolist()
     for index, can_insert in zip(randomized_indices, insertion_mask):
         word = words[index]
-        if not can_insert or is_stopword(word):
-            continue
-        synonym = get_random_synonym(word)
-        if synonym == word:
+        if not can_insert or (synonym := _replace_word_with_synonym(word, rng)) == word:
             continue
         insertion_index = rng.integers(0, num_words + 1)
         augmented_words[insertion_index].append(synonym)
     return flatten(augmented_words)
 
 
+def _replace_word_with_synonym(word: Word, rng: np.random.Generator) -> Word:
+    """Replaces word that is not stopword with synonym."""
+    if not is_stopword(word):
+        synonym = get_random_synonym(word, rng)
+        return synonym
+    return word
+
+
 @pass_empty_text
-def insert_punctuation(text: Text, insertion_prob: float, punctuation: tuple[str, ...]) -> Text:
+def insert_punctuation(
+    text: Text,
+    insertion_prob: float,
+    punctuation: tuple[str, ...],
+    *,
+    seed: int | np.random.Generator | None = None,
+) -> Text:
     """Randomly inserts punctuation in the text.
 
     Args:
         text: The input text.
         insertion_prob: The probability of inserting a punctuation mark.
         punctuation: Punctuation to be inserted at random.
+        seed: The seed for a random number generator. Can be None, an integer, or an instance of np.random.Generator.
 
     Returns:
         A text with randomly inserted punctuation.
@@ -233,7 +239,8 @@ def insert_punctuation(text: Text, insertion_prob: float, punctuation: tuple[str
         >>> punctuation = (".", ";", "?", ":", "!", ",")
         >>> augmented_text = fm.insert_punctuation(text, insertion_prob, punctuation)
     """
-    return _insert_punctuation(text, insertion_prob, punctuation)
+    rng = check_rng(seed)
+    return _insert_punctuation(text, insertion_prob, punctuation, rng)
 
 
 @autopsy_text
@@ -241,9 +248,10 @@ def _insert_punctuation(
     sentences: list[Sentence],
     insertion_prob: float,
     punctuation: tuple[str, ...],
+    rng: np.random.Generator,
 ) -> list[Sentence]:
     """Randomly inserts punctuation in each sentence."""
-    return [_insert_punctuation_in_sentence(sentence, insertion_prob, punctuation) for sentence in sentences]
+    return [_insert_punctuation_in_sentence(sentence, insertion_prob, punctuation, rng) for sentence in sentences]
 
 
 @autopsy_sentence
@@ -251,27 +259,29 @@ def _insert_punctuation_in_sentence(
     words: list[Word],
     insertion_prob: float,
     punctuation: tuple[str, ...],
+    rng: np.random.Generator,
 ) -> list[Word]:
     """Randomly inserts punctuation in the list of words."""
-    return [_insert_punctuation_mark_into_word(word, insertion_prob, punctuation) for word in words]
-
-
-def _insert_punctuation_mark_into_word(word: Word, insertion_prob: float, punctuation: tuple[str, ...]) -> Word:
-    """Randomly inserts a punctuation mark at the beginning of a word."""
-    if random.random() < insertion_prob:
-        punctuation_mark = random.choice(punctuation)
-        word_with_punctuation_mark = SPACE.join([punctuation_mark, word])
-        return word_with_punctuation_mark
-    return word
+    num_punctuation = len(punctuation)
+    augmented_words: List[List[Word]] = [[]]  # To insert a punctuation mark in front of the words
+    augmented_words.extend([word] for word in words)
+    insertion_mask = rng.random(size=len(words) + 1).__lt__(insertion_prob).tolist()
+    for index, should_insert in enumerate(insertion_mask):
+        if not should_insert:
+            continue
+        nth = rng.integers(0, num_punctuation)
+        augmented_words[index].append(punctuation[nth])
+    return flatten(augmented_words)
 
 
 @pass_empty_text
-def replace_synonyms(text: Text, replacement_prob: float) -> Text:
+def replace_synonyms(text: Text, replacement_prob: float, *, seed: int | np.random.Generator | None = None) -> Text:
     """Randomly replaces words that are not stopwords in the text with synonyms.
 
     Args:
         text: The input text.
         replacement_prob: The probability of replacing a word with a synonym.
+        seed: The seed for a random number generator. Can be None, an integer, or an instance of np.random.Generator.
 
     Returns:
         A text with random words replaced by synonyms.
@@ -282,31 +292,28 @@ def replace_synonyms(text: Text, replacement_prob: float) -> Text:
         >>> replacement_prob = 0.2
         >>> augmented_text = fm.replace_synonyms(text, replacement_prob)
     """
-    return _replace_synonyms(text, replacement_prob)
+    rng = check_rng(seed)
+    return _replace_synonyms(text, replacement_prob, rng)
 
 
 @autopsy_text
-def _replace_synonyms(sentences: list[Sentence], replacement_prob: float) -> list[Sentence]:
+def _replace_synonyms(sentences: list[Sentence], replacement_prob: float, rng: np.random.Generator) -> list[Sentence]:
     """Randomly replaces words that are not stopwords in each sentence with synonyms."""
-    return [_replace_synonyms_in_sentence(sentence, replacement_prob) for sentence in sentences]
+    return [_replace_synonyms_in_sentence(sentence, replacement_prob, rng) for sentence in sentences]
 
 
 @autopsy_sentence
-def _replace_synonyms_in_sentence(words: list[Word], replacement_prob: float) -> list[Word]:
+def _replace_synonyms_in_sentence(words: list[Word], replacement_prob: float, rng: np.random.Generator) -> list[Word]:
     """Randomly replaces words that are not stopwords in the list of words with synonyms."""
-    return [_replace_word_with_synonym(word, replacement_prob) for word in words]
-
-
-def _replace_word_with_synonym(word: Word, replacement_prob: float) -> Word:
-    """Randomly replaces word that is not stopword with synonym."""
-    if not is_stopword(word) and random.random() < replacement_prob:
-        synonym = get_random_synonym(word)
-        return synonym
-    return word
+    replacement_mask = rng.random(size=len(words)).__lt__(replacement_prob).tolist()
+    return [
+        _replace_word_with_synonym(word, rng) if should_replace else word
+        for word, should_replace in zip(words, replacement_mask)
+    ]
 
 
 @pass_empty_text
-def swap_words(text: Text, alpha: float | int) -> Text:
+def swap_words(text: Text, alpha: float | int, *, seed: int | np.random.Generator | None = None) -> Text:
     """Repeats n times the task of randomly swapping two words in a randomly selected sentence from the text.
 
     Args:
@@ -315,6 +322,7 @@ def swap_words(text: Text, alpha: float | int) -> Text:
             If a `float`, it is the number of times to repeat the process is calculated as `N = alpha * L`,
             where `L` is the length of the text.
             If an `int`, it is the number of times to repeat the process.
+        seed: The seed for a random number generator. Can be None, an integer, or an instance of np.random.Generator.
 
     Returns:
         A text with randomly shuffled words each sentence.
@@ -325,43 +333,45 @@ def swap_words(text: Text, alpha: float | int) -> Text:
         >>> alpha = 0.1
         >>> augmented_text = fm.swap_words(text, alpha)
     """
+    rng = check_rng(seed)
     n_times = math.ceil(len(text) * alpha) if isinstance(alpha, float) else alpha
-    return _swap_words(text, n_times)
+    return _swap_words(text, n_times, rng)
 
 
 @autopsy_text
-def _swap_words(sentences: list[Sentence], n_times: int) -> list[Sentence]:
+def _swap_words(sentences: list[Sentence], n_times: int, rng: np.random.Generator) -> list[Sentence]:
     """Repeats n times the task of randomly swapping two words in a randomly selected sentence."""
     num_sentences = len(sentences)
-    sentence_lengths = [*map(len, sentences)]
-    for _ in range(n_times):
-        index = _squeeze_first(random.choices(range(num_sentences), weights=sentence_lengths, k=1))
-        sentences[index] = _swap_two_words_in_sentence(sentences[index])
+    sentence_lengths = np.array([*map(len, sentences)])
+    weights = sentence_lengths / np.sum(sentence_lengths)
+    selected_indices = rng.choice(num_sentences, replace=True, size=n_times, p=weights)
+    for index in selected_indices:
+        sentences[index] = _swap_two_words_in_sentence(sentences[index], rng)
     return sentences
 
 
 @autopsy_sentence
-def _swap_two_words_in_sentence(words: list[Word]) -> list[Word]:
+def _swap_two_words_in_sentence(words: list[Word], rng: np.random.Generator) -> list[Word]:
     """Randomly swaps two words in the list of words."""
-    return _swap_two_strings(words)
+    return _swap_two_strings(words, rng)
 
 
-def _swap_two_strings(strings: list[Corpus]) -> list[Corpus]:
+def _swap_two_strings(strings: list[Corpus], rng: np.random.Generator) -> list[Corpus]:
     """Randomly swaps two strings in the list of strings."""
-    num_strings = len(strings)
-    if num_strings >= 2:
-        index1, index2 = random.sample(range(num_strings), k=2)
+    if (num_strings := len(strings)) >= 2:
+        index1, index2 = rng.choice(num_strings, replace=False, size=2)
         strings[index1], strings[index2] = strings[index2], strings[index1]
     return strings
 
 
 @pass_empty_text
-def swap_sentences(text: Text, n_times: int) -> Text:
+def swap_sentences(text: Text, n_times: int, *, seed: int | np.random.Generator | None = None) -> Text:
     """Repeats n times the task of randomly swapping two sentences in the text.
 
     Args:
         text: The input text.
         n_times: The number of times to repeat the process.
+        seed: The seed for a random number generator. Can be None, an integer, or an instance of np.random.Generator.
 
     Returns:
         A text with randomly shuffled sentences.
@@ -372,12 +382,13 @@ def swap_sentences(text: Text, n_times: int) -> Text:
         >>> n_times = 1
         >>> augmented_text = fm.swap_sentences(text, n_times)
     """
-    return _swap_sentences(text, n_times)
+    rng = check_rng(seed)
+    return _swap_sentences(text, n_times, rng)
 
 
 @autopsy_text
-def _swap_sentences(sentences: list[Sentence], n_times: int) -> list[Sentence]:
+def _swap_sentences(sentences: list[Sentence], n_times: int, rng: np.random.Generator) -> list[Sentence]:
     """Repeats n times the task of randomly swapping two sentences in the list of sentences."""
     for _ in range(n_times):
-        sentences = _swap_two_strings(sentences)
+        sentences = _swap_two_strings(sentences, rng)
     return sentences

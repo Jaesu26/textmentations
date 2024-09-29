@@ -88,7 +88,7 @@ def test_insert_punctuation(text_without_synonyms):
     insertion_prob = 1.0
     punctuation = (";",)
     augmented_text = fm.insert_punctuation(text_without_synonyms, insertion_prob, punctuation)
-    expected_text = "; 짜장면을 ; 맛있게 ; 먹었다. ; 짬뽕도 ; 맛있게 ; 먹었다. ; 짬짜면도 ; 먹고 ; 싶었다."
+    expected_text = "; 짜장면을 ; 맛있게 ; 먹었다 ;. ; 짬뽕도 ; 맛있게 ; 먹었다 ;. ; 짬짜면도 ; 먹고 ; 싶었다 ;."
     assert augmented_text == expected_text
 
 

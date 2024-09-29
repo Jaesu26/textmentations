@@ -274,23 +274,6 @@ def flatten(list_of_lists: list[list[_T]]) -> list[_T]:
     return [*itertools.chain.from_iterable(list_of_lists)]
 
 
-def _squeeze_first(list_: list[_T]) -> _T:
-    """Returns the first and only element in the list containing exactly one element.
-
-    Args:
-        list_: The list that is expected to contain exactly one element.
-
-    Returns:
-        The single element in the list.
-
-    Raises:
-        ValueError: If the list does not contain exactly one element.
-    """
-    if len(list_) != 1:
-        raise ValueError("Input list must contain exactly one element.")
-    return list_[0]
-
-
 def get_translator() -> GoogleTranslator:
     """Returns an instance of GoogleTranslator class."""
     return _translator
