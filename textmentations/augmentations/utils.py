@@ -250,7 +250,7 @@ def check_rng(seed: int | np.random.Generator | None = None) -> np.random.Genera
         seed: The seed for a random number generator. Can be None, an integer, or an instance of np.random.Generator.
 
     Returns:
-        A NumPy random generator instance.
+        A numpy random generator instance.
 
     Raises:
         ValueError: If the provided seed is not valid.

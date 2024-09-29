@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import math
 import random
+from typing import List
 
 import numpy as np
 
@@ -197,7 +198,8 @@ def _insert_synonyms_in_sentence(
 def _insert_synonyms_in_words(words: list[Word], insertion_prob: float, rng: np.random.Generator) -> list[Word]:
     """Randomly inserts synonyms of words that are not stopwords in the list of words."""
     num_words = len(words)
-    augmented_words = [[word] for word in words]
+    augmented_words: List[List[Word]] = [[]]  # To insert synonyms in front of the words
+    augmented_words.extend([word] for word in words)
     randomized_indices = rng.permutation(num_words).tolist()
     insertion_mask = rng.random(size=num_words).__le__(insertion_prob).tolist()
     for index, can_insert in zip(randomized_indices, insertion_mask):
@@ -207,7 +209,7 @@ def _insert_synonyms_in_words(words: list[Word], insertion_prob: float, rng: np.
         synonym = get_random_synonym(word)
         if synonym == word:
             continue
-        insertion_index = random.randrange(0, num_words)
+        insertion_index = rng.integers(0, num_words + 1)
         augmented_words[insertion_index].append(synonym)
     return flatten(augmented_words)
 
