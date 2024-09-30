@@ -2,11 +2,11 @@ from __future__ import annotations
 
 import numpy as np
 
-from textmentations.corpora.corpora import get_stopwords, get_wordnet
+from textmentations.corpora.corpora import _STOPWORDS_PATH, _WORDNET_PATH, read_stopwords, read_wordnet
 from textmentations.corpora.types import Word
 
-_STOPWORDS = get_stopwords()
-_WORDNET = get_wordnet()
+_STOPWORDS = read_stopwords(_STOPWORDS_PATH)
+_WORDNET = read_wordnet(_WORDNET_PATH)
 
 
 def get_synonyms(word: Word) -> list[Word]:

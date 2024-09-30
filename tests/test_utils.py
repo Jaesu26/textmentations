@@ -1,6 +1,7 @@
 import pytest
 
 from textmentations.augmentations.utils import clear_double_hash_tokens, extract_nth_sentence, remove_nth_sentence
+from textmentations.corpora.corpora import get_stopwords, get_wordnet
 
 
 @pytest.mark.parametrize(
@@ -38,3 +39,15 @@ def test_extract_nth_sentence(input_text, n, expected_text):
 )
 def test_remove_nth_sentence(input_text, n, expected_text):
     assert remove_nth_sentence(input_text, n) == expected_text
+
+
+def test_get_stopwords():
+    stopwords = get_stopwords()
+    assert isinstance(stopwords, frozenset)
+    assert len(stopwords) > 0
+
+
+def test_get_wordnet():
+    wordnet = get_wordnet()
+    assert isinstance(wordnet, dict)
+    assert len(wordnet) > 0
