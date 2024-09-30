@@ -10,6 +10,7 @@ from typing import TypeVar
 
 import numpy as np
 from deep_translator import GoogleTranslator
+from numpy.typing import NDArray
 from transformers import AlbertForMaskedLM, BertTokenizerFast
 from typing_extensions import Concatenate, ParamSpec
 
@@ -243,11 +244,11 @@ def pass_empty_text(func: Callable[Concatenate[Text, _P], Text]) -> Callable[Con
     return wrapped
 
 
-def check_rng(seed: int | np.random.Generator | None = None) -> np.random.Generator:
+def check_rng(seed: int | np.random.Generator | None) -> np.random.Generator:
     """Returns a numpy random number generator.
 
     Args:
-        seed: The seed for a random number generator. Can be None, an integer, or an instance of np.random.Generator.
+        seed: The seed for a random number generator. Can be None, an int, or an instance of np.random.Generator.
 
     Returns:
         A numpy random generator instance.
@@ -256,7 +257,7 @@ def check_rng(seed: int | np.random.Generator | None = None) -> np.random.Genera
         ValueError: If the provided seed is not valid.
     """
     if seed is None:
-        return np.random.default_rng(_get_random_seed())
+        return np.random.default_rng(_generate_random_seed())
     if isinstance(seed, int):
         return np.random.default_rng(seed)
     if isinstance(seed, np.random.Generator):
@@ -264,14 +265,19 @@ def check_rng(seed: int | np.random.Generator | None = None) -> np.random.Genera
     raise ValueError(f"{seed} cannot be used to seed a numpy.random.default_rng function.")
 
 
-def _get_random_seed() -> int:
+def _generate_random_seed() -> int:
     """Generates a random seed within the valid range for numpy random number generator."""
-    return random.randrange(0, 2**32)
+    return random.randint(0, 2**32 - 1)
 
 
-def flatten(list_of_lists: list[list[_T]]) -> list[_T]:
+def _flatten(list_of_lists: list[list[_T]]) -> list[_T]:
     """Flattens the list of lists."""
     return [*itertools.chain.from_iterable(list_of_lists)]
+
+
+def _generate_boolean_mask(size: int, masking_prob: float, rng: np.random.Generator) -> NDArray[np.bool_]:
+    """generates a boolean mask array."""
+    return rng.random(size=size).__lt__(masking_prob)
 
 
 def get_translator() -> GoogleTranslator:

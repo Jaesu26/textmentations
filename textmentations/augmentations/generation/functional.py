@@ -8,10 +8,11 @@ from deep_translator.exceptions import NotValidLength, RequestError, TooManyRequ
 
 from textmentations.augmentations.utils import (
     EMPTY_STRING,
+    _flatten,
+    _generate_boolean_mask,
     autopsy_sentence,
     autopsy_text,
     check_rng,
-    flatten,
     get_translator,
     join_words_into_sentence,
     pass_empty_text,
@@ -72,7 +73,7 @@ def insert_contextual_words(
         insertion_prob: The probability of inserting a mask token.
         top_k: The number of candidate words to replace the masked word at each iteration
         device: The device to use for computation (e.g., "cpu", "cuda:1", torch.device("cuda")).
-        seed: The seed for a random number generator. Can be None, an integer, or an instance of np.random.Generator.
+        seed: The seed for a random number generator. Can be None, an int, or an instance of np.random.Generator.
 
     Examples:
         >>> import textmentations.augmentations.generation.functional as fg
@@ -119,8 +120,8 @@ def _insert_contextual_words_in_sentence(
 ) -> list[Word]:
     """Randomly inserts mask tokens in the list of words and fills them with language model predictions."""
     mask_token = tokenizer.mask_token
-    insertion_mask = rng.random(size=len(words)).__lt__(insertion_prob).tolist()
-    words_with_masking = flatten(
+    insertion_mask = _generate_boolean_mask(len(words), insertion_prob, rng).tolist()
+    words_with_masking = _flatten(
         [[mask_token, word] if should_insert else [word] for word, should_insert in zip(words, insertion_mask)]
     )  # Avoid inserting the mask token at the end of words because the model often predicts punctuation
     sentence_with_masking = join_words_into_sentence(words_with_masking)
@@ -178,7 +179,7 @@ def iterative_mask_fill(
         tokenizer: The tokenizer that will be used to encode text for the model and decode the model's output.
         top_k: The number of candidate words to replace the masked word at each iteration
         device: The device to use for computation (e.g., "cpu", "cuda:1", torch.device("cuda")).
-        seed: The seed for a random number generator. Can be None, an integer, or an instance of np.random.Generator.
+        seed: The seed for a random number generator. Can be None, an int, or an instance of np.random.Generator.
 
     Returns:
         A augmented text.
@@ -254,7 +255,7 @@ def replace_contextual_words(
         masking_prob: The probability of masking a word.
         top_k: The number of candidate words to replace the masked word at each iteration
         device: The device to use for computation (e.g., "cpu", "cuda:1", torch.device("cuda")).
-        seed: The seed for a random number generator. Can be None, an integer, or an instance of np.random.Generator.
+        seed: The seed for a random number generator. Can be None, an int, or an instance of np.random.Generator.
 
     Examples:
         >>> import textmentations.augmentations.generation.functional as fg
@@ -301,7 +302,7 @@ def _replace_contextual_words_in_sentence(
 ) -> list[Word]:
     """Randomly replaces words in the list of words with mask tokens and fills them with language model predictions."""
     mask_token = tokenizer.mask_token
-    replacement_mask = rng.random(size=len(words)).__lt__(masking_prob).tolist()
+    replacement_mask = _generate_boolean_mask(len(words), masking_prob, rng).tolist()
     words_with_masking = [mask_token if should_mask else word for word, should_mask in zip(words, replacement_mask)]
     sentence_with_masking = join_words_into_sentence(words_with_masking)
     plausible_words = _predict_masks(sentence_with_masking, model, tokenizer, top_k, device, rng)
