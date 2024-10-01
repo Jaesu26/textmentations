@@ -74,6 +74,9 @@ def insert_contextual_words(
         top_k: The number of candidate words to replace the masked word at each iteration
         device: The device to use for computation (e.g., "cpu", "cuda:1", torch.device("cuda")).
         seed: The seed for a random number generator. Can be None, an int, or an instance of np.random.Generator.
+            If `None`, a new random number generator is created with a random seed.
+            If an `int`, a generator is created using the seed.
+            If an instance of `np.random.Generator`, it is used directly.
 
     Examples:
         >>> import textmentations.augmentations.generation.functional as fg
@@ -88,6 +91,7 @@ def insert_contextual_words(
         >>> augmented_text = fg.insert_contextual_words(text, model, tokenizer, insertion_prob, top_k, device)
     """
     rng = check_rng(seed)
+    model.to(device)
     return _insert_contextual_words(text, model, tokenizer, insertion_prob, top_k, device, rng)
 
 
@@ -139,13 +143,15 @@ def _predict_masks(
     top_k: int,
     device: str | torch.device,
     rng: np.random.Generator,
+    skip_model_to_device: bool = True,
 ) -> list[Word]:
     """Predicts plausible words to replace mask tokens in the sentence using the masked language model."""
     mask_token_id = tokenizer.mask_token_id
     input_ids = tokenizer.encode(sentence, truncation=True, return_tensors="pt")
     if mask_token_id not in input_ids:
         return []
-    model.to(device)
+    if not skip_model_to_device:
+        model.to(device)
     input_ids = input_ids.to(device)
     with torch.no_grad():
         mlm_output = model(input_ids)
@@ -154,9 +160,9 @@ def _predict_masks(
     topk_values = topk.values.numpy()
     token_ids_list = topk.indices.tolist()
     scores_list = topk_values.__truediv__(topk_values.sum(axis=-1, keepdims=True)).tolist()
-    selected_indices = rng.multinomial(n=1, pvals=scores_list).argmax(axis=-1).tolist()
-    token_ids_to_decode = [token_ids[index] for token_ids, index in zip(token_ids_list, selected_indices)]
-    plausible_words = [tokenizer.decode(token_id) for token_id in token_ids_to_decode]
+    chosen_token_id_indices = rng.multinomial(n=1, pvals=scores_list).argmax(axis=-1).tolist()
+    token_ids_to_decode = [token_ids[index] for token_ids, index in zip(token_ids_list, chosen_token_id_indices)]
+    plausible_words = tokenizer.batch_decode(token_ids_to_decode)
     return plausible_words
 
 
@@ -180,6 +186,9 @@ def iterative_mask_fill(
         top_k: The number of candidate words to replace the masked word at each iteration
         device: The device to use for computation (e.g., "cpu", "cuda:1", torch.device("cuda")).
         seed: The seed for a random number generator. Can be None, an int, or an instance of np.random.Generator.
+            If `None`, a new random number generator is created with a random seed.
+            If an `int`, a generator is created using the seed.
+            If an instance of `np.random.Generator`, it is used directly.
 
     Returns:
         A augmented text.
@@ -196,6 +205,7 @@ def iterative_mask_fill(
         >>> augmented_text = fg.iterative_mask_fill(text, model, tokenizer, top_k, device)
     """
     rng = check_rng(seed)
+    model.to(device)
     return _iterative_mask_fill(text, model, tokenizer, top_k, device, rng)
 
 
@@ -256,6 +266,9 @@ def replace_contextual_words(
         top_k: The number of candidate words to replace the masked word at each iteration
         device: The device to use for computation (e.g., "cpu", "cuda:1", torch.device("cuda")).
         seed: The seed for a random number generator. Can be None, an int, or an instance of np.random.Generator.
+            If `None`, a new random number generator is created with a random seed.
+            If an `int`, a generator is created using the seed.
+            If an instance of `np.random.Generator`, it is used directly.
 
     Examples:
         >>> import textmentations.augmentations.generation.functional as fg
@@ -270,6 +283,7 @@ def replace_contextual_words(
         >>> augmented_text = fg.replace_contextual_words(text, model, tokenizer, masking_prob, top_k, device)
     """
     rng = check_rng(seed)
+    model.to(device)
     return _replace_contextual_words(text, model, tokenizer, masking_prob, top_k, device, rng)
 
 

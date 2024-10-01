@@ -14,8 +14,8 @@ class AEDA(TextTransform):
     """Randomly inserts punctuation into the input text.
 
     Args:
-        insertion_prob_range: The Range for probability of inserting a punctuation mark.
-        punctuation: Punctuation to be inserted at random.
+        insertion_prob_range: The range for probability of inserting a punctuation mark.
+        punctuation: The punctuation to be inserted at random.
         ignore_first: Whether to ignore the first sentence when applying this transform.
             It is useful when the main idea of the text is in the first sentence.
         p: The probability of applying this transform.

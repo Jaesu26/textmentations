@@ -34,6 +34,9 @@ def delete_words(
             If a `float`, it is the minimum proportion of words to retain in each sentence.
             If an `int`, it is the minimum number of words in each sentence.
         seed: The seed for a random number generator. Can be None, an int, or an instance of np.random.Generator.
+            If `None`, a new random number generator is created with a random seed.
+            If an `int`, a generator is created using the seed.
+            If an instance of `np.random.Generator`, it is used directly.
 
     Returns:
         A text with randomly deleted words.
@@ -116,6 +119,9 @@ def delete_sentences(
             If a `float`, it is the minimum proportion of sentences to retain in the text.
             If an `int`, it is the minimum number of sentences in the text.
         seed: The seed for a random number generator. Can be None, an int, or an instance of np.random.Generator.
+            If `None`, a new random number generator is created with a random seed.
+            If an `int`, a generator is created using the seed.
+            If an instance of `np.random.Generator`, it is used directly.
 
     Returns:
         A text with randomly deleted sentences.
@@ -157,6 +163,9 @@ def insert_synonyms(
         insertion_prob: The probability of inserting a synonym.
         n_times: The number of times to repeat the synonym-insertion process.
         seed: The seed for a random number generator. Can be None, an int, or an instance of np.random.Generator.
+            If `None`, a new random number generator is created with a random seed.
+            If an `int`, a generator is created using the seed.
+            If an instance of `np.random.Generator`, it is used directly.
 
     Returns:
         A text with randomly inserted synonyms.
@@ -233,8 +242,11 @@ def insert_punctuation(
     Args:
         text: The input text.
         insertion_prob: The probability of inserting a punctuation mark.
-        punctuation: Punctuation to be inserted at random.
+        punctuation: The punctuation to be inserted at random.
         seed: The seed for a random number generator. Can be None, an int, or an instance of np.random.Generator.
+            If `None`, a new random number generator is created with a random seed.
+            If an `int`, a generator is created using the seed.
+            If an instance of `np.random.Generator`, it is used directly.
 
     Returns:
         A text with randomly inserted punctuation.
@@ -276,8 +288,8 @@ def _insert_punctuation_in_sentence(
     for index, should_insert in enumerate(insertion_mask):
         if not should_insert:
             continue
-        nth = rng.integers(0, num_punctuation)
-        augmented_words[index].append(punctuation[nth])
+        punctuation_index = rng.integers(0, num_punctuation)
+        augmented_words[index].append(punctuation[punctuation_index])
     return _flatten(augmented_words)
 
 
@@ -289,6 +301,9 @@ def replace_synonyms(text: Text, replacement_prob: float, *, seed: int | np.rand
         text: The input text.
         replacement_prob: The probability of replacing a word with a synonym.
         seed: The seed for a random number generator. Can be None, an int, or an instance of np.random.Generator.
+            If `None`, a new random number generator is created with a random seed.
+            If an `int`, a generator is created using the seed.
+            If an instance of `np.random.Generator`, it is used directly.
 
     Returns:
         A text with random words replaced by synonyms.
@@ -330,6 +345,9 @@ def swap_words(text: Text, alpha: float | int, *, seed: int | np.random.Generato
             where `L` is the length of the text.
             If an `int`, it is the number of times to repeat the process.
         seed: The seed for a random number generator. Can be None, an int, or an instance of np.random.Generator.
+            If `None`, a new random number generator is created with a random seed.
+            If an `int`, a generator is created using the seed.
+            If an instance of `np.random.Generator`, it is used directly.
 
     Returns:
         A text with randomly shuffled words each sentence.
@@ -351,8 +369,8 @@ def _swap_words(sentences: list[Sentence], n_times: int, rng: np.random.Generato
     num_sentences = len(sentences)
     sentence_lengths = np.array([*map(len, sentences)])
     weights = sentence_lengths / np.sum(sentence_lengths)
-    selected_indices = rng.choice(num_sentences, replace=True, size=n_times, p=weights)
-    for index in selected_indices:
+    chosen_indices = rng.choice(num_sentences, replace=True, size=n_times, p=weights).tolist()
+    for index in chosen_indices:
         sentences[index] = _swap_two_words_in_sentence(sentences[index], rng)
     return sentences
 
@@ -366,7 +384,7 @@ def _swap_two_words_in_sentence(words: list[Word], rng: np.random.Generator) -> 
 def _swap_two_strings(strings: list[Corpus], rng: np.random.Generator) -> list[Corpus]:
     """Randomly swaps two strings in the list of strings."""
     if (num_strings := len(strings)) >= 2:
-        index1, index2 = rng.choice(num_strings, replace=False, size=2)
+        index1, index2 = rng.choice(num_strings, replace=False, size=2).tolist()
         strings[index1], strings[index2] = strings[index2], strings[index1]
     return strings
 
@@ -379,6 +397,9 @@ def swap_sentences(text: Text, n_times: int, *, seed: int | np.random.Generator 
         text: The input text.
         n_times: The number of times to repeat the process.
         seed: The seed for a random number generator. Can be None, an int, or an instance of np.random.Generator.
+            If `None`, a new random number generator is created with a random seed.
+            If an `int`, a generator is created using the seed.
+            If an instance of `np.random.Generator`, it is used directly.
 
     Returns:
         A text with randomly shuffled sentences.

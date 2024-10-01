@@ -249,12 +249,15 @@ def check_rng(seed: int | np.random.Generator | None) -> np.random.Generator:
 
     Args:
         seed: The seed for a random number generator. Can be None, an int, or an instance of np.random.Generator.
+            If `None`, a new random number generator is created with a random seed.
+            If an `int`, a generator is created using the seed.
+            If an instance of `np.random.Generator`, it is returned as-is.
 
     Returns:
         A numpy random generator instance.
 
     Raises:
-        ValueError: If the provided seed is not valid.
+        ValueError: If the seed type is not an int, np.random.Generator, or None.
     """
     if seed is None:
         return np.random.default_rng(_generate_random_seed())
@@ -276,12 +279,12 @@ def _flatten(list_of_lists: list[list[_T]]) -> list[_T]:
 
 
 def _generate_boolean_mask(size: int, masking_prob: float, rng: np.random.Generator) -> NDArray[np.bool_]:
-    """generates a boolean mask array."""
+    """Generates a boolean mask array."""
     return rng.random(size=size).__lt__(masking_prob)
 
 
 def get_translator() -> GoogleTranslator:
-    """Returns an instance of GoogleTranslator class."""
+    """Returns an instance of GoogleTranslator."""
     return _translator
 
 
