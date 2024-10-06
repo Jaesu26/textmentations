@@ -10,7 +10,7 @@ from typing_extensions import TypeAlias
 Word: TypeAlias = str
 Sentence: TypeAlias = str
 Text: TypeAlias = str
-Corpus = TypeVar("Corpus", Word, Sentence, Text)
+Corpus = TypeVar("Corpus", bound=Text)
 Language: TypeAlias = Literal[
     "af",
     "ak",

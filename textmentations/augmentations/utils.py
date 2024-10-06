@@ -6,7 +6,7 @@ import random
 import re
 from collections.abc import Callable
 from functools import wraps
-from typing import TypeVar
+from typing import List, TypeVar, cast
 
 import numpy as np
 from deep_translator import GoogleTranslator
@@ -115,12 +115,12 @@ def split_text_into_sentences(text: Text) -> list[Sentence]:
 
 def strip_v2(strings: list[Corpus]) -> list[Corpus]:
     """Removes leading and trailing whitespace from each string and filters out any strings that are empty."""
-    return [stripped for s in strings if (stripped := s.strip())]
+    return cast(List[Corpus], [stripped for s in strings if (stripped := s.strip())])
 
 
 def strip(strings: list[Corpus]) -> list[Corpus]:
     """Removes leading and trailing whitespaces from each string in the list."""
-    return [s.strip() for s in strings]
+    return cast(List[Corpus], [s.strip() for s in strings])
 
 
 def remove_empty_strings(strings: list[Corpus]) -> list[Corpus]:
