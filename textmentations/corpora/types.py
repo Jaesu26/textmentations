@@ -1,16 +1,16 @@
 """Corpus types.
-Word -> (), Sentence -> {}, Text -> [], then it's expressed as follows.
+Word -> (), Sentence -> {}, Text -> [], then it's expressed as follows. Corpus can be Word or Sentence or Text.
 [{(아침에는) (짜장면을) (맛있게) (먹었다)}. {(점심에는) (짬뽕을) (맛있게) (먹었다)}. {(저녁에는) (짬짜면을) (맛있게) (먹었다)}.]
 """
 
-from typing import Literal, TypeVar
+from typing import Literal
 
 from typing_extensions import TypeAlias
 
 Word: TypeAlias = str
 Sentence: TypeAlias = str
 Text: TypeAlias = str
-Corpus = TypeVar("Corpus", bound=Text)
+Corpus: TypeAlias = str
 Language: TypeAlias = Literal[
     "af",
     "ak",
