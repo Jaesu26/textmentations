@@ -75,19 +75,18 @@ def _delete_words_in_sentence(
     rng: np.random.Generator,
 ) -> list[Word]:
     """Randomly deletes words in the list of words."""
+    min_words = math.ceil(len(words) * min_words) if isinstance(min_words, float) else min_words
     return _delete_strings(words, deletion_prob, min_words, rng)
 
 
 def _delete_strings(
     strings: list[Corpus],
     deletion_prob: float,
-    min_strings: float | int,
+    min_strings: int,
     rng: np.random.Generator,
 ) -> list[Corpus]:
     """Randomly deletes strings in the list of strings."""
-    num_strings = len(strings)
-    min_strings = math.ceil(num_strings * min_strings) if isinstance(min_strings, float) else min_strings
-    if num_strings <= min_strings:
+    if (num_strings := len(strings)) <= min_strings:
         return strings
     indices_to_retain = set()
     num_possible_deletions = num_strings - min_strings
@@ -145,6 +144,7 @@ def _delete_sentences(
     rng: np.random.Generator,
 ) -> list[Sentence]:
     """Randomly deletes sentences in the list of sentences."""
+    min_sentences = math.ceil(len(sentences) * min_sentences) if isinstance(min_sentences, float) else min_sentences
     return _delete_strings(sentences, deletion_prob, min_sentences, rng)
 
 
@@ -366,10 +366,9 @@ def swap_words(text: Text, alpha: float | int, *, seed: int | np.random.Generato
 @autopsy_text
 def _swap_words(sentences: list[Sentence], n_times: int, rng: np.random.Generator) -> list[Sentence]:
     """Repeats n times the task of randomly swapping two words in a randomly selected sentence."""
-    num_sentences = len(sentences)
     sentence_lengths = np.array([*map(len, sentences)])
     weights = sentence_lengths / np.sum(sentence_lengths)
-    chosen_indices = rng.choice(num_sentences, replace=True, size=n_times, p=weights).tolist()
+    chosen_indices = rng.choice(len(sentences), replace=True, size=n_times, p=weights).tolist()
     for index in chosen_indices:
         sentences[index] = _swap_two_words_in_sentence(sentences[index], rng)
     return sentences

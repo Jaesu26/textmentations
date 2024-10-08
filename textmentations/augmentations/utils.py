@@ -273,7 +273,7 @@ def _generate_random_seed() -> int:
     return random.randint(0, 2**32 - 1)
 
 
-def _flatten(list_of_lists: list[list[_T]]) -> list[_T]:
+def _flatten(list_of_lists: list[list[_T]], /) -> list[_T]:
     """Flattens the list of lists."""
     return [*itertools.chain.from_iterable(list_of_lists)]
 
@@ -288,13 +288,13 @@ def get_translator() -> GoogleTranslator:
     return _translator
 
 
-def _get_albert_mlm(model_path: str | os.PathLike) -> AlbertForMaskedLM:
+def _from_pretrained_albert_mlm(model_path: str | os.PathLike) -> AlbertForMaskedLM:
     """Gets an ALBERT model for masked language modeling."""
     model = AlbertForMaskedLM.from_pretrained(pretrained_model_name_or_path=model_path)
     return model
 
 
-def _get_bert_tokenizer_fast(model_path: str | os.PathLike) -> BertTokenizerFast:
+def _from_pretrained_bert_tokenizer_fast(model_path: str | os.PathLike) -> BertTokenizerFast:
     """Gets a fast BERT tokenizer."""
     tokenizer = BertTokenizerFast.from_pretrained(
         pretrained_model_name_or_path=model_path,
