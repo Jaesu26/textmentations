@@ -273,17 +273,17 @@ def _generate_random_seed() -> int:
     return random.randint(0, 2**32 - 1)
 
 
-def _flatten(list_of_lists: list[list[_T]], /) -> list[_T]:
-    """Flattens the list of lists."""
-    return [*itertools.chain.from_iterable(list_of_lists)]
-
-
 def _generate_boolean_mask(size: int, masking_prob: float, rng: np.random.Generator) -> NDArray[np.bool_]:
     """Generates a boolean mask array."""
     return rng.random(size=size).__lt__(masking_prob)
 
 
-def get_translator() -> GoogleTranslator:
+def _flatten(list_of_lists: list[list[_T]], /) -> list[_T]:
+    """Flattens the list of lists."""
+    return [*itertools.chain.from_iterable(list_of_lists)]
+
+
+def _get_translator() -> GoogleTranslator:
     """Returns an instance of GoogleTranslator."""
     return _translator
 

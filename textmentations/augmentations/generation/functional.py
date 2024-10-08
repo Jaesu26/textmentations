@@ -10,10 +10,10 @@ from textmentations.augmentations.utils import (
     EMPTY_STRING,
     _flatten,
     _generate_boolean_mask,
+    _get_translator,
     autopsy_sentence,
     autopsy_text,
     check_rng,
-    get_translator,
     join_words_into_sentence,
     pass_empty_text,
     remove_empty_strings,
@@ -41,7 +41,7 @@ def back_translate(text: Text, from_lang: Language, to_lang: Language) -> Text:
         >>> to_lang = "en"
         >>> augmented_text = fg.back_translate(text, from_lang, to_lang)
     """
-    translator = get_translator()
+    translator = _get_translator()
     try:
         translator.source, translator.target = from_lang, to_lang
         translated_text = translator.translate(text)
