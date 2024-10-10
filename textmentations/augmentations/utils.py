@@ -278,13 +278,18 @@ def _generate_boolean_mask(size: int, p: float, rng: np.random.Generator) -> NDA
     return rng.random(size=size).__lt__(p)
 
 
+def _get_true_indices(boolean_mask: NDArray[np.bool_]) -> NDArray[np.int_]:
+    """Gets indices of true values."""
+    return np.flatnonzero(boolean_mask)
+
+
 def _flatten(list_of_lists: list[list[_T]], /) -> list[_T]:
     """Flattens the list of lists."""
     return [*itertools.chain.from_iterable(list_of_lists)]
 
 
 def _get_translator() -> GoogleTranslator:
-    """Returns an instance of GoogleTranslator."""
+    """Gets an instance of GoogleTranslator."""
     return _translator
 
 

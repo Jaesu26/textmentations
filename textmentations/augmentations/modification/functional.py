@@ -8,6 +8,7 @@ import numpy as np
 from textmentations.augmentations.utils import (
     _flatten,
     _generate_boolean_mask,
+    _get_true_indices,
     autopsy_sentence,
     autopsy_text,
     check_rng,
@@ -89,7 +90,7 @@ def _delete_strings(
     if (num_strings := len(strings)) <= min_strings:
         return strings
     deletion_mask = _generate_boolean_mask(num_strings, deletion_prob, rng)
-    indices_to_delete = np.flatnonzero(deletion_mask)
+    indices_to_delete = _get_true_indices(deletion_mask)
     if len(indices_to_delete) > (num_possible_deletions := num_strings - min_strings):
         indices_to_delete = rng.choice(indices_to_delete, size=num_possible_deletions, replace=False)
     indices_to_delete = set(indices_to_delete)
@@ -206,8 +207,8 @@ def _insert_synonyms_in_words(words: list[Word], insertion_prob: float, rng: np.
     num_words = len(words)
     augmented_words: List[List[Word]] = [[]]  # To insert synonyms in front of the words
     augmented_words.extend([word] for word in words)
-    insertion_mask = _generate_boolean_mask(num_words, insertion_prob, rng)
-    chosen_word_indices = np.flatnonzero(insertion_mask)
+    choice_mask = _generate_boolean_mask(num_words, insertion_prob, rng)
+    chosen_word_indices = _get_true_indices(choice_mask)
     chosen_word_indices = rng.permutation(chosen_word_indices).tolist()
     for index in chosen_word_indices:
         word = words[index]
@@ -283,7 +284,7 @@ def _insert_punctuation_in_sentence(
     augmented_words: List[List[Word]] = [[]]  # To insert a punctuation mark in front of the words
     augmented_words.extend([word] for word in words)
     insertion_mask = _generate_boolean_mask(len(words) + 1, insertion_prob, rng)
-    insertion_indices = np.flatnonzero(insertion_mask).tolist()
+    insertion_indices = _get_true_indices(insertion_mask).tolist()
     for index in insertion_indices:
         punctuation_index = rng.integers(0, num_punctuation)
         augmented_words[index].append(punctuation[punctuation_index])
