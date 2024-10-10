@@ -125,13 +125,13 @@ def _insert_contextual_words_in_sentence(
     """Randomly inserts mask tokens in the list of words and fills them with language model predictions."""
     mask_token = tokenizer.mask_token
     insertion_mask = _generate_boolean_mask(len(words), insertion_prob, rng).tolist()
-    words_with_masking = _flatten(
+    words_with_masks = _flatten(
         [[mask_token, word] if should_insert else [word] for word, should_insert in zip(words, insertion_mask)]
     )  # Avoid inserting the mask token at the end of words because the model often predicts punctuation
-    sentence_with_masking = join_words_into_sentence(words_with_masking)
-    plausible_words = _predict_masks(sentence_with_masking, model, tokenizer, top_k, device, rng)
+    sentence_with_masks = join_words_into_sentence(words_with_masks)
+    plausible_words = _predict_masks(sentence_with_masks, model, tokenizer, top_k, device, rng)
     plausible_word_iter = iter(plausible_words)
-    augmented_words = [next(plausible_word_iter, EMPTY_STRING) if w == mask_token else w for w in words_with_masking]
+    augmented_words = [next(plausible_word_iter, EMPTY_STRING) if w == mask_token else w for w in words_with_masks]
     augmented_words = remove_empty_strings(augmented_words)
     return augmented_words
 
@@ -234,13 +234,13 @@ def _iterative_mask_fill_in_sentence(
     rng: np.random.Generator,
 ) -> list[Word]:
     """Iteratively masks each word in the list of words and replaces it with language model predictions."""
-    for masking_index, word in enumerate(words):
-        words[masking_index] = tokenizer.mask_token
-        sentence_with_masking = join_words_into_sentence(words)
-        plausible_words = _predict_masks(sentence_with_masking, model, tokenizer, top_k, device, rng)
+    for mask_index, word in enumerate(words):
+        words[mask_index] = tokenizer.mask_token
+        sentence_with_mask = join_words_into_sentence(words)
+        plausible_words = _predict_masks(sentence_with_mask, model, tokenizer, top_k, device, rng)
         plausible_word_iter = iter(plausible_words)
         plausible_word = next(plausible_word_iter, word)
-        words[masking_index] = plausible_word
+        words[mask_index] = plausible_word
     return words
 
 
@@ -317,12 +317,12 @@ def _replace_contextual_words_in_sentence(
     """Randomly replaces words in the list of words with mask tokens and fills them with language model predictions."""
     mask_token = tokenizer.mask_token
     replacement_mask = _generate_boolean_mask(len(words), masking_prob, rng).tolist()
-    words_with_masking = [mask_token if should_mask else word for word, should_mask in zip(words, replacement_mask)]
-    sentence_with_masking = join_words_into_sentence(words_with_masking)
-    plausible_words = _predict_masks(sentence_with_masking, model, tokenizer, top_k, device, rng)
+    words_with_masks = [mask_token if should_mask else word for word, should_mask in zip(words, replacement_mask)]
+    sentence_with_masks = join_words_into_sentence(words_with_masks)
+    plausible_words = _predict_masks(sentence_with_masks, model, tokenizer, top_k, device, rng)
     plausible_word_iter = iter(plausible_words)
     augmented_words = [
         next(plausible_word_iter, words[index]) if word == mask_token else word
-        for index, word in enumerate(words_with_masking)
+        for index, word in enumerate(words_with_masks)
     ]
     return augmented_words

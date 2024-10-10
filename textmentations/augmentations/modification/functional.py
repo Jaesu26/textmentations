@@ -88,16 +88,12 @@ def _delete_strings(
     """Randomly deletes strings in the list of strings."""
     if (num_strings := len(strings)) <= min_strings:
         return strings
-    indices_to_retain = set()
-    num_possible_deletions = num_strings - min_strings
-    randomized_indices = rng.permutation(num_strings).tolist()
-    deletion_mask = _generate_boolean_mask(num_strings, deletion_prob, rng).tolist()
-    for index, can_delete in zip(randomized_indices, deletion_mask):
-        if can_delete and num_possible_deletions > 0:
-            num_possible_deletions -= 1
-            continue
-        indices_to_retain.add(index)
-    augmented_strings = [string for index, string in enumerate(strings) if index in indices_to_retain]
+    deletion_mask = _generate_boolean_mask(num_strings, deletion_prob, rng)
+    indices_to_delete = np.flatnonzero(deletion_mask)
+    if len(indices_to_delete) > (num_possible_deletions := num_strings - min_strings):
+        indices_to_delete = rng.choice(indices_to_delete, size=num_possible_deletions, replace=False)
+    indices_to_delete = set(indices_to_delete)
+    augmented_strings = [string for index, string in enumerate(strings) if index not in indices_to_delete]
     return augmented_strings
 
 
@@ -210,11 +206,13 @@ def _insert_synonyms_in_words(words: list[Word], insertion_prob: float, rng: np.
     num_words = len(words)
     augmented_words: List[List[Word]] = [[]]  # To insert synonyms in front of the words
     augmented_words.extend([word] for word in words)
-    randomized_indices = rng.permutation(num_words).tolist()
-    insertion_mask = _generate_boolean_mask(num_words, insertion_prob, rng).tolist()
-    for index, can_insert in zip(randomized_indices, insertion_mask):
+    insertion_mask = _generate_boolean_mask(num_words, insertion_prob, rng)
+    chosen_word_indices = np.flatnonzero(insertion_mask)
+    chosen_word_indices = rng.permutation(chosen_word_indices).tolist()
+    for index in chosen_word_indices:
         word = words[index]
-        if not can_insert or (synonym := _replace_word_with_synonym(word, rng)) == word:
+        synonym = _replace_word_with_synonym(word, rng)
+        if synonym == word:
             continue
         insertion_index = rng.integers(0, num_words + 1)
         augmented_words[insertion_index].append(synonym)
@@ -284,10 +282,9 @@ def _insert_punctuation_in_sentence(
     num_punctuation = len(punctuation)
     augmented_words: List[List[Word]] = [[]]  # To insert a punctuation mark in front of the words
     augmented_words.extend([word] for word in words)
-    insertion_mask = _generate_boolean_mask(len(words) + 1, insertion_prob, rng).tolist()
-    for index, should_insert in enumerate(insertion_mask):
-        if not should_insert:
-            continue
+    insertion_mask = _generate_boolean_mask(len(words) + 1, insertion_prob, rng)
+    insertion_indices = np.flatnonzero(insertion_mask).tolist()
+    for index in insertion_indices:
         punctuation_index = rng.integers(0, num_punctuation)
         augmented_words[index].append(punctuation[punctuation_index])
     return _flatten(augmented_words)
@@ -368,8 +365,8 @@ def _swap_words(sentences: list[Sentence], n_times: int, rng: np.random.Generato
     """Repeats n times the task of randomly swapping two words in a randomly selected sentence."""
     sentence_lengths = np.array([*map(len, sentences)])
     weights = sentence_lengths / np.sum(sentence_lengths)
-    chosen_indices = rng.choice(len(sentences), replace=True, size=n_times, p=weights).tolist()
-    for index in chosen_indices:
+    chosen_sentence_indices = rng.choice(len(sentences), replace=True, size=n_times, p=weights).tolist()
+    for index in chosen_sentence_indices:
         sentences[index] = _swap_two_words_in_sentence(sentences[index], rng)
     return sentences
 

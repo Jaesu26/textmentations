@@ -273,9 +273,9 @@ def _generate_random_seed() -> int:
     return random.randint(0, 2**32 - 1)
 
 
-def _generate_boolean_mask(size: int, masking_prob: float, rng: np.random.Generator) -> NDArray[np.bool_]:
+def _generate_boolean_mask(size: int, p: float, rng: np.random.Generator) -> NDArray[np.bool_]:
     """Generates a boolean mask array."""
-    return rng.random(size=size).__lt__(masking_prob)
+    return rng.random(size=size).__lt__(p)
 
 
 def _flatten(list_of_lists: list[list[_T]], /) -> list[_T]:

@@ -22,7 +22,7 @@ def test_back_translate_too_many_requests():
     text = "나는 목이 말라서 물을 마셨다."
     from_lang = "ko"
     to_lang = "en"
-    with patch("textmentations.augmentations.generation.functional.get_translator") as mock_get_translator:
+    with patch("textmentations.augmentations.generation.functional._get_translator") as mock_get_translator:
         mock_translator = mock_get_translator.return_value
         mock_translator.translate.side_effect = TooManyRequests
         augmented_text = fg.back_translate(text, from_lang, to_lang)
