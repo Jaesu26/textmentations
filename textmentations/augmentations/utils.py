@@ -293,14 +293,14 @@ def _get_translator() -> GoogleTranslator:
     return _translator
 
 
-def _from_pretrained_albert_mlm(model_path: str | os.PathLike) -> AlbertForMaskedLM:
-    """Gets an ALBERT model for masked language modeling."""
+def _load_pretrained_albert_mlm(model_path: str | os.PathLike) -> AlbertForMaskedLM:
+    """Loads an ALBERT model for masked language modeling."""
     model = AlbertForMaskedLM.from_pretrained(pretrained_model_name_or_path=model_path)
     return model
 
 
-def _from_pretrained_bert_tokenizer_fast(model_path: str | os.PathLike) -> BertTokenizerFast:
-    """Gets a fast BERT tokenizer."""
+def _load_pretrained_bert_tokenizer_fast(model_path: str | os.PathLike) -> BertTokenizerFast:
+    """Loads a fast BERT tokenizer."""
     tokenizer = BertTokenizerFast.from_pretrained(
         pretrained_model_name_or_path=model_path,
         clean_up_tokenization_spaces=True,
