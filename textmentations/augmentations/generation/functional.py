@@ -90,8 +90,8 @@ def insert_contextual_words(
         >>> device = "cuda:0"
         >>> augmented_text = fg.insert_contextual_words(text, model, tokenizer, insertion_prob, top_k, device)
     """
-    rng = check_rng(seed)
     model.to(device)
+    rng = check_rng(seed)
     return _insert_contextual_words(text, model, tokenizer, insertion_prob, top_k, device, rng)
 
 
@@ -204,8 +204,8 @@ def iterative_mask_fill(
         >>> device = "cuda:0"
         >>> augmented_text = fg.iterative_mask_fill(text, model, tokenizer, top_k, device)
     """
-    rng = check_rng(seed)
     model.to(device)
+    rng = check_rng(seed)
     return _iterative_mask_fill(text, model, tokenizer, top_k, device, rng)
 
 
@@ -219,7 +219,7 @@ def _iterative_mask_fill(
     rng: np.random.Generator,
 ) -> list[Sentence]:
     """Iteratively masks words in a randomly selected sentence and replaces them with language model predictions."""
-    index = rng.integers(0, len(sentences))
+    index = rng.integers(len(sentences))
     sentences[index] = _iterative_mask_fill_in_sentence(sentences[index], model, tokenizer, top_k, device, rng)
     return sentences
 
@@ -282,8 +282,8 @@ def replace_contextual_words(
         >>> device = "cuda:0"
         >>> augmented_text = fg.replace_contextual_words(text, model, tokenizer, masking_prob, top_k, device)
     """
-    rng = check_rng(seed)
     model.to(device)
+    rng = check_rng(seed)
     return _replace_contextual_words(text, model, tokenizer, masking_prob, top_k, device, rng)
 
 

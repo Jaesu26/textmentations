@@ -8,14 +8,14 @@ from deep_translator.constants import GOOGLE_LANGUAGES_TO_CODES as CODE_BY_GOOGL
 from deep_translator.exceptions import LanguageNotSupportedException as LanguageNotSupportedError
 
 import textmentations.augmentations.generation.functional as fg
-from textmentations.augmentations.utils import _load_pretrained_albert_mlm, _load_pretrained_bert_tokenizer_fast
+from textmentations.augmentations.utils import _read_pretrained_albert_mlm, _read_pretrained_bert_tokenizer_fast
 from textmentations.core.transforms_interface import TextTransform
 from textmentations.corpora.types import Language, Text
 
 LANGUAGES = sorted(CODE_BY_GOOGLE_LANGUAGE.values())
 _ALBERT_MODEL_PATH = Path(__file__).resolve().parent / "_models" / "kykim-albert-kor-base"
-_albert_model = _load_pretrained_albert_mlm(model_path=_ALBERT_MODEL_PATH).eval()
-_albert_tokenizer = _load_pretrained_bert_tokenizer_fast(model_path=_ALBERT_MODEL_PATH)
+_albert_model = _read_pretrained_albert_mlm(model_path=_ALBERT_MODEL_PATH).eval()
+_albert_tokenizer = _read_pretrained_bert_tokenizer_fast(model_path=_ALBERT_MODEL_PATH)
 
 
 class BackTranslation(TextTransform):

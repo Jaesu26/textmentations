@@ -15,11 +15,11 @@ def get_synonyms(word: Word) -> list[Word]:
     return synonyms
 
 
-def get_random_synonym(word: Word, rng: np.random.Generator) -> Word:
+def choose_synonym(word: Word, rng: np.random.Generator) -> Word:
     """Gets a random synonym for the word."""
     synonyms = get_synonyms(word)
     if synonyms:
-        index = rng.integers(0, len(synonyms))
+        index = rng.integers(len(synonyms))
         return synonyms[index]
     return word
 

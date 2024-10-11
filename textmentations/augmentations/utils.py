@@ -270,7 +270,7 @@ def check_rng(seed: int | np.random.Generator | None) -> np.random.Generator:
 
 def _generate_random_seed() -> int:
     """Generates a random seed within the valid range for numpy random number generator."""
-    return random.randint(0, 2**32 - 1)
+    return random.randrange(2**32)
 
 
 def _generate_boolean_mask(size: int, p: float, rng: np.random.Generator) -> NDArray[np.bool_]:
@@ -278,8 +278,8 @@ def _generate_boolean_mask(size: int, p: float, rng: np.random.Generator) -> NDA
     return rng.random(size=size).__lt__(p)
 
 
-def _get_true_indices(boolean_mask: NDArray[np.bool_]) -> NDArray[np.int_]:
-    """Gets indices of true values."""
+def _find_true_indices(boolean_mask: NDArray[np.bool_]) -> NDArray[np.int_]:
+    """Finds indices of true values."""
     return np.flatnonzero(boolean_mask)
 
 
@@ -293,13 +293,13 @@ def _get_translator() -> GoogleTranslator:
     return _translator
 
 
-def _load_pretrained_albert_mlm(model_path: str | os.PathLike) -> AlbertForMaskedLM:
+def _read_pretrained_albert_mlm(model_path: str | os.PathLike) -> AlbertForMaskedLM:
     """Loads an ALBERT model for masked language modeling."""
     model = AlbertForMaskedLM.from_pretrained(pretrained_model_name_or_path=model_path)
     return model
 
 
-def _load_pretrained_bert_tokenizer_fast(model_path: str | os.PathLike) -> BertTokenizerFast:
+def _read_pretrained_bert_tokenizer_fast(model_path: str | os.PathLike) -> BertTokenizerFast:
     """Loads a fast BERT tokenizer."""
     tokenizer = BertTokenizerFast.from_pretrained(
         pretrained_model_name_or_path=model_path,
