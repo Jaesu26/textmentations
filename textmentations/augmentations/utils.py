@@ -6,21 +6,58 @@ import random
 import re
 from collections.abc import Callable
 from functools import wraps
-from typing import TypeVar
+from typing import Any, TypeVar
 
 import numpy as np
 from deep_translator import GoogleTranslator
 from numpy.typing import NDArray
 from transformers import AlbertForMaskedLM, BertTokenizerFast
-from typing_extensions import Concatenate, ParamSpec
+from typing_extensions import Concatenate, ParamSpec, TypeAlias
 
 from textmentations.corpora.types import Corpus, Sentence, Text, Word
 
 EMPTY_STRING = ""
 SPACE = " "
 _translator = GoogleTranslator(source="ko", target="en")
-_P = ParamSpec("_P")
 _T = TypeVar("_T")
+_P = ParamSpec("_P")
+_SplitInput: TypeAlias = Any
+_SplitOutput: TypeAlias = Any
+_JoinInput: TypeAlias = Any
+_JoinOutput: TypeAlias = Any
+
+
+class Autopsy:
+    """Decorator class that facilitates transformation of input by splitting it into parts,
+    applying a transformation function to those parts, and then recombining them.
+    It separates the logic of splitting, processing, and rejoining, allowing users to focus on the transformation.
+
+    Args:
+        split_func: A callable that splits the input into smaller parts. (e.g., sentence -> words).
+        join_func: A callable that joins the processed parts back into the original format. (e.g., words -> sentence).
+    """
+
+    def __init__(
+        self,
+        *,
+        split_func: Callable[[_SplitInput], _SplitOutput],
+        join_func: Callable[[_JoinInput], _JoinOutput],
+    ) -> None:
+        self.split_func = split_func
+        self.join_func = join_func
+
+    def __call__(
+        self,
+        func: Callable[Concatenate[_SplitOutput, _P], _JoinInput],
+    ) -> Callable[Concatenate[_SplitInput, _P], _JoinOutput]:
+        @wraps(func)
+        def wrapped(original: _SplitInput, *args: _P.args, **kwargs: _P.kwargs) -> _JoinOutput:
+            pieces = self.split_func(original)
+            processed_pieces = func(pieces, *args, **kwargs)
+            restored = self.join_func(processed_pieces)
+            return restored
+
+        return wrapped
 
 
 def autopsy_sentence(
