@@ -4,8 +4,10 @@ import math
 from typing import List
 
 import numpy as np
+from kiwipiepy import Kiwi, Token
 
 from textmentations.augmentations.utils import (
+    Autopsy,
     _find_true_indices,
     _flatten,
     _generate_boolean_mask,
@@ -16,6 +18,10 @@ from textmentations.augmentations.utils import (
 )
 from textmentations.corpora.types import Corpus, Sentence, Text, Word
 from textmentations.corpora.utils import choose_synonym, is_stopword
+
+_ADDS_SPACE = False
+_NOUN_TAGS = {"NNG", "NNP", "NNB", "NR", "NP"}
+_morpheme_analyzer = Kiwi()
 
 
 @pass_empty_text
@@ -212,12 +218,24 @@ def _insert_synonyms_in_words(words: list[Word], insertion_prob: float, rng: np.
     chosen_word_indices = rng.permutation(chosen_word_indices).tolist()
     for index in chosen_word_indices:
         word = words[index]
-        synonym = _replace_word_with_synonym(word, rng)
+        synonym = _replace_synonym_in_word_segment(word, rng)
         if synonym == word:
             continue
         insertion_index = rng.integers(num_words + 1)
         augmented_words[insertion_index].append(synonym)
     return _flatten(augmented_words)
+
+
+@Autopsy(split_func=_morpheme_analyzer.tokenize, join_func=_morpheme_analyzer.join)
+def _replace_synonym_in_word_segment(tokens: list[Token], rng: np.random.Generator) -> list[tuple[str, str, bool]]:
+    return [
+        (
+            (_replace_word_with_synonym(t.form, rng), t.tag, _ADDS_SPACE)
+            if t.tag in _NOUN_TAGS
+            else (t.form, t.tag, _ADDS_SPACE)
+        )
+        for t in tokens
+    ]
 
 
 def _replace_word_with_synonym(word: Word, rng: np.random.Generator) -> Word:
@@ -280,12 +298,11 @@ def _insert_punctuation_in_sentence(
     rng: np.random.Generator,
 ) -> list[Word]:
     """Randomly inserts punctuation in the list of words."""
-    num_punctuation = len(punctuation)
     augmented_words: List[List[Word]] = [[]]  # To insert a punctuation mark in front of the words
     augmented_words.extend([word] for word in words)
     insertion_mask = _generate_boolean_mask(len(words) + 1, insertion_prob, rng)
     insertion_indices = _find_true_indices(insertion_mask).tolist()
-    punctuation_indices = rng.integers(num_punctuation, size=len(insertion_indices)).tolist()
+    punctuation_indices = rng.integers(len(punctuation), size=len(insertion_indices)).tolist()
     for insertion_index, punctuation_index in zip(insertion_indices, punctuation_indices):
         augmented_words[insertion_index].append(punctuation[punctuation_index])
     return _flatten(augmented_words)
@@ -327,7 +344,7 @@ def _replace_synonyms_in_sentence(words: list[Word], replacement_prob: float, rn
     """Randomly replaces words that are not stopwords in the list of words with synonyms."""
     replacement_mask = _generate_boolean_mask(len(words), replacement_prob, rng).tolist()
     return [
-        _replace_word_with_synonym(word, rng) if should_replace else word
+        _replace_synonym_in_word_segment(word, rng) if should_replace else word
         for word, should_replace in zip(words, replacement_mask)
     ]
 
