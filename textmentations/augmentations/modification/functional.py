@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import math
-from typing import List
+from typing import List, Literal, Set
 
 import numpy as np
 from kiwipiepy import Kiwi, Token
@@ -16,11 +16,11 @@ from textmentations.augmentations.utils import (
     check_rng,
     pass_empty_text,
 )
-from textmentations.corpora.types import Corpus, Sentence, Text, Word
+from textmentations.corpora.types import Corpus, Morpheme, POSTag, Sentence, Text, Word
 from textmentations.corpora.utils import choose_synonym, is_stopword
 
-_ADDS_SPACE = False
-_NOUN_TAGS = {"NNG", "NNP", "NNB", "NR", "NP"}
+_ADDS_SPACE: Literal[False] = False
+_NOUN_TAGS: Set[POSTag] = {"NNG", "NNP", "NNB", "NR", "NP"}
 _morpheme_analyzer = Kiwi()
 
 
@@ -204,11 +204,11 @@ def _insert_synonyms_in_sentence(
 ) -> list[Word]:
     """Repeats n times the task of randomly inserting synonyms of words that are not stopwords in the list of words."""
     for _ in range(n_times):
-        words = _insert_synonyms_in_words(words, insertion_prob, rng)
+        words = _insert_synonyms_once_in_sentence(words, insertion_prob, rng)
     return words
 
 
-def _insert_synonyms_in_words(words: list[Word], insertion_prob: float, rng: np.random.Generator) -> list[Word]:
+def _insert_synonyms_once_in_sentence(words: list[Word], insertion_prob: float, rng: np.random.Generator) -> list[Word]:
     """Randomly inserts synonyms of words that are not stopwords in the list of words."""
     num_words = len(words)
     augmented_words: List[List[Word]] = [[]]  # To insert synonyms in front of the words
@@ -218,7 +218,7 @@ def _insert_synonyms_in_words(words: list[Word], insertion_prob: float, rng: np.
     chosen_word_indices = rng.permutation(chosen_word_indices).tolist()
     for index in chosen_word_indices:
         word = words[index]
-        synonym = _replace_synonym_in_word_segment(word, rng)
+        synonym = _replace_word_in_eojeol_with_synonym(word, rng)
         if synonym == word:
             continue
         insertion_index = rng.integers(num_words + 1)
@@ -227,14 +227,13 @@ def _insert_synonyms_in_words(words: list[Word], insertion_prob: float, rng: np.
 
 
 @Autopsy(split_func=_morpheme_analyzer.tokenize, join_func=_morpheme_analyzer.join)
-def _replace_synonym_in_word_segment(tokens: list[Token], rng: np.random.Generator) -> list[tuple[str, str, bool]]:
+def _replace_word_in_eojeol_with_synonym(
+    tokens: list[Token],
+    rng: np.random.Generator,
+) -> list[tuple[Morpheme, POSTag, Literal[False]]]:
     return [
-        (
-            (_replace_word_with_synonym(t.form, rng), t.tag, _ADDS_SPACE)
-            if t.tag in _NOUN_TAGS
-            else (t.form, t.tag, _ADDS_SPACE)
-        )
-        for t in tokens
+        ((_replace_word_with_synonym(morph, rng), tag, _ADDS_SPACE) if tag in _NOUN_TAGS else (morph, tag, _ADDS_SPACE))
+        for morph, tag, *_ in tokens
     ]
 
 
@@ -339,13 +338,17 @@ def _replace_synonyms(sentences: list[Sentence], replacement_prob: float, rng: n
     return [_replace_synonyms_in_sentence(sentence, replacement_prob, rng) for sentence in sentences]
 
 
-@autopsy_sentence
-def _replace_synonyms_in_sentence(words: list[Word], replacement_prob: float, rng: np.random.Generator) -> list[Word]:
+@Autopsy(split_func=_morpheme_analyzer.tokenize, join_func=_morpheme_analyzer.join)
+def _replace_synonyms_in_sentence(
+    tokens: list[Token],
+    replacement_prob: float,
+    rng: np.random.Generator,
+) -> list[tuple[Morpheme, POSTag]]:
     """Randomly replaces words that are not stopwords in the list of words with synonyms."""
-    replacement_mask = _generate_boolean_mask(len(words), replacement_prob, rng).tolist()
+    replacement_mask = _generate_boolean_mask(len(tokens), replacement_prob, rng).tolist()
     return [
-        _replace_synonym_in_word_segment(word, rng) if should_replace else word
-        for word, should_replace in zip(words, replacement_mask)
+        (_replace_word_with_synonym(morph, rng), tag) if tag in _NOUN_TAGS and should_replace else (morph, tag)
+        for (morph, tag, *_), should_replace in zip(tokens, replacement_mask)
     ]
 
 

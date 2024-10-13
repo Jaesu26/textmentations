@@ -1,16 +1,79 @@
 """Corpus types.
-Word -> (), Sentence -> {}, Text -> [], then it's expressed as follows. Corpus can be Word, Sentence or Text.
+Word -> (), Sentence -> {}, Text -> [], then it's expressed as follows. Corpus can be anything.
 [{(아침에는) (짜장면을) (맛있게) (먹었다)}. {(점심에는) (짬뽕을) (맛있게) (먹었다)}. {(저녁에는) (짬짜면을) (맛있게) (먹었다)}.]
+Word can basically be word or word segment (eojeol), separating the two as needed.
 """
 
 from typing import Literal
 
 from typing_extensions import TypeAlias
 
+Morpheme: TypeAlias = str
 Word: TypeAlias = str
 Sentence: TypeAlias = str
 Text: TypeAlias = str
 Corpus: TypeAlias = str
+POSTag: TypeAlias = Literal[
+    "NNG",
+    "NNP",
+    "NNB",
+    "NR",
+    "NP",
+    "VV",
+    "VA",
+    "VX",
+    "VCP",
+    "VCN",
+    "MM",
+    "MAG",
+    "MAJ",
+    "IC",
+    "JKS",
+    "JKC",
+    "JKG",
+    "JKO",
+    "JKB",
+    "JKV",
+    "JKQ",
+    "JX",
+    "JC",
+    "EP",
+    "EF",
+    "EC",
+    "ETN",
+    "ETM",
+    "XPN",
+    "XSN",
+    "XSV",
+    "XSA",
+    "XSM",
+    "XR",
+    "SF",
+    "SP",
+    "SS",
+    "SSO",
+    "SSC",
+    "SE",
+    "SO",
+    "SW",
+    "SL",
+    "SH",
+    "SN",
+    "SB",
+    "UN",
+    "W_URL",
+    "W_EMAIL",
+    "W_HASHTAG",
+    "W_MENTION",
+    "W_SERIAL",
+    "W_EMOJI",
+    "Z_CODA",
+    "USER0",
+    "USER1",
+    "USER2",
+    "USER3",
+    "USER4",
+]
 Language: TypeAlias = Literal[
     "af",
     "ak",
