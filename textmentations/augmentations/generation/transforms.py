@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any
+from typing import Any, List
 
 import torch
 from deep_translator.constants import GOOGLE_LANGUAGES_TO_CODES as CODE_BY_GOOGLE_LANGUAGE
@@ -12,7 +12,7 @@ from textmentations.augmentations.utils import _read_pretrained_albert_mlm, _rea
 from textmentations.core.transforms_interface import TextTransform
 from textmentations.corpora.types import Language, Text
 
-LANGUAGES = sorted(CODE_BY_GOOGLE_LANGUAGE.values())
+LANGUAGES: List[Language] = sorted(CODE_BY_GOOGLE_LANGUAGE.values())
 _ALBERT_MODEL_PATH = Path(__file__).resolve().parent / "_models" / "kykim-albert-kor-base"
 _albert_model = _read_pretrained_albert_mlm(model_path=_ALBERT_MODEL_PATH).eval()
 _albert_tokenizer = _read_pretrained_bert_tokenizer_fast(model_path=_ALBERT_MODEL_PATH)

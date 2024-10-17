@@ -204,11 +204,15 @@ def _insert_synonyms_in_sentence(
 ) -> list[Word]:
     """Repeats n times the task of randomly inserting synonyms of words that are not stopwords in the list of words."""
     for _ in range(n_times):
-        words = _insert_synonyms_once_in_sentence(words, insertion_prob, rng)
+        words = _insert_synonyms_once_between_words(words, insertion_prob, rng)
     return words
 
 
-def _insert_synonyms_once_in_sentence(words: list[Word], insertion_prob: float, rng: np.random.Generator) -> list[Word]:
+def _insert_synonyms_once_between_words(
+    words: list[Word],
+    insertion_prob: float,
+    rng: np.random.Generator,
+) -> list[Word]:
     """Randomly inserts synonyms of words that are not stopwords in the list of words."""
     num_words = len(words)
     augmented_words: List[List[Word]] = [[]]  # To insert synonyms in front of the words
