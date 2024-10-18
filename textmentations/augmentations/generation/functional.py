@@ -107,13 +107,13 @@ def _insert_contextual_words(
 ) -> list[Sentence]:
     """Randomly inserts mask tokens in each sentence and fills them with language model predictions."""
     return [
-        _insert_contextual_words_in_sentence(sentence, model, tokenizer, insertion_prob, top_k, device, rng)
+        _insert_contextual_words_into_sentence(sentence, model, tokenizer, insertion_prob, top_k, device, rng)
         for sentence in sentences
     ]
 
 
 @autopsy_sentence
-def _insert_contextual_words_in_sentence(
+def _insert_contextual_words_into_sentence(
     words: list[Word],
     model: Any,
     tokenizer: Any,
@@ -299,13 +299,13 @@ def _replace_contextual_words(
 ) -> list[Sentence]:
     """Randomly replaces words in each sentence with mask tokens and fills them with language model predictions."""
     return [
-        _replace_contextual_words_in_sentence(sentence, model, tokenizer, masking_prob, top_k, device, rng)
+        _replace_words_in_sentence_with_contextual_words(sentence, model, tokenizer, masking_prob, top_k, device, rng)
         for sentence in sentences
     ]
 
 
 @autopsy_sentence
-def _replace_contextual_words_in_sentence(
+def _replace_words_in_sentence_with_contextual_words(
     words: list[Word],
     model: Any,
     tokenizer: Any,

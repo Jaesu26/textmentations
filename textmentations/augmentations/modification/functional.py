@@ -70,12 +70,12 @@ def _delete_words(
     return [
         augmented_sentence
         for sentence in sentences
-        if (augmented_sentence := _delete_words_in_sentence(sentence, deletion_prob, min_words_per_sentence, rng))
+        if (augmented_sentence := _delete_words_from_sentence(sentence, deletion_prob, min_words_per_sentence, rng))
     ]
 
 
 @autopsy_sentence
-def _delete_words_in_sentence(
+def _delete_words_from_sentence(
     words: list[Word],
     deletion_prob: float,
     min_words: float | int,
@@ -192,11 +192,11 @@ def _insert_synonyms(
     rng: np.random.Generator,
 ) -> list[Sentence]:
     """Repeats n times the task of randomly inserting synonyms of words that are not stopwords in each sentence."""
-    return [_insert_synonyms_in_sentence(sentence, insertion_prob, n_times, rng) for sentence in sentences]
+    return [_insert_synonyms_into_sentence(sentence, insertion_prob, n_times, rng) for sentence in sentences]
 
 
 @autopsy_sentence
-def _insert_synonyms_in_sentence(
+def _insert_synonyms_into_sentence(
     words: list[Word],
     insertion_prob: float,
     n_times: int,
@@ -204,11 +204,11 @@ def _insert_synonyms_in_sentence(
 ) -> list[Word]:
     """Repeats n times the task of randomly inserting synonyms of words that are not stopwords in the list of words."""
     for _ in range(n_times):
-        words = _insert_synonyms_once_between_words(words, insertion_prob, rng)
+        words = _insert_synonyms_between_words(words, insertion_prob, rng)
     return words
 
 
-def _insert_synonyms_once_between_words(
+def _insert_synonyms_between_words(
     words: list[Word],
     insertion_prob: float,
     rng: np.random.Generator,
@@ -290,11 +290,11 @@ def _insert_punctuation(
     rng: np.random.Generator,
 ) -> list[Sentence]:
     """Randomly inserts punctuation in each sentence."""
-    return [_insert_punctuation_in_sentence(sentence, insertion_prob, punctuation, rng) for sentence in sentences]
+    return [_insert_punctuation_into_sentence(sentence, insertion_prob, punctuation, rng) for sentence in sentences]
 
 
 @autopsy_sentence
-def _insert_punctuation_in_sentence(
+def _insert_punctuation_into_sentence(
     words: list[Word],
     insertion_prob: float,
     punctuation: tuple[str, ...],
@@ -339,11 +339,11 @@ def replace_synonyms(text: Text, replacement_prob: float, *, seed: int | np.rand
 @autopsy_text
 def _replace_synonyms(sentences: list[Sentence], replacement_prob: float, rng: np.random.Generator) -> list[Sentence]:
     """Randomly replaces words that are not stopwords in each sentence with synonyms."""
-    return [_replace_synonyms_in_sentence(sentence, replacement_prob, rng) for sentence in sentences]
+    return [_replace_words_in_sentence_with_synonyms(sentence, replacement_prob, rng) for sentence in sentences]
 
 
 @Autopsy(split_func=_morpheme_analyzer.tokenize, join_func=_morpheme_analyzer.join)
-def _replace_synonyms_in_sentence(
+def _replace_words_in_sentence_with_synonyms(
     tokens: list[Token],
     replacement_prob: float,
     rng: np.random.Generator,
