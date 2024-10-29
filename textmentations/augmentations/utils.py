@@ -215,12 +215,12 @@ def wrap_text_with_sentences(
     """Wraps the text with the specified prefix and suffix sentences.
 
     Args:
-        text: The input text to wrap with sentences.
+        text: The input text to be wrapped with sentences.
         prefix_sentences: The list of sentences to add at the beginning of the text.
         suffix_sentences: The list of sentences to add at the end of the text.
 
     Returns:
-        A wrapped text.
+        A text wrapped with the specified prefix and suffix sentences.
     """
     prefix_text = join_sentences_into_text(prefix_sentences) if prefix_sentences else EMPTY_STRING
     suffix_text = join_sentences_into_text(suffix_sentences) if suffix_sentences else EMPTY_STRING
