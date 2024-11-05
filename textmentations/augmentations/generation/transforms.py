@@ -78,7 +78,7 @@ class ContextualInsertion(TextTransform):
     Examples:
         >>> import textmentations as T
         >>> text = "어제 식당에 갔다. 목이 너무 말랐다. 먼저 물 한 잔을 마셨다. 그리고 탕수육을 맛있게 먹었다."
-        >>> ci = T.ContextualInsertion(isnertion_prob=0.15, top_k=5, device="cuda:0", p=1.0)
+        >>> ci = T.ContextualInsertion(insertion_prob=0.15, top_k=5, device="cuda:0", p=1.0)
         >>> augmented_text = ci(text=text)["text"]
     """
 
